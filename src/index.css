@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .btn {
+        @apply flex items-center justify-center cursor-pointer rounded disabled:hover:cursor-not-allowed;
+    }
+
+    .default-btn {
+        @apply btn border border-gray012 hover:bg-gray003 disabled:hover:bg-white;
+    }
+
+    .primary-btn {
+        @apply btn bg-primary font-extrabold text-white_1 hover:bg-primaryHover disabled:hover:bg-primary;
+    }
+
+    .outlined-btn {
+        @apply btn border border-primary text-primary hover:bg-primary disabled:hover:bg-white;
+    }
+
+    .lg-btn {
+        @apply w-full text-[18px] h-12 leading-[25px] font-semibold;
+    }
+
+    .md-btn {
+        @apply py-[6px] px-[10px];
+    }
+
+    .sm-btn {
+        @apply py-0 px-[10px];
+    }
+
+    .friend-item {
+        @apply p-[10px] flex items-center justify-start gap-[10px] hover:cursor-pointer hover:bg-gray003;
+    }
+
+    .friend-item-active {
+        @apply friend-item bg-gray006;
+    }
+
+    .lastest-message {
+        @apply text-[14px] font-medium;
+    }
+
+    .new-message {
+        @apply lastest-message font-semibold text-primary;
+    }
+}
+
+/* :root {
+    --font-family: 'Roboto', sans-serif;
+
+    --navbar-height: 60px;
+
+    --layout-width: 1150px;
+
+    --sidebar-width: 358px;
+
+    --search-height: 46px;
+    --search-width: 361px;
+
+    --post-width: 600px;
+
+    --auth-pages-width: 483px;
+
+    --notification-modal-width: 480px;
+    --notification-modal-height: 642px;
+
+    --primary-color: rgba(254, 44, 85, 1);
+    --primary-hover-color: #e4274c;
+
+    --gray006-color: rgba(22, 24, 35, 0.06);
+    --gray03-color: rgba(22, 24, 35, 0.3);
+    --gray06-color: rgba(22, 24, 35, 0.6);
+    --gray034-color: rgba(22, 24, 35, 0.34);
+    --gray003-color: rgba(22, 24, 35, 0.03);
+    --gray075-color: rgba(22, 24, 35, 0.75);
+    --gray012-color: rgba(22, 24, 35, 0.12);
+    --gray01-color: rgba(22, 24, 35, 0.1);
+    --gray05-color: rgba(22, 24, 35, 0.5);
+    --gray241-241-242-1-color: rgba(241, 241, 242, 1);
+    --gray248-248-248-color: rgb(248, 248, 248);
+
+    --text-color: #161823;
+
+    --white1-color: rgba(255, 255, 255, 1);
+    --pink-hover-color: rgba(254, 44, 85, 0.06);
+
+    --like-icon-color: rgb(27, 116, 228);
+} */
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: var(--font-family);
+}
+
+body {
+    font-size: 16px;
+}
+
+button,
+textarea,
+input {
+    outline: none;
+    border: none;
+    background-color: transparent;
+}
+
+a {
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(22, 24, 35, 0.12);
+    border-radius: 10px;
+}
+
+@font-face {
+    font-family: Roboto;
+    src: url('/assets/fonts/Roboto-Regular.ttf');
+    font-weight: 400;
+}
+@font-face {
+    font-family: Roboto;
+    src: url('/assets/fonts/Roboto-Medium.ttf');
+    font-weight: 500;
+}
+@font-face {
+    font-family: Roboto;
+    src: url('/assets/fonts/Roboto-Bold.ttf');
+    font-weight: 700;
+}

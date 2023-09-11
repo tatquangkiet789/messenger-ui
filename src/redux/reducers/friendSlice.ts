@@ -11,6 +11,8 @@ interface IFriendState {
     receiver: IFriend;
     activeId: number;
     hasNextPage: boolean;
+    userReceiveNewMessageId: number;
+    toggleNewReceiver: boolean;
 }
 
 const initialState: IFriendState = {
@@ -20,6 +22,8 @@ const initialState: IFriendState = {
     receiver: null as any,
     activeId: 0,
     hasNextPage: false,
+    userReceiveNewMessageId: 0,
+    toggleNewReceiver: false,
 };
 
 // [GET] /api/v1/friends
@@ -46,14 +50,30 @@ const friendSlice = createSlice({
                 (friend) => friend.id === action.payload,
             )[0];
             state.activeId = action.payload;
+            state.toggleNewReceiver = !state.toggleNewReceiver;
         },
-        updateLastestMessageFromSocket: (state, action) => {
+        updateReceiverLastestMessage: (state, action) => {
             state.friends = [...state.friends].map((friend) => {
                 if (friend.id === action.payload.senderDetail.id) {
+                    state.userReceiveNewMessageId = friend.id;
                     return { ...friend, lastestMessage: action.payload.content };
                 }
                 return friend;
             });
+        },
+        updateSenderLastestMessage: (state, action) => {
+            state.friends = [...state.friends].map((friend) => {
+                if (friend.id === action.payload.receiverDetail.id) {
+                    return {
+                        ...friend,
+                        lastestMessage: `Bạn: ${action.payload.content}`,
+                    };
+                }
+                return friend;
+            });
+        },
+        resetUserReceiveNewMessage: (state) => {
+            state.userReceiveNewMessageId = 0;
         },
     },
     extraReducers: (builder) => {
@@ -78,6 +98,11 @@ const friendSlice = createSlice({
     },
 });
 
-export const { setReceiver, updateLastestMessageFromSocket } = friendSlice.actions;
+export const {
+    setReceiver,
+    updateReceiverLastestMessage,
+    resetUserReceiveNewMessage,
+    updateSenderLastestMessage,
+} = friendSlice.actions;
 
 export default friendSlice.reducer;

@@ -3,8 +3,12 @@ import SOCKET_EVENT from '@src/constants/socket';
 import { useAppDispatch } from '@src/hooks/useAppDispatch';
 import { useAppSelector } from '@src/hooks/useAppSelector';
 import socketClient from '@src/lib/socketClient';
-import { createNewMessage } from '@src/redux/reducers/messageSlice';
-import { FC, FormEvent, useState } from 'react';
+import { updateSenderLastestMessage } from '@src/redux/reducers/friendSlice';
+import {
+    createNewMessage,
+    receiveNewMessageFromSocket,
+} from '@src/redux/reducers/messageSlice';
+import { ChangeEvent, FC, FormEvent, useState } from 'react';
 import { AiOutlineSend } from 'react-icons/ai';
 import { FiImage } from 'react-icons/fi';
 import { HiOutlineEmojiHappy } from 'react-icons/hi';
@@ -13,6 +17,7 @@ import { INewMessage, ISendMessage } from '../../models/message';
 
 const AddMessage: FC = () => {
     const [content, setContent] = useState('');
+    const [fileContent, setFileContent] = useState<File | null>(null);
     const { receiver } = useAppSelector((state) => state.friends);
     const { currentUser } = useAppSelector((state) => state.auth);
     const accessToken = sessionStorage.getItem(STORAGE_KEY.ACCESS_TOKEN)!;
@@ -31,16 +36,25 @@ const AddMessage: FC = () => {
             content: content,
         };
         socketClient.emit(SOCKET_EVENT.SEND_MESSAGE, socketData);
-        dispatch(createNewMessage(data));
+        dispatch(createNewMessage(data))
+            .unwrap()
+            .then((data) => {
+                // Cập nhật tin nhắn vào trong message list và cập nhật
+                // tin nhắn mới nhất trong friend list ở phía sender
+                const { content } = data;
+                dispatch(receiveNewMessageFromSocket(content));
+                dispatch(updateSenderLastestMessage(content));
+            });
         setContent('');
-    };
-
-    const handleOpenImageModal = () => {
-        toast.info('Opening modal to choose image');
     };
 
     const handleOpenEmojiModal = () => {
         toast.info('Opening modal to choose emoji');
+    };
+
+    const handleSetFile = (e: ChangeEvent<HTMLInputElement>) => {
+        if (!e.currentTarget.files) return;
+        setFileContent(e.currentTarget.files[0]);
     };
 
     return (
@@ -51,13 +65,14 @@ const AddMessage: FC = () => {
             onSubmit={handleSubmitMessage}
         >
             <div className='flex items-center w-fit gap-3'>
-                <div
+                <label
                     className='bg-white flex items-center justify-center rounded-full p-[6px] 
                     cursor-pointer hover:bg-gray006'
-                    onClick={handleOpenImageModal}
+                    htmlFor='file-btn'
                 >
                     <FiImage className='stroke-primary' size={30} />
-                </div>
+                </label>
+                <input type='file' id='file-btn' hidden onChange={handleSetFile} />
                 <div
                     className='bg-white flex items-center justify-center rounded-full p-[6px] 
                     cursor-pointer hover:bg-gray006'
@@ -71,7 +86,7 @@ const AddMessage: FC = () => {
                     type='text'
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    placeholder='Nhập tin nhắn tới Raiden Shogun'
+                    placeholder={`Nhập tin nhắn tới ${receiver.lastName} ${receiver.firstName}`}
                     className='caret-primary py-3 px-5 text-base flex-1 bg-gray006 
                     rounded-full border-gray012'
                 />

@@ -8,3 +8,9 @@ export const USER_ROLES = {
 export const STORAGE_KEY = {
     ACCESS_TOKEN: 'ACCESS_TOKEN',
 };
+
+export const MESSAGE_TYPE = {
+    TEXT: 1,
+    IMAGE: 2,
+    EMOJI: 3,
+};

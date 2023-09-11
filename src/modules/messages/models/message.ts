@@ -6,6 +6,7 @@ export interface IFindMessage {
 
 export interface IMessage {
     id: number;
+    messageTypeId: number;
     senderDetail: {
         id: number;
         avatar: string;

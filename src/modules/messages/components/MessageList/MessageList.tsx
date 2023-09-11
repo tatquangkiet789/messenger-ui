@@ -1,7 +1,7 @@
-import { FC } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import { FC, Fragment } from 'react';
 import { IMessage } from '../../models/message';
 import MessageItem from '../MessageItem/MessageItem';
-import { AnimatePresence } from 'framer-motion';
 
 interface IMessageListProps {
     messages: IMessage[];
@@ -10,8 +10,36 @@ interface IMessageListProps {
 }
 
 const MessageList: FC<IMessageListProps> = ({ messages, loading, error }) => {
+    // const [element, setElement] = useState<HTMLDivElement | null>(null);
+    // const latestMessageRef = useRef<HTMLDivElement | null>(null);
+    // const observer = useRef(
+    //     new IntersectionObserver(
+    //         (entries) => {
+    //             const first = entries[0];
+    //             if (first.isIntersecting) onChangePage((prev: any) => prev + 1);
+    //         },
+    //         {
+    //             threshold: 1,
+    //         },
+    //     ),
+    // );
+
+    // useEffect(() => {
+    //     const currentElement = element;
+    //     const currentObserver = observer.current;
+
+    //     if (!currentElement) return;
+
+    //     currentObserver.observe(currentElement);
+
+    //     if (!hasNextPage) currentObserver.unobserve(currentElement);
+
+    //     return () => currentObserver.unobserve(currentElement);
+    // }, [element, hasNextPage]);
+
     return (
-        <div className='flex flex-col gap-[10px] overflow-x-hidden'>
+        <Fragment>
+            {/* <div ref={setElement}></div> */}
             {messages.length === 0 && loading ? (
                 <p>Đang tải tin nhắn</p>
             ) : messages.length === 0 ? (
@@ -20,18 +48,19 @@ const MessageList: FC<IMessageListProps> = ({ messages, loading, error }) => {
                 <p>{error}</p>
             ) : (
                 <AnimatePresence>
-                    {messages.map(({ senderDetail, content, id }, index) => (
+                    {messages.map(({ senderDetail, content, id, messageTypeId }) => (
                         <MessageItem
-                            key={index}
+                            key={id}
                             content={content}
                             senderId={senderDetail.id}
                             senderAvatar={senderDetail.avatar}
-                            id={id}
+                            messageTypeId={messageTypeId}
                         />
                     ))}
                 </AnimatePresence>
             )}
-        </div>
+            {/* <div ref={latestMessageRef} className='h-10 bg-red-100'></div> */}
+        </Fragment>
     );
 };
 

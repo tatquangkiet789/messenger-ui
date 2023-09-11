@@ -1,4 +1,3 @@
-import Button from '@src/components/ui/Button/Button';
 import { STORAGE_KEY } from '@src/constants/constants';
 import SOCKET_EVENT from '@src/constants/socket';
 import { useAppDispatch } from '@src/hooks/useAppDispatch';
@@ -8,14 +7,14 @@ import ReceiverInfo from '@src/modules/friends/components/ReceiverInfo/ReceiverI
 import AddMessage from '@src/modules/messages/components/AddMessage/AddMessage';
 import MessageList from '@src/modules/messages/components/MessageList/MessageList';
 import { IMessage } from '@src/modules/messages/models/message';
-import { updateLastestMessageFromSocket } from '@src/redux/reducers/friendSlice';
+import { updateReceiverLastestMessage } from '@src/redux/reducers/friendSlice';
 import {
     findAllMessages,
     receiveNewMessageFromSocket,
     resetMessages,
     setIsNewList,
 } from '@src/redux/reducers/messageSlice';
-import { FC, MutableRefObject, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { IoVideocamOutline } from 'react-icons/io5';
 import { toast } from 'react-toastify';
 
@@ -23,7 +22,6 @@ const HomePage: FC = () => {
     const { receiver } = useAppSelector((state) => state.friends);
     const dispatch = useAppDispatch();
     const accessToken = sessionStorage.getItem(STORAGE_KEY.ACCESS_TOKEN);
-    const element = useRef() as MutableRefObject<HTMLDivElement>;
     const [page, setPage] = useState(1);
     const {
         messages,
@@ -33,7 +31,6 @@ const HomePage: FC = () => {
 
     useEffect(() => {
         if (!accessToken) return;
-
         dispatch(setIsNewList(page === 1 ? true : false));
         dispatch(
             findAllMessages({
@@ -42,36 +39,27 @@ const HomePage: FC = () => {
                 userId: receiver.id,
             }),
         );
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [accessToken, page, receiver.id]);
+    }, [accessToken, dispatch, page, receiver.id]);
 
     useEffect(() => {
-        socketClient.on(SOCKET_EVENT.RECEIVE_MESSAGE, (data: IMessage) => {
-            if (data.senderDetail.id === receiver.id) {
-                console.log('In the same conversation');
-                dispatch(receiveNewMessageFromSocket(data));
-            } else {
-                console.log('Not in the same conversation');
-                dispatch(updateLastestMessageFromSocket(data));
-            }
-            // console.log(data);
-        });
-        // return () => {
-        //     console.log('Remove socketClient');
-        //     socketClient.removeListener();
-        // };
+        dispatch(resetMessages());
+        setPage(1);
     }, [dispatch, receiver.id]);
 
     useEffect(() => {
-        if (!element) return;
-        if (messages.length === 0) return;
-
-        const scrollToBottom = () => {
-            element.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        socketClient.on(SOCKET_EVENT.RECEIVE_MESSAGE, (data) => {
+            // Cập nhật tin nhắn vào trong message list và cập nhật
+            // tin nhắn mới nhất trong friend list ở phía receiver
+            const newMessage: IMessage = data.content;
+            if (newMessage.senderDetail.id === receiver.id) {
+                dispatch(receiveNewMessageFromSocket(newMessage));
+            }
+            dispatch(updateReceiverLastestMessage(newMessage));
+        });
+        return () => {
+            socketClient.off(SOCKET_EVENT.RECEIVE_MESSAGE);
         };
-
-        scrollToBottom();
-    }, [element, receiver.id, messages.length]);
+    }, [dispatch, receiver.id]);
 
     const handleVideoCall = () => {
         toast.info('Opening new browser window');
@@ -89,27 +77,23 @@ const HomePage: FC = () => {
                     <IoVideocamOutline size={30} className='text-primary' />
                 </span>
             </div>
-            <div className='flex-1 overflow-y-scroll p-[10px]'>
-                <div className='flex gap-4'>
-                    <Button
-                        size='md'
-                        text='Load'
-                        variant='primary'
-                        onClick={() => setPage((prev) => prev + 1)}
-                    />
-                    <Button
-                        size='md'
-                        text='Reset'
-                        variant='default'
-                        onClick={() => dispatch(resetMessages())}
-                    />
-                </div>
+            <div
+                className='py-[10px] pl-[10px] flex flex-1 flex-col gap-[10px] 
+                overflow-x-hidden'
+                style={{ overflow: 'overlay', overflowAnchor: 'none' }}
+            >
+                <button
+                    className='w-full text-[18px] leading-[25px] font-semibold 
+                    text-primary hover:bg-gray006 p-2 duration-500'
+                    onClick={() => setPage((prev) => prev + 1)}
+                >
+                    Tải thêm tin nhắn
+                </button>
                 <MessageList
                     loading={messageLoading}
                     error={messageError}
                     messages={messages}
                 />
-                <div ref={element}></div>
             </div>
             <AddMessage />
         </div>

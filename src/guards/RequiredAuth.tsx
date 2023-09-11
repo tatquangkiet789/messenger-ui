@@ -16,7 +16,6 @@ const RequiredAuth: FC = () => {
     useEffect(() => {
         if (!accessToken) return;
         if (currentUser) return;
-
         dispatch(getCurrentUserByAccessToken(accessToken));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [accessToken, currentUser]);

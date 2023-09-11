@@ -40,25 +40,16 @@ const FriendList: FC<IFriendListProps> = ({ friendList, loading, error }) => {
     return (
         <div className='flex flex-col'>
             {friendList.length === 0 && loading ? (
-                <p>Đang tải danh sách bạn bè</p>
+                <p className='px-[10px]'>Đang tải danh sách bạn bè</p>
             ) : friendList.length === 0 ? (
-                <p>Không tìm thấy danh sách bạn vè</p>
+                <p className='px-[10px]'>Không tìm thấy danh sách bạn vè</p>
             ) : error ? (
-                <p>{error}</p>
+                <p className='px-[10px]'>{error}</p>
             ) : (
                 <Fragment>
-                    {friendList.map(
-                        ({ avatar, firstName, lastName, id, lastestMessage, tick }) => (
-                            <FriendItem
-                                key={id}
-                                avatar={avatar}
-                                userId={id}
-                                fullname={`${lastName} ${firstName}`}
-                                lastestMessage={lastestMessage}
-                                tick={tick}
-                            />
-                        ),
-                    )}
+                    {friendList.map((friend) => (
+                        <FriendItem key={friend.id} friend={friend} />
+                    ))}
                     {/* <div ref={setElement} className='w-full h-[10px] bg-red-100'></div> */}
                 </Fragment>
             )}

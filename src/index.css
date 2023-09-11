@@ -16,7 +16,7 @@
     }
 
     .outlined-btn {
-        @apply btn border border-primary text-primary hover:bg-primary disabled:hover:bg-white;
+        @apply btn border border-primary text-primary hover:bg-primary hover:text-white disabled:hover:bg-white;
     }
 
     .lg-btn {

@@ -16,6 +16,7 @@ interface IMessageState {
     loading: boolean;
     error: string;
     isNewList: boolean;
+    hasNextPage: boolean;
 }
 
 const initialState: IMessageState = {
@@ -23,6 +24,7 @@ const initialState: IMessageState = {
     loading: false,
     error: '',
     isNewList: false,
+    hasNextPage: false,
 };
 
 // [GET] /api/v1/messages/:userId?page=:page
@@ -60,6 +62,7 @@ const messageSlice = createSlice({
     initialState,
     reducers: {
         resetMessages: (state) => {
+            console.log('Rest Message List');
             state.messages = [];
         },
         setIsNewList: (state, action: PayloadAction<boolean>) => {
@@ -78,6 +81,7 @@ const messageSlice = createSlice({
             })
             .addCase(findAllMessages.fulfilled, (state, action) => {
                 state.loading = false;
+                state.hasNextPage = Boolean(action.payload.content.length);
                 if (state.isNewList) {
                     state.messages = action.payload.content;
                 } else {
@@ -96,7 +100,7 @@ const messageSlice = createSlice({
                 state.loading = true;
                 state.error = '';
             })
-            .addCase(createNewMessage.fulfilled, (state, action) => {
+            .addCase(createNewMessage.fulfilled, (state) => {
                 state.loading = false;
                 // state.messages = [...state.messages, action.payload.content];
             })

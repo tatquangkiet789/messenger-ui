@@ -1,11 +1,16 @@
+interface ILastestMessage {
+    content: string;
+    messageTypeId: number;
+}
+
 export interface IFriend {
     id: number;
     firstName: string;
     lastName: string;
-    username: string;
     avatar: string;
     tick: boolean;
-    lastestMessage: string;
+    lastestMessage: ILastestMessage;
+    username: string;
 }
 
 export interface IFindFriend {

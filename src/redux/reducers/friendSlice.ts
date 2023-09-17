@@ -1,4 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { MESSAGE_TYPE } from '@src/constants/constants';
 import { IFindFriend, IFriend } from '@src/modules/friends/models/friend';
 import { findAllFriendsSevice } from '@src/modules/friends/services/friendService';
 import { AxiosError } from 'axios';
@@ -56,7 +57,22 @@ const friendSlice = createSlice({
             state.friends = [...state.friends].map((friend) => {
                 if (friend.id === action.payload.senderDetail.id) {
                     state.userReceiveNewMessageId = friend.id;
-                    return { ...friend, lastestMessage: action.payload.content };
+                    if (action.payload.messageTypeId === MESSAGE_TYPE.IMAGE) {
+                        return {
+                            ...friend,
+                            lastestMessage: {
+                                content: `Hình ảnh`,
+                                messageTypeId: MESSAGE_TYPE.IMAGE,
+                            },
+                        };
+                    }
+                    return {
+                        ...friend,
+                        lastestMessage: {
+                            content: `${action.payload.content}`,
+                            messageTypeId: MESSAGE_TYPE.TEXT,
+                        },
+                    };
                 }
                 return friend;
             });
@@ -64,9 +80,21 @@ const friendSlice = createSlice({
         updateSenderLastestMessage: (state, action) => {
             state.friends = [...state.friends].map((friend) => {
                 if (friend.id === action.payload.receiverDetail.id) {
+                    if (action.payload.messageTypeId === MESSAGE_TYPE.IMAGE) {
+                        return {
+                            ...friend,
+                            lastestMessage: {
+                                content: `Bạn: Hình ảnh`,
+                                messageTypeId: MESSAGE_TYPE.IMAGE,
+                            },
+                        };
+                    }
                     return {
                         ...friend,
-                        lastestMessage: `Bạn: ${action.payload.content}`,
+                        lastestMessage: {
+                            content: `Bạn: ${action.payload.content}`,
+                            messageTypeId: MESSAGE_TYPE.TEXT,
+                        },
                     };
                 }
                 return friend;

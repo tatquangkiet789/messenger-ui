@@ -4,12 +4,14 @@ import AuthLayout from '@src/layouts/AuthLayout/AuthLayout';
 import MainLayout from '@src/layouts/MainLayout/MainLayout';
 import HomePage from '@src/pages/HomePage/HomePage';
 import LoginPage from '@src/pages/LoginPage/LoginPage';
+import RegisterPage from '@src/pages/RegisterPage/RegisterPage';
 import { FC } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 const AppRoutes: FC = () => {
     const publicRoutes = [
         { path: ROUTES.LOGIN, page: <LoginPage />, layout: <AuthLayout /> },
+        { path: ROUTES.REGISTER, page: <RegisterPage />, layout: <AuthLayout /> },
     ];
 
     const privateRoutes = [

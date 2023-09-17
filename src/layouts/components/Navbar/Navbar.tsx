@@ -3,8 +3,10 @@ import Modal from '@src/components/ui/Modal/Modal';
 import { ROUTES } from '@src/constants/routes';
 import { useAppDispatch } from '@src/hooks/useAppDispatch';
 import { useAppSelector } from '@src/hooks/useAppSelector';
+import UserProfile from '@src/modules/users/components/UserProfile/UserProfile';
 import { logout } from '@src/redux/reducers/authSlice';
 import HeadlessTippy from '@tippyjs/react/headless';
+import { AnimatePresence } from 'framer-motion';
 import { FC, useState } from 'react';
 import { BiLogOutCircle } from 'react-icons/bi';
 import { HiOutlineUserCircle } from 'react-icons/hi';
@@ -64,7 +66,8 @@ const Navbar: FC = () => {
                                         setIsOpenProfile(true);
                                         handleCloseModal();
                                     }}
-                                    className='w-full flex items-center justify-start py-[10px] px-4 cursor-pointer hover:bg-gray012'
+                                    className='w-full flex items-center justify-start py-[10px]
+                                    px-4 cursor-pointer hover:bg-gray012'
                                 >
                                     <span className='mr-2'>
                                         <HiOutlineUserCircle size={20} />
@@ -136,7 +139,8 @@ const Navbar: FC = () => {
                     >
                         <div
                             onClick={() => setIsOpen(true)}
-                            className='w-8 h-8 ml-6 cursor-pointer bg-center bg-contain rounded-full bg-no-repeat'
+                            className={`w-8 h-8 ml-6 cursor-pointer bg-center bg-contain 
+                            rounded-full bg-no-repeat `}
                             style={{
                                 backgroundImage: `url(${currentUser.avatar})`,
                             }}
@@ -144,9 +148,16 @@ const Navbar: FC = () => {
                     </HeadlessTippy>
                 ) : null}
             </div>
-            {isOpenProfile ? (
-                <Modal onCloseModal={setIsOpenProfile}>Profile</Modal>
-            ) : null}
+            <AnimatePresence>
+                {isOpenProfile ? (
+                    <Modal>
+                        <UserProfile
+                            user={currentUser}
+                            onToggleModal={setIsOpenProfile}
+                        />
+                    </Modal>
+                ) : null}
+            </AnimatePresence>
         </div>
     );
 };

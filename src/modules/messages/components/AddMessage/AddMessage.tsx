@@ -8,16 +8,16 @@ import {
     createNewMessage,
     receiveNewMessageFromSocket,
 } from '@src/redux/reducers/messageSlice';
-import { ChangeEvent, FC, FormEvent, useState } from 'react';
+import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
+import { ChangeEvent, FC, FormEvent, Fragment, useState } from 'react';
 import { AiOutlineSend } from 'react-icons/ai';
 import { FiImage } from 'react-icons/fi';
 import { HiOutlineEmojiHappy } from 'react-icons/hi';
-import { toast } from 'react-toastify';
 import { INewMessage, ISendMessage } from '../../models/message';
 
 const AddMessage: FC = () => {
     const [content, setContent] = useState('');
-    const [fileContent, setFileContent] = useState<File | null>(null);
+    const [isOpenEmoji, setIsOpenEmoji] = useState(false);
     const { receiver } = useAppSelector((state) => state.friends);
     const { currentUser } = useAppSelector((state) => state.auth);
     const accessToken = sessionStorage.getItem(STORAGE_KEY.ACCESS_TOKEN)!;
@@ -25,16 +25,54 @@ const AddMessage: FC = () => {
 
     const handleSubmitMessage = (e: FormEvent) => {
         e.preventDefault();
+
+        const formData = new FormData();
+        formData.append('receiverId', receiver.id.toString());
+        formData.append('content', content);
+
         const data: INewMessage = {
+            formData: formData,
             accessToken: accessToken,
-            receiverId: receiver.id,
-            content: content,
         };
         const socketData: ISendMessage = {
             senderName: currentUser.username,
             receiverName: receiver.username,
-            content: content,
         };
+
+        dispatch(createNewMessage(data))
+            .unwrap()
+            .then((data) => {
+                // Cập nhật tin nhắn vào trong message list và cập nhật
+                // tin nhắn mới nhất trong friend list ở phía sender
+                const { content } = data;
+                dispatch(receiveNewMessageFromSocket(content));
+                dispatch(updateSenderLastestMessage(content));
+            });
+        socketClient.emit(SOCKET_EVENT.SEND_MESSAGE, socketData);
+        setContent('');
+    };
+
+    const handleSelectEmoji = (emojiData: EmojiClickData) => {
+        setContent((prev) => prev + emojiData.emoji);
+        setIsOpenEmoji(false);
+    };
+
+    const handleChooseAndUploadFile = (e: ChangeEvent<HTMLInputElement>) => {
+        if (!e.currentTarget.files) return;
+
+        const formData = new FormData();
+        formData.append('image', e.currentTarget.files[0]);
+        formData.append('receiverId', receiver.id.toString());
+
+        const data: INewMessage = {
+            formData: formData,
+            accessToken: accessToken,
+        };
+        const socketData: ISendMessage = {
+            senderName: currentUser.username,
+            receiverName: receiver.username,
+        };
+
         socketClient.emit(SOCKET_EVENT.SEND_MESSAGE, socketData);
         dispatch(createNewMessage(data))
             .unwrap()
@@ -45,43 +83,42 @@ const AddMessage: FC = () => {
                 dispatch(receiveNewMessageFromSocket(content));
                 dispatch(updateSenderLastestMessage(content));
             });
-        setContent('');
-    };
-
-    const handleOpenEmojiModal = () => {
-        toast.info('Opening modal to choose emoji');
-    };
-
-    const handleSetFile = (e: ChangeEvent<HTMLInputElement>) => {
-        if (!e.currentTarget.files) return;
-        setFileContent(e.currentTarget.files[0]);
     };
 
     return (
-        <form
-            className='bg-white flex flex-col p-3 gap-3 items-start
-            rounded-b-lg'
-            style={{ boxShadow: 'rgb(0 0 0 / 6%) 0px 2px 8px' }}
-            onSubmit={handleSubmitMessage}
-        >
-            <div className='flex items-center w-fit gap-3'>
+        <Fragment>
+            {isOpenEmoji ? (
+                <div className='absolute bottom-24 left-auto'>
+                    <EmojiPicker onEmojiClick={handleSelectEmoji} />
+                </div>
+            ) : null}
+            <form
+                className='bg-white flex p-3 gap-3 rounded-b-lg items-center'
+                style={{ boxShadow: 'rgb(0 0 0 / 6%) 0px 2px 8px' }}
+                onSubmit={handleSubmitMessage}
+            >
                 <label
-                    className='bg-white flex items-center justify-center rounded-full p-[6px] 
+                    className='bg-white flex items-center justify-center rounded-md p-[6px] 
                     cursor-pointer hover:bg-gray006'
                     htmlFor='file-btn'
                 >
                     <FiImage className='stroke-primary' size={30} />
                 </label>
-                <input type='file' id='file-btn' hidden onChange={handleSetFile} />
+                <input
+                    type='file'
+                    id='file-btn'
+                    hidden
+                    onChange={handleChooseAndUploadFile}
+                />
                 <div
-                    className='bg-white flex items-center justify-center rounded-full p-[6px] 
-                    cursor-pointer hover:bg-gray006'
-                    onClick={handleOpenEmojiModal}
+                    className={`flex items-center justify-center rounded-md p-[6px] 
+                    cursor-pointer hover:bg-gray006 ${
+                        isOpenEmoji ? 'bg-gray006' : 'bg-white'
+                    }`}
+                    onClick={() => setIsOpenEmoji(!isOpenEmoji)}
                 >
                     <HiOutlineEmojiHappy className='stroke-primary' size={30} />
                 </div>
-            </div>
-            <div className='flex items-center w-full gap-3'>
                 <input
                     type='text'
                     value={content}
@@ -89,6 +126,7 @@ const AddMessage: FC = () => {
                     placeholder={`Nhập tin nhắn tới ${receiver.lastName} ${receiver.firstName}`}
                     className='caret-primary py-3 px-5 text-base flex-1 bg-gray006 
                     rounded-full border-gray012'
+                    spellCheck={false}
                 />
                 <button
                     className={`bg-white flex items-center justify-center p-[6px] 
@@ -102,8 +140,8 @@ const AddMessage: FC = () => {
                         size={30}
                     />
                 </button>
-            </div>
-        </form>
+            </form>
+        </Fragment>
     );
 };
 

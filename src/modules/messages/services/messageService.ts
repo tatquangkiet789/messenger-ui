@@ -15,18 +15,11 @@ export const findAllMessagesService = async (param: IFindMessage) => {
 
 // [POST] /api/v1/messages/create
 export const createNewMessageService = async (param: INewMessage) => {
-    const { accessToken, content, receiverId } = param;
-    const res = await privateAxios.post(
-        ENDPOINTS.CREATE_NEW_MESSAGE,
-        {
-            content: content,
-            receiverId: receiverId,
+    const { accessToken, formData } = param;
+    const res = await privateAxios.post(ENDPOINTS.CREATE_NEW_MESSAGE, formData, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
         },
-        {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        },
-    );
+    });
     return res.data;
 };

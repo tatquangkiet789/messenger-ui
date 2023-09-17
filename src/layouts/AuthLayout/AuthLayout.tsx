@@ -13,7 +13,7 @@ const AuthLayout: FC = () => {
                 style={{ backgroundImage: `url(${wave})` }}
             ></div>
             <div className='w-[483px] rounded-lg shadow-lg flex flex-col items-center h-[75vh] z-10 bg-white'>
-                <div className='py-0 px-[54px] w-full h-full'>
+                <div className='py-0 px-[54px] w-full h-full overflow-y-auto'>
                     <Outlet />
                 </div>
                 {pathname === '/auth/login' ? (

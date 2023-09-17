@@ -1,11 +1,11 @@
 import tickIcon from '@src/assets/icons/tick.svg';
+import { MESSAGE_TYPE } from '@src/constants/constants';
 import { useAppDispatch } from '@src/hooks/useAppDispatch';
 import { useAppSelector } from '@src/hooks/useAppSelector';
 import { resetUserReceiveNewMessage, setReceiver } from '@src/redux/reducers/friendSlice';
 import { FC } from 'react';
+import { FiImage } from 'react-icons/fi';
 import { IFriend } from '../../models/friend';
-import { RxImage } from 'react-icons/rx';
-import { MESSAGE_TYPE } from '@src/constants/constants';
 
 interface IFriendItemProps {
     friend: IFriend;
@@ -46,8 +46,13 @@ const FriendItem: FC<IFriendItemProps> = ({ friend }) => {
                 ) : null}
                 {lastestMessage.messageTypeId === MESSAGE_TYPE.IMAGE ? (
                     <div className='flex items-center gap-1'>
-                        <RxImage size={15} />
-                        <p className='lastest-message'>Hình ảnh</p>
+                        <FiImage
+                            className={isNewMessage ? 'stroke-primary' : ''}
+                            size={15}
+                        />
+                        <p className={isNewMessage ? 'new-message' : 'lastest-message'}>
+                            Hình ảnh
+                        </p>
                     </div>
                 ) : null}
             </div>

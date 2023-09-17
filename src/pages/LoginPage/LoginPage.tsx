@@ -8,8 +8,7 @@ import { ILogin } from '@src/modules/auth/models/auth';
 import { login } from '@src/redux/reducers/authSlice';
 import { Field, Formik } from 'formik';
 import { FC, Fragment } from 'react';
-import { MdOutlineArrowBackIosNew } from 'react-icons/md';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 
 const LoginPage: FC = () => {
@@ -39,12 +38,7 @@ const LoginPage: FC = () => {
 
     return (
         <Fragment>
-            <div className='py-4 flex items-center justify-center'>
-                <Link className='flex cursor-pointer' to={ROUTES.HOME}>
-                    <MdOutlineArrowBackIosNew size={20} />
-                </Link>
-                <h1 className='text-[32px] text-center flex-1'>Đăng nhập</h1>
-            </div>
+            <h1 className='text-[32px] text-center flex-1 py-4'>Đăng nhập</h1>
             <Formik
                 initialValues={initialValues}
                 onSubmit={(values, { resetForm }) => {
@@ -52,7 +46,6 @@ const LoginPage: FC = () => {
                         .unwrap()
                         .then((data) => {
                             const { userRoleId } = data.content;
-                            // socketClient.emit(SOCKET_EVENT.NEW_USER, username);
                             if (userRoleId === USER_ROLES.USER) return navigate(from);
                         });
                     resetForm();
@@ -88,9 +81,9 @@ const LoginPage: FC = () => {
                                 placeholder='Mật khẩu'
                                 error={passwordErr}
                             />
-                            <p className='text-gray075 font-semibold text-xs mb-[21px]'>
+                            {/* <p className='text-gray075 font-semibold text-xs mb-[21px]'>
                                 Quên mật khẩu?
-                            </p>
+                            </p> */}
                             <Button
                                 text='Đăng nhập'
                                 variant='primary'

@@ -20,7 +20,7 @@
     }
 
     .lg-btn {
-        @apply w-full text-[18px] h-12 leading-[25px] font-semibold;
+        @apply w-full text-[18px] py-[10px] leading-[25px] font-semibold;
     }
 
     .md-btn {
@@ -121,6 +121,11 @@ a {
 ::-webkit-scrollbar-thumb {
     background: rgba(22, 24, 35, 0.12);
     border-radius: 10px;
+}
+
+input[type='password']::-ms-reveal,
+input[type='password']::-ms-clear {
+    display: none;
 }
 
 @font-face {

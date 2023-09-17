@@ -7,6 +7,8 @@ export const ENDPOINTS = {
     LOGOUT: '/auth/logout',
     REGISTER: '/auth/register',
     GET_CURRENT_USER_BY_ACCESS_TOKEN: '/users/current-user',
+    REFRESH_TOKEN: '/auth/refresh-token',
+    UPDATE_PASSWORD: '/auth/update-password',
 
     // Friend endpoints
     FIND_ALL_FRIENDS: (page: number) => `/friends?page=${page}`,

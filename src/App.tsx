@@ -8,7 +8,7 @@ const App: FC = () => {
     return (
         <Fragment>
             <AppRoutes />
-            <ToastContainer position='bottom-right' autoClose={2000} />
+            <ToastContainer position='top-left' autoClose={2000} />
         </Fragment>
     );
 };

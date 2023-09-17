@@ -8,6 +8,7 @@ import FriendList from '@src/modules/friends/components/FriendList/FriendList';
 import { IFriend } from '@src/modules/friends/models/friend';
 import { findAllFriends } from '@src/redux/reducers/friendSlice';
 import Tippy from '@tippyjs/react';
+import { AnimatePresence } from 'framer-motion';
 import { FC, Fragment, useEffect, useState } from 'react';
 import { MdOutlinePersonAddAlt } from 'react-icons/md';
 
@@ -71,11 +72,13 @@ const Sidebar: FC = () => {
                     />
                 </div>
             </div>
-            {isOpenAddFriend ? (
-                <Modal onCloseModal={setIsOpenAddFriend}>
-                    <AddFriend />
-                </Modal>
-            ) : null}
+            <AnimatePresence>
+                {isOpenAddFriend ? (
+                    <Modal>
+                        <AddFriend onToggleModal={setIsOpenAddFriend} />
+                    </Modal>
+                ) : null}
+            </AnimatePresence>
         </Fragment>
     );
 };

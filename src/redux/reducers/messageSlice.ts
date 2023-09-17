@@ -62,7 +62,6 @@ const messageSlice = createSlice({
     initialState,
     reducers: {
         resetMessages: (state) => {
-            console.log('Rest Message List');
             state.messages = [];
         },
         setIsNewList: (state, action: PayloadAction<boolean>) => {

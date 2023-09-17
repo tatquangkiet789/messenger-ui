@@ -12,14 +12,8 @@ interface IInputProps {
     placeholder?: string;
     error?: string;
     onChangeValue: (value: any) => void;
+    customPadding?: string;
 }
-
-//     &.error {
-//         & .input {
-//             border: 1px solid red;
-//         }
-//     }
-// }
 
 const Input: FC<IInputProps> = ({
     name,
@@ -29,9 +23,10 @@ const Input: FC<IInputProps> = ({
     placeholder,
     error,
     onChangeValue,
+    customPadding,
 }) => {
     return (
-        <div className='w-full flex flex-col'>
+        <div className='flex-1 flex flex-col'>
             {label ? (
                 <label className='text-xs mb-[5px] font-semibold'>{label}</label>
             ) : null}
@@ -39,7 +34,8 @@ const Input: FC<IInputProps> = ({
                 id={name}
                 name={name}
                 type={inputType}
-                className='caret-primary p-3 text-base flex-1 border-gray012 bg-gray006'
+                className={`caret-primary text-base flex-1 border-2 
+                border-gray012 bg-gray006 ${customPadding ? customPadding : 'p-3'}`}
                 placeholder={placeholder}
                 value={value}
                 onChange={onChangeValue}

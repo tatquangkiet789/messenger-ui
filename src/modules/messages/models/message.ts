@@ -20,13 +20,11 @@ export interface IMessage {
 }
 
 export interface INewMessage {
-    receiverId: number;
-    content: string;
+    formData: FormData;
     accessToken: string;
 }
 
 export interface ISendMessage {
-    content: string;
     senderName: string;
     receiverName: string;
 }

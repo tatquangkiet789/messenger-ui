@@ -14,7 +14,7 @@ import {
     resetMessages,
     setIsNewList,
 } from '@src/redux/reducers/messageSlice';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { IoVideocamOutline } from 'react-icons/io5';
 import { toast } from 'react-toastify';
 
@@ -27,7 +27,10 @@ const HomePage: FC = () => {
         messages,
         loading: messageLoading,
         error: messageError,
+        hasNextPage,
+        isNewList,
     } = useAppSelector((state) => state.messages);
+    const lastestMessageRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         if (!accessToken) return;
@@ -40,10 +43,17 @@ const HomePage: FC = () => {
             }),
         );
     }, [accessToken, dispatch, page, receiver.id]);
+    console.log(messages);
 
     useEffect(() => {
         dispatch(resetMessages());
         setPage(1);
+        const timeout = setTimeout(() => {
+            lastestMessageRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+        return () => {
+            clearTimeout(timeout);
+        };
     }, [dispatch, receiver.id]);
 
     useEffect(() => {
@@ -66,8 +76,8 @@ const HomePage: FC = () => {
     };
 
     return (
-        <div className='bg-white flex-1 rounded-lg shadow-lg flex flex-col'>
-            <div className='flex items-center justify-between py-2 pr-[22px] pl-4 shadow-md'>
+        <div className='bg-white flex-1 rounded-lg shadow-lg flex flex-col overflow-hidden'>
+            <div className='flex items-center justify-between py-2 pr-[22px] pl-4'>
                 <ReceiverInfo receiverInfo={receiver} />
                 <span
                     onClick={handleVideoCall}
@@ -78,22 +88,18 @@ const HomePage: FC = () => {
                 </span>
             </div>
             <div
-                className='py-[10px] pl-[10px] flex flex-1 flex-col gap-[10px] 
-                overflow-x-hidden'
-                style={{ overflow: 'overlay', overflowAnchor: 'none' }}
+                className='p-[10px] flex flex-1 flex-col gap-[10px] 
+                overflow-x-hidden overflow-y-scroll'
             >
-                <button
-                    className='w-full text-[18px] leading-[25px] font-semibold 
-                    text-primary hover:bg-gray006 p-2 duration-500'
-                    onClick={() => setPage((prev) => prev + 1)}
-                >
-                    Tải thêm tin nhắn
-                </button>
                 <MessageList
                     loading={messageLoading}
                     error={messageError}
                     messages={messages}
+                    onChangePage={setPage}
+                    hasNextPage={hasNextPage}
+                    isNewList={isNewList}
                 />
+                <div ref={lastestMessageRef}></div>
             </div>
             <AddMessage />
         </div>

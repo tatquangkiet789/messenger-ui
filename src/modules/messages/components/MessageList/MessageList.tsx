@@ -1,5 +1,6 @@
 import { AnimatePresence } from 'framer-motion';
-import { FC, Fragment } from 'react';
+import { FC, Fragment, useEffect, useRef, useState } from 'react';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { IMessage } from '../../models/message';
 import MessageItem from '../MessageItem/MessageItem';
 
@@ -7,39 +8,65 @@ interface IMessageListProps {
     messages: IMessage[];
     loading: boolean;
     error: string;
+    onChangePage: (value: any) => void;
+    hasNextPage: boolean;
+    isNewList: boolean;
 }
 
-const MessageList: FC<IMessageListProps> = ({ messages, loading, error }) => {
-    // const [element, setElement] = useState<HTMLDivElement | null>(null);
-    // const latestMessageRef = useRef<HTMLDivElement | null>(null);
-    // const observer = useRef(
-    //     new IntersectionObserver(
-    //         (entries) => {
-    //             const first = entries[0];
-    //             if (first.isIntersecting) onChangePage((prev: any) => prev + 1);
-    //         },
-    //         {
-    //             threshold: 1,
-    //         },
-    //     ),
-    // );
+const MessageList: FC<IMessageListProps> = ({
+    messages,
+    loading,
+    error,
+    onChangePage,
+    hasNextPage,
+    isNewList,
+}) => {
+    const [element, setElement] = useState<HTMLDivElement | null>(null);
+    const observer = useRef(
+        new IntersectionObserver(
+            (entries) => {
+                const first = entries[0];
+                if (first.isIntersecting) {
+                    handleChangePage();
+                }
+            },
+            { threshold: 1 },
+        ),
+    );
 
-    // useEffect(() => {
-    //     const currentElement = element;
-    //     const currentObserver = observer.current;
+    const handleChangePage = () => {
+        onChangePage((prev: any) => prev + 1);
+    };
 
-    //     if (!currentElement) return;
+    useEffect(() => {
+        if (!element) return;
+        const currentObserver = observer.current;
+        let timeout = null as any;
 
-    //     currentObserver.observe(currentElement);
+        if (isNewList) {
+            timeout = setTimeout(() => {
+                currentObserver.observe(element);
+            }, 3000);
+            return;
+        }
+        currentObserver.observe(element);
+        if (!hasNextPage) currentObserver.unobserve(element);
 
-    //     if (!hasNextPage) currentObserver.unobserve(currentElement);
-
-    //     return () => currentObserver.unobserve(currentElement);
-    // }, [element, hasNextPage]);
+        return () => {
+            currentObserver.unobserve(element);
+            clearTimeout(timeout);
+        };
+    }, [element, hasNextPage, isNewList]);
 
     return (
         <Fragment>
-            {/* <div ref={setElement}></div> */}
+            <div ref={setElement} className='p-2 flex items-center justify-center'>
+                {hasNextPage ? (
+                    <AiOutlineLoading3Quarters className='animate-spin' size={25} />
+                ) : (
+                    <p>Không còn tin nhắn để hiển thị</p>
+                )}
+            </div>
             {messages.length === 0 && loading ? (
                 <p>Đang tải tin nhắn</p>
             ) : messages.length === 0 ? (
@@ -59,7 +86,6 @@ const MessageList: FC<IMessageListProps> = ({ messages, loading, error }) => {
                     ))}
                 </AnimatePresence>
             )}
-            {/* <div ref={latestMessageRef} className='h-10 bg-red-100'></div> */}
         </Fragment>
     );
 };

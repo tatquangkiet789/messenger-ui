@@ -57,18 +57,14 @@ const Button: FC<IButtonProps> = ({
     return (
         <Element className={`${btnClass}`} {...props}>
             {iconLeft ? (
-                <span className='mr-[10px] flex items-center justify-center'>
-                    {iconLeft}
-                </span>
+                <span className='mr-[10px] flex items-center justify-center'>{iconLeft}</span>
             ) : null}
             {iconRight ? (
-                <span className='ml-[10px] flex items-center justify-center'>
-                    {iconRight}
-                </span>
+                <span className='ml-[10px] flex items-center justify-center'>{iconRight}</span>
             ) : null}
             {loading ? (
                 <span className='flex items-center animate-spin'>
-                    <AiOutlineLoading3Quarters size={20} />
+                    <AiOutlineLoading3Quarters size={22} />
                 </span>
             ) : (
                 <span className='text-base font-semibold leading-6'>{text}</span>

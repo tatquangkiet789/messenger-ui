@@ -7,7 +7,7 @@ export default {
         },
         extend: {
             colors: {
-                primary: 'rgba(254, 44, 85, 1)',
+                primary: '#fe2c55',
                 primaryHover: '#e4274c',
                 white_1: 'rgba(255, 255, 255, 1)',
                 text: '#161823',

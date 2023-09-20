@@ -57,10 +57,7 @@ const LoginPage: FC = () => {
                     const { username, password } = values;
                     const { username: usernameErr, password: passwordErr } = errors;
                     return (
-                        <form
-                            className='w-full flex flex-col gap-[9px]'
-                            onSubmit={handleSubmit}
-                        >
+                        <form className='w-full flex flex-col gap-[9px]' onSubmit={handleSubmit}>
                             <Field
                                 as={Input}
                                 name='username'
@@ -84,14 +81,16 @@ const LoginPage: FC = () => {
                             {/* <p className='text-gray075 font-semibold text-xs mb-[21px]'>
                                 Quên mật khẩu?
                             </p> */}
-                            <Button
-                                text='Đăng nhập'
-                                variant='primary'
-                                type='submit'
-                                size='lg'
-                                disabled={authLoading}
-                                loading={authLoading}
-                            />
+                            <div className={`mt-5`}>
+                                <Button
+                                    text='Đăng nhập'
+                                    variant='primary'
+                                    type='submit'
+                                    size='lg'
+                                    disabled={authLoading}
+                                    loading={authLoading}
+                                />
+                            </div>
                         </form>
                     );
                 }}

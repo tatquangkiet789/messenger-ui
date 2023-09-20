@@ -2,20 +2,29 @@ import { ROUTES } from '@src/constants/routes';
 import RequiredAuth from '@src/guards/RequiredAuth';
 import AuthLayout from '@src/layouts/AuthLayout/AuthLayout';
 import MainLayout from '@src/layouts/MainLayout/MainLayout';
+import NoLayout from '@src/layouts/NoLayout/NoLayout';
 import HomePage from '@src/pages/HomePage/HomePage';
 import LoginPage from '@src/pages/LoginPage/LoginPage';
 import RegisterPage from '@src/pages/RegisterPage/RegisterPage';
+import VideoCallPage from '@src/pages/VideoCallPage/VideoCallPage';
 import { FC } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
+type TRoute = {
+    path: string;
+    page: JSX.Element;
+    layout: JSX.Element;
+};
+
 const AppRoutes: FC = () => {
-    const publicRoutes = [
+    const publicRoutes: TRoute[] = [
         { path: ROUTES.LOGIN, page: <LoginPage />, layout: <AuthLayout /> },
         { path: ROUTES.REGISTER, page: <RegisterPage />, layout: <AuthLayout /> },
     ];
 
-    const privateRoutes = [
+    const privateRoutes: TRoute[] = [
         { path: ROUTES.HOME, page: <HomePage />, layout: <MainLayout /> },
+        { path: ROUTES.VIDEO_CALL, page: <VideoCallPage />, layout: <NoLayout /> },
     ];
 
     return (

@@ -1,24 +1,30 @@
-import manageChat from '@src/assets/images/manage-chat.svg';
-import onlineChat from '@src/assets/images/online-chat.svg';
-import videoCall from '@src/assets/images/video-call.svg';
+import { onlineChat, videoCall, welcome } from '@src/assets';
+import Lottie from 'lottie-react';
 import { FC, useEffect, useRef, useState } from 'react';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
+
+interface ISildeItem {
+    id: number;
+    image: any;
+    title: string;
+    des: string;
+}
 
 const Slider: FC = () => {
     const intervalRef = useRef(null) as any;
     const [activeIndex, setActiveIndex] = useState(0);
-    const items = [
+    const items: ISildeItem[] = [
         {
             id: 0,
-            image: onlineChat,
-            title: 'Giải quyết công việc hiểu quả đến 40%',
-            des: 'Với Messenger UI',
+            image: welcome,
+            title: 'Nhắn tin nhiều hơn, soạn thảo ít hơn',
+            des: 'Lưu trữ sẵn các tin nhắn thường dùng và gửi nhanh trong hội thoại bất kỳ',
         },
         {
             id: 1,
-            image: manageChat,
-            title: 'Nhắn tin nhiều hơn, soạn thảo ít hơn',
-            des: 'Lưu trữ sẵn các tin nhắn thường dùng và gửi nhanh trong hội thoại bất kỳ',
+            image: onlineChat,
+            title: 'Giải quyết công việc hiểu quả đến 40%',
+            des: 'Với Messenger UI',
         },
         {
             id: 2,
@@ -34,8 +40,7 @@ const Slider: FC = () => {
         }, 8000);
 
         return () => clearInterval(intervalRef.current);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [items.length]);
 
     const resetInterval = () => {
         clearInterval(intervalRef.current);
@@ -64,15 +69,20 @@ const Slider: FC = () => {
             </button>
             <div className='w-[380px] h-[228px] overflow-x-hidden'>
                 <div
-                    className={`h-full w-[1140px] flex ease-out duration-500`}
-                    style={{ transform: `translateX(${-(activeIndex * 380)}px)` }}
+                    className={`h-full flex ease-out duration-500`}
+                    style={{
+                        transform: `translateX(${-(activeIndex * 380)}px)`,
+                        width: `${items.length * 380}px`,
+                    }}
                 >
                     {items.map(({ id }, index) => (
-                        <div
+                        <Lottie
                             key={id}
-                            className='h-full w-full bg-center bg-no-repeat bg-contain'
-                            style={{ backgroundImage: `url(${items[index].image})` }}
-                        ></div>
+                            animationData={items[index].image}
+                            autoPlay={true}
+                            loop={true}
+                            className='f-full w-full'
+                        />
                     ))}
                 </div>
             </div>

@@ -46,7 +46,7 @@ const MessageList: FC<IMessageListProps> = ({
         if (isNewList) {
             timeout = setTimeout(() => {
                 currentObserver.observe(element);
-            }, 3000);
+            }, 5000);
             return;
         }
         currentObserver.observe(element);
@@ -63,9 +63,7 @@ const MessageList: FC<IMessageListProps> = ({
             <div ref={setElement} className='p-2 flex items-center justify-center'>
                 {hasNextPage ? (
                     <AiOutlineLoading3Quarters className='animate-spin' size={25} />
-                ) : (
-                    <p>Không còn tin nhắn để hiển thị</p>
-                )}
+                ) : null}
             </div>
             {messages.length === 0 && loading ? (
                 <p>Đang tải tin nhắn</p>

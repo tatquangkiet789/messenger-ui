@@ -1,4 +1,5 @@
 import { STORAGE_KEY } from '@src/constants/constants';
+import { ROUTES } from '@src/constants/routes';
 import SOCKET_EVENT from '@src/constants/socket';
 import { useAppDispatch } from '@src/hooks/useAppDispatch';
 import { useAppSelector } from '@src/hooks/useAppSelector';
@@ -16,7 +17,7 @@ import {
 } from '@src/redux/reducers/messageSlice';
 import { FC, useEffect, useRef, useState } from 'react';
 import { IoVideocamOutline } from 'react-icons/io5';
-import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 const HomePage: FC = () => {
     const { receiver } = useAppSelector((state) => state.friends);
@@ -71,21 +72,17 @@ const HomePage: FC = () => {
         };
     }, [dispatch, receiver.id]);
 
-    const handleVideoCall = () => {
-        toast.info('Opening new browser window');
-    };
-
     return (
         <div className='bg-white flex-1 rounded-lg shadow-lg flex flex-col overflow-hidden'>
             <div className='flex items-center justify-between py-2 pr-[22px] pl-4'>
                 <ReceiverInfo receiverInfo={receiver} />
-                <span
-                    onClick={handleVideoCall}
+                <Link
+                    to={`${ROUTES.VIDEO_CALL}`}
                     className='flex items-center p-2 rounded-lg hover:cursor-pointer 
                     hover:bg-gray006'
                 >
                     <IoVideocamOutline size={30} className='text-primary' />
-                </span>
+                </Link>
             </div>
             <div
                 className='p-[10px] flex flex-1 flex-col gap-[10px] 

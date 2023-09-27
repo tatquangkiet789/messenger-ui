@@ -1,28 +1,20 @@
 import { STORAGE_KEY } from '@src/constants/constants';
 import { ROUTES } from '@src/constants/routes';
-import SOCKET_EVENT from '@src/constants/socket';
+import ReceiverInfo from '@src/features/friends/components/ReceiverInfo/ReceiverInfo';
+import AddMessage from '@src/features/messages/components/AddMessage/AddMessage';
+import MessageList from '@src/features/messages/components/MessageList/MessageList';
+import { setIsNewList, resetMessages } from '@src/features/messages/messageSlice';
+import { findAllMessages } from '@src/features/messages/services/messageThunk';
 import { useAppDispatch } from '@src/hooks/useAppDispatch';
 import { useAppSelector } from '@src/hooks/useAppSelector';
-import socketClient from '@src/lib/socketClient';
-import ReceiverInfo from '@src/modules/friends/components/ReceiverInfo/ReceiverInfo';
-import AddMessage from '@src/modules/messages/components/AddMessage/AddMessage';
-import MessageList from '@src/modules/messages/components/MessageList/MessageList';
-import { IMessage } from '@src/modules/messages/models/message';
-import { updateReceiverLastestMessage } from '@src/redux/reducers/friendSlice';
-import {
-    findAllMessages,
-    receiveNewMessageFromSocket,
-    resetMessages,
-    setIsNewList,
-} from '@src/redux/reducers/messageSlice';
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { IoVideocamOutline } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
 
 const HomePage: FC = () => {
     const { receiver } = useAppSelector((state) => state.friends);
     const dispatch = useAppDispatch();
-    const accessToken = sessionStorage.getItem(STORAGE_KEY.ACCESS_TOKEN);
+    const accessToken = sessionStorage.getItem(STORAGE_KEY.ACCESS_TOKEN)!;
     const [page, setPage] = useState(1);
     const {
         messages,
@@ -31,10 +23,8 @@ const HomePage: FC = () => {
         hasNextPage,
         isNewList,
     } = useAppSelector((state) => state.messages);
-    const lastestMessageRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        if (!accessToken) return;
         dispatch(setIsNewList(page === 1 ? true : false));
         dispatch(
             findAllMessages({
@@ -43,33 +33,11 @@ const HomePage: FC = () => {
                 userId: receiver.id,
             }),
         );
-    }, [accessToken, dispatch, page, receiver.id]);
-    console.log(messages);
+    }, [dispatch, accessToken, page, receiver.id]);
 
     useEffect(() => {
         dispatch(resetMessages());
         setPage(1);
-        const timeout = setTimeout(() => {
-            lastestMessageRef.current?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-        return () => {
-            clearTimeout(timeout);
-        };
-    }, [dispatch, receiver.id]);
-
-    useEffect(() => {
-        socketClient.on(SOCKET_EVENT.RECEIVE_MESSAGE, (data) => {
-            // Cập nhật tin nhắn vào trong message list và cập nhật
-            // tin nhắn mới nhất trong friend list ở phía receiver
-            const newMessage: IMessage = data.content;
-            if (newMessage.senderDetail.id === receiver.id) {
-                dispatch(receiveNewMessageFromSocket(newMessage));
-            }
-            dispatch(updateReceiverLastestMessage(newMessage));
-        });
-        return () => {
-            socketClient.off(SOCKET_EVENT.RECEIVE_MESSAGE);
-        };
     }, [dispatch, receiver.id]);
 
     return (
@@ -95,8 +63,8 @@ const HomePage: FC = () => {
                     onChangePage={setPage}
                     hasNextPage={hasNextPage}
                     isNewList={isNewList}
+                    receiverId={receiver.id}
                 />
-                <div ref={lastestMessageRef}></div>
             </div>
             <AddMessage />
         </div>

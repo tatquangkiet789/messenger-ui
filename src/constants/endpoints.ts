@@ -14,7 +14,12 @@ export const ENDPOINTS = {
     FIND_ALL_FRIENDS: (page: number) => `/friends?page=${page}`,
 
     // Message endpoints
-    FIND_ALL_MESSAGES: (userId: number, page: number) =>
-        `/messages/${userId}?page=${page}`,
+    FIND_ALL_MESSAGES: (userId: number, page: number) => `/messages/${userId}?page=${page}`,
     CREATE_NEW_MESSAGE: '/messages/create',
+
+    // Notification endpoints
+    FIND_ALL_ADD_FRIEND_NOTIFICATIONS: (page: number) => `/notifications?page=${page}`,
+    CREATE_ADD_FRIEND_NOTIFICATION: `/notifications/add-friend`,
+    ACCEPT_ADD_FRIEND_NOTIFICATION: `/notifications/accept`,
+    DECLINE_ADD_FRIEND_NOTIFICATION: `/notifications/decline`,
 };

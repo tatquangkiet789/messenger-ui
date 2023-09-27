@@ -1,6 +1,6 @@
 import { STORAGE_KEY } from '@src/constants/constants';
 import { API_URL } from '@src/constants/endpoints';
-import { refreshTokenService } from '@src/modules/auth/services/authService';
+import { refreshTokenService } from '@src/features/auth/services/authService';
 import axios from 'axios';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 

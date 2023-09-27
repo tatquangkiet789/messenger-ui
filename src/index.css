@@ -28,7 +28,7 @@
     }
 
     .sm-btn {
-        @apply py-0 px-[10px];
+        @apply py-1 px-[10px];
     }
 
     .friend-item {

@@ -1,9 +1,9 @@
 import Input from '@src/components/form/Input/Input';
 import Button from '@src/components/ui/Button/Button';
+import { IRegister } from '@src/features/auth/models/auth';
+import { register } from '@src/features/auth/services/authThunk';
 import { useAppDispatch } from '@src/hooks/useAppDispatch';
 import { useAppSelector } from '@src/hooks/useAppSelector';
-import { IRegister } from '@src/modules/auth/models/auth';
-import { register } from '@src/redux/reducers/authSlice';
 import { Formik, Field } from 'formik';
 import { ChangeEvent, FC, Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -56,8 +56,7 @@ const RegisterPage: FC = () => {
             <Formik
                 initialValues={initialValues}
                 onSubmit={(values) => {
-                    const { firstName, lastName, username, password, email, avatar } =
-                        values;
+                    const { firstName, lastName, username, password, email, avatar } = values;
 
                     if (!avatar) {
                         toast.error('Vui lòng chọn ảnh đại diện');

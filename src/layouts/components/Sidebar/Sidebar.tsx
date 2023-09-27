@@ -3,14 +3,14 @@ import { MAX_INPUT_LENGTH, STORAGE_KEY } from '@src/constants/constants';
 import { useAppDispatch } from '@src/hooks/useAppDispatch';
 import { useAppSelector } from '@src/hooks/useAppSelector';
 import useDebounce from '@src/hooks/useDebounce';
-import AddFriend from '@src/modules/friends/components/AddFriend/AddFriend';
-import FriendList from '@src/modules/friends/components/FriendList/FriendList';
-import { IFriend } from '@src/modules/friends/models/friend';
-import { findAllFriends } from '@src/redux/reducers/friendSlice';
+import AddFriend from '@src/features/friends/components/AddFriend/AddFriend';
+import FriendList from '@src/features/friends/components/FriendList/FriendList';
+import { IFriend } from '@src/features/friends/models/friend';
 import Tippy from '@tippyjs/react';
 import { AnimatePresence } from 'framer-motion';
 import { FC, Fragment, useEffect, useState } from 'react';
 import { MdOutlinePersonAddAlt } from 'react-icons/md';
+import { findAllFriends } from '@src/features/friends/services/friendThunk';
 
 const Sidebar: FC = () => {
     const {
@@ -25,14 +25,8 @@ const Sidebar: FC = () => {
     const debouncedValue = useDebounce(keyword, 500);
     const filterList: IFriend[] = [...friends].filter(
         (friend) =>
-            friend.firstName
-                .toLowerCase()
-                .trim()
-                .includes(debouncedValue.toLowerCase().trim()) ||
-            friend.lastName
-                .toLowerCase()
-                .trim()
-                .includes(debouncedValue.toLowerCase().trim()),
+            friend.firstName.toLowerCase().trim().includes(debouncedValue.toLowerCase().trim()) ||
+            friend.lastName.toLowerCase().trim().includes(debouncedValue.toLowerCase().trim()),
     );
 
     useEffect(() => {

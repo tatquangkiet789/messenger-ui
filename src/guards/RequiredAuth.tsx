@@ -1,10 +1,10 @@
 import { STORAGE_KEY } from '@src/constants/constants';
 import { ROUTES } from '@src/constants/routes';
 import SOCKET_EVENT from '@src/constants/socket';
+import { getCurrentUserByAccessToken } from '@src/features/auth/services/authThunk';
 import { useAppDispatch } from '@src/hooks/useAppDispatch';
 import { useAppSelector } from '@src/hooks/useAppSelector';
 import socketClient from '@src/lib/socketClient';
-import { getCurrentUserByAccessToken } from '@src/redux/reducers/authSlice';
 import { FC, Fragment, useEffect } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 
@@ -23,16 +23,12 @@ const RequiredAuth: FC = () => {
     useEffect(() => {
         if (!currentUser) return;
 
-        socketClient.emit(SOCKET_EVENT.NEW_USER, currentUser.username);
+        socketClient.emit(SOCKET_EVENT.NEW_USER, currentUser.id);
     }, [currentUser]);
 
     return (
         <Fragment>
-            {!accessToken && !currentUser ? (
-                <Navigate to={ROUTES.LOGIN} replace />
-            ) : (
-                <Outlet />
-            )}
+            {!accessToken && !currentUser ? <Navigate to={ROUTES.LOGIN} replace /> : <Outlet />}
         </Fragment>
     );
 };

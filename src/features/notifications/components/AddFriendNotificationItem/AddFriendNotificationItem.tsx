@@ -1,6 +1,15 @@
-import React, { FC } from 'react';
-import { IAddFriendNotification } from '../../models/notification';
 import Button from '@src/components/ui/Button/Button';
+import { FC } from 'react';
+import { IAddFriendNotification } from '../../models/notification';
+import { useAppDispatch } from '@src/hooks/useAppDispatch';
+import { removeSelectedAddFriendNotification } from '../../notificationSlice';
+import {
+    acceptAddFriendNotification,
+    declineAddFriendNotification,
+} from '../../services/notificationThunk';
+import { STORAGE_KEY } from '@src/constants/constants';
+import { useAppSelector } from '@src/hooks/useAppSelector';
+import { updateFriendListAfterAcceptAddFriendNotification } from '@src/features/friends/friendSlice';
 
 interface AddFriendNotificationItemProps {
     addFriendNotification: IAddFriendNotification;
@@ -10,17 +19,33 @@ const AddFriendNotificationItem: FC<AddFriendNotificationItemProps> = ({
     addFriendNotification,
 }) => {
     const { content, id, notificationSenderDetail } = addFriendNotification;
+    const accessToken = sessionStorage.getItem(STORAGE_KEY.ACCESS_TOKEN)!;
+    const { loading: addFriendNotificationLoading } = useAppSelector(
+        (state) => state.notifications,
+    );
+    const dispatch = useAppDispatch();
 
     const handleAcceptAddFriendNotification = () => {
-        console.log(`Accept Add Friend Notification with ID: [${id}]`);
+        dispatch(acceptAddFriendNotification({ addFriendNotificationId: id, accessToken }))
+            .unwrap()
+            .then((data) => {
+                const { content } = data;
+                dispatch(updateFriendListAfterAcceptAddFriendNotification(content));
+                dispatch(removeSelectedAddFriendNotification(id));
+            });
     };
 
     const handleDeclineAddFriendNotification = () => {
-        console.log(`Decline Add Friend Notification with ID: [${id}]`);
+        dispatch(declineAddFriendNotification({ addFriendNotificationId: id, accessToken }))
+            .unwrap()
+            .then(() => dispatch(removeSelectedAddFriendNotification(id)));
     };
 
     return (
-        <div className={`flex items-start p-2 hover:cursor-pointer hover:bg-gray003`}>
+        <div
+            className={`flex items-start p-2 hover:cursor-pointer hover:bg-gray003 
+            border-t border-gray006`}
+        >
             <div
                 className={`bg-no-repeat bg-contain bg-center w-14 h-14 rounded-full`}
                 style={{ backgroundImage: `url(${notificationSenderDetail.avatar})` }}
@@ -38,12 +63,15 @@ const AddFriendNotificationItem: FC<AddFriendNotificationItemProps> = ({
                         text='Chấp nhận'
                         variant='primary'
                         onClick={handleAcceptAddFriendNotification}
+                        loading={addFriendNotificationLoading}
+                        disabled={addFriendNotificationLoading}
                     />
                     <Button
                         size='md'
                         text='Từ chối'
                         variant='outlined'
                         onClick={handleDeclineAddFriendNotification}
+                        disabled={addFriendNotificationLoading}
                     />
                 </div>
             </div>

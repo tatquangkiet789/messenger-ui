@@ -1,5 +1,6 @@
 import Input from '@src/components/form/Input/Input';
 import Button from '@src/components/ui/Button/Button';
+import { STORAGE_KEY } from '@src/constants/constants';
 import { useAppDispatch } from '@src/hooks/useAppDispatch';
 import { useAppSelector } from '@src/hooks/useAppSelector';
 import { Field, Formik } from 'formik';
@@ -8,7 +9,6 @@ import { FC } from 'react';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { IUpdatePassword } from '../../models/auth';
-import { STORAGE_KEY } from '@src/constants/constants';
 import { updatePassword } from '../../services/authThunk';
 
 interface IUpdatePasswordForm {

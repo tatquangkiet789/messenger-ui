@@ -39,16 +39,12 @@ export const logoutService = async () => {
     return res.data;
 };
 
-// [POST] /api/v1/users/current-user
+// [POST] /api/v1/auth/current-user
 export const getCurrentUserByAccessTokenService = async (accessToken: string) => {
-    const res = await privateAxios.post(
-        ENDPOINTS.GET_CURRENT_USER_BY_ACCESS_TOKEN,
-        null,
-        {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
+    const res = await privateAxios.post(ENDPOINTS.GET_CURRENT_USER_BY_ACCESS_TOKEN, null, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
         },
-    );
+    });
     return res.data;
 };

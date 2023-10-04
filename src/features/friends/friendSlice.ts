@@ -86,6 +86,12 @@ const friendSlice = createSlice({
         resetUserReceiveNewMessage: (state) => {
             state.userReceiveNewMessageId = 0;
         },
+        resetReceiver: (state) => {
+            state.receiver = null as any;
+        },
+        updateFriendListAfterAcceptAddFriendNotification: (state, action) => {
+            state.friends = [...state.friends, action.payload];
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -114,6 +120,8 @@ export const {
     updateReceiverLastestMessage,
     resetUserReceiveNewMessage,
     updateSenderLastestMessage,
+    resetReceiver,
+    updateFriendListAfterAcceptAddFriendNotification,
 } = friendSlice.actions;
 
 export default friendSlice.reducer;

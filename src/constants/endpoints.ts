@@ -6,7 +6,7 @@ export const ENDPOINTS = {
     LOGIN: '/auth/login',
     LOGOUT: '/auth/logout',
     REGISTER: '/auth/register',
-    GET_CURRENT_USER_BY_ACCESS_TOKEN: '/users/current-user',
+    GET_CURRENT_USER_BY_ACCESS_TOKEN: '/auth/current-user',
     REFRESH_TOKEN: '/auth/refresh-token',
     UPDATE_PASSWORD: '/auth/update-password',
 
@@ -22,4 +22,7 @@ export const ENDPOINTS = {
     CREATE_ADD_FRIEND_NOTIFICATION: `/notifications/add-friend`,
     ACCEPT_ADD_FRIEND_NOTIFICATION: `/notifications/accept`,
     DECLINE_ADD_FRIEND_NOTIFICATION: `/notifications/decline`,
+
+    // User endpoints
+    FIND_ALL_USERS_BY_KEYWORD: (keyword: string) => `/users/search?q=${keyword}`,
 };

@@ -11,14 +11,14 @@ import { Navigate, Outlet } from 'react-router-dom';
 const RequiredAuth: FC = () => {
     const { currentUser } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
-    const accessToken = sessionStorage.getItem(STORAGE_KEY.ACCESS_TOKEN);
+    const accessToken = sessionStorage.getItem(STORAGE_KEY.ACCESS_TOKEN)!;
 
     useEffect(() => {
         if (!accessToken) return;
         if (currentUser) return;
+
         dispatch(getCurrentUserByAccessToken(accessToken));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [accessToken, currentUser]);
+    }, [accessToken, currentUser, dispatch]);
 
     useEffect(() => {
         if (!currentUser) return;

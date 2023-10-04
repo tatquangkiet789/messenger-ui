@@ -44,13 +44,11 @@ const MessageList: FC<IMessageListProps> = ({
     useEffect(() => {
         const scrollDownTimeout = setTimeout(() => {
             if (lastestMessageRef.current) {
-                console.log('Scrolling down in MessageList');
                 lastestMessageRef.current.scrollIntoView({ behavior: 'smooth' });
             }
         }, 200);
 
         return () => {
-            console.log('Return function in MessageList');
             clearTimeout(scrollDownTimeout);
         };
     }, [receiverId]);
@@ -77,7 +75,7 @@ const MessageList: FC<IMessageListProps> = ({
 
     return (
         <Fragment>
-            <div ref={setElement} className='p-2 flex items-center justify-center'>
+            <div ref={setElement} className='flex items-center justify-center'>
                 {hasNextPage ? (
                     <AiOutlineLoading3Quarters className='animate-spin' size={25} />
                 ) : null}

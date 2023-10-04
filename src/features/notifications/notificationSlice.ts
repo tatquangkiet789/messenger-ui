@@ -1,7 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { IAddFriendNotification } from './models/notification';
 import {
     acceptAddFriendNotification,
+    createAddFriendNotification,
     declineAddFriendNotification,
     findAllAddFriendNotifications,
 } from './services/notificationThunk';
@@ -22,7 +23,13 @@ const initialState: INotificationState = {
 const notificationSlice = createSlice({
     name: 'notifications',
     initialState,
-    reducers: {},
+    reducers: {
+        removeSelectedAddFriendNotification: (state, action: PayloadAction<number>) => {
+            state.addFriendNotificationList = [...state.addFriendNotificationList].filter(
+                (notification) => notification.id !== action.payload,
+            );
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(findAllAddFriendNotifications.pending, (state) => {
@@ -64,8 +71,23 @@ const notificationSlice = createSlice({
                 state.error = (action.payload as AxiosError)
                     ? (action.payload as AxiosError).message
                     : action.error.message!;
+            })
+            .addCase(createAddFriendNotification.pending, (state) => {
+                state.loading = true;
+                state.error = '';
+            })
+            .addCase(createAddFriendNotification.fulfilled, (state) => {
+                state.loading = false;
+            })
+            .addCase(createAddFriendNotification.rejected, (state, action) => {
+                state.loading = false;
+                state.error = (action.payload as AxiosError)
+                    ? (action.payload as AxiosError).message
+                    : action.error.message!;
             });
     },
 });
+
+export const { removeSelectedAddFriendNotification } = notificationSlice.actions;
 
 export default notificationSlice.reducer;

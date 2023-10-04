@@ -1,16 +1,16 @@
 import Modal from '@src/components/ui/Modal/Modal';
 import { MAX_INPUT_LENGTH, STORAGE_KEY } from '@src/constants/constants';
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
-import { useAppSelector } from '@src/hooks/useAppSelector';
-import useDebounce from '@src/hooks/useDebounce';
 import AddFriend from '@src/features/friends/components/AddFriend/AddFriend';
 import FriendList from '@src/features/friends/components/FriendList/FriendList';
 import { IFriend } from '@src/features/friends/models/friend';
+import { findAllFriends } from '@src/features/friends/services/friendThunk';
+import { useAppDispatch } from '@src/hooks/useAppDispatch';
+import { useAppSelector } from '@src/hooks/useAppSelector';
+import useDebounce from '@src/hooks/useDebounce';
 import Tippy from '@tippyjs/react';
 import { AnimatePresence } from 'framer-motion';
 import { FC, Fragment, useEffect, useState } from 'react';
 import { MdOutlinePersonAddAlt } from 'react-icons/md';
-import { findAllFriends } from '@src/features/friends/services/friendThunk';
 
 const Sidebar: FC = () => {
     const {
@@ -43,7 +43,7 @@ const Sidebar: FC = () => {
                         className='bg-gray006 rounded-[92px] caret-primary py-3 px-5 
                     text-base flex-1 border-gray012'
                         type='text'
-                        placeholder='Tìm kiếm người dùng'
+                        placeholder='Tìm kiếm bạn bè'
                         value={keyword}
                         onChange={(e) => setKeyword(e.target.value)}
                         maxLength={MAX_INPUT_LENGTH}

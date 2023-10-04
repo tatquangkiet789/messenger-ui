@@ -1,6 +1,5 @@
 import Input from '@src/components/form/Input/Input';
 import Button from '@src/components/ui/Button/Button';
-import { USER_ROLES } from '@src/constants/constants';
 import { ROUTES } from '@src/constants/routes';
 import { ILogin } from '@src/features/auth/models/auth';
 import { login } from '@src/features/auth/services/authThunk';
@@ -8,7 +7,7 @@ import { useAppDispatch } from '@src/hooks/useAppDispatch';
 import { useAppSelector } from '@src/hooks/useAppSelector';
 import { Field, Formik } from 'formik';
 import { FC, Fragment } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 
 const LoginPage: FC = () => {
@@ -16,9 +15,6 @@ const LoginPage: FC = () => {
     const dispatch = useAppDispatch();
 
     const navigate = useNavigate();
-    const location = useLocation();
-
-    const from = (location.state as any)?.from.pathname || ROUTES.HOME;
 
     const initialValues: ILogin = {
         username: '',
@@ -44,9 +40,8 @@ const LoginPage: FC = () => {
                 onSubmit={(values, { resetForm }) => {
                     dispatch(login(values))
                         .unwrap()
-                        .then((data) => {
-                            const { userRoleId } = data.content;
-                            if (userRoleId === USER_ROLES.USER) return navigate(from);
+                        .then(() => {
+                            return navigate(ROUTES.HOME);
                         });
                     resetForm();
                 }}

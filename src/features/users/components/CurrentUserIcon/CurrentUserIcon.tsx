@@ -1,17 +1,18 @@
+import Modal from '@src/components/ui/Modal/Modal';
+import { ROUTES } from '@src/constants/routes';
 import { IAuth } from '@src/features/auth/models/auth';
-import { FC, useState, Fragment } from 'react';
+import { logout } from '@src/features/auth/services/authThunk';
+import { useAppDispatch } from '@src/hooks/useAppDispatch';
 import HeadlessTippy from '@tippyjs/react/headless';
+import { AnimatePresence } from 'framer-motion';
+import { FC, Fragment, useState } from 'react';
 import { BiLogOutCircle } from 'react-icons/bi';
 import { HiOutlineUserCircle } from 'react-icons/hi';
 import { IoLanguageOutline } from 'react-icons/io5';
 import { MdKeyboardArrowRight } from 'react-icons/md';
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
-import { logout } from '@src/features/auth/services/authThunk';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '@src/constants/routes';
-import Modal from '@src/components/ui/Modal/Modal';
-import { AnimatePresence } from 'framer-motion';
 import UserProfile from '../UserProfile/UserProfile';
+import { resetReceiver } from '@src/features/friends/friendSlice';
 
 interface ICurrentUserIconProps {
     currentUser: IAuth;
@@ -31,6 +32,7 @@ const CurrentUserIcon: FC<ICurrentUserIconProps> = ({ currentUser }) => {
 
     const handleLogout = () => {
         dispatch(logout());
+        dispatch(resetReceiver());
         return navigate(ROUTES.LOGIN);
     };
 

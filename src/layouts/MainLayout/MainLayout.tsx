@@ -1,15 +1,15 @@
+import SOCKET_EVENT from '@src/constants/socket';
+import { updateReceiverLastestMessage } from '@src/features/friends/friendSlice';
+import { receiveNewMessageFromSocket } from '@src/features/messages/messageSlice';
+import { IMessage } from '@src/features/messages/models/message';
+import { useAppDispatch } from '@src/hooks/useAppDispatch';
+import { useAppSelector } from '@src/hooks/useAppSelector';
+import socketClient from '@src/lib/socketClient';
+import WelcomePage from '@src/pages/WelcomePage/WelcomePage';
 import HomePage from 'pages/HomePage/HomePage';
 import { FC, useEffect } from 'react';
 import Navbar from '../components/Navbar/Navbar';
 import Sidebar from '../components/Sidebar/Sidebar';
-import WelcomePage from '@src/pages/WelcomePage/WelcomePage';
-import { useAppSelector } from '@src/hooks/useAppSelector';
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
-import SOCKET_EVENT from '@src/constants/socket';
-import socketClient from '@src/lib/socketClient';
-import { updateReceiverLastestMessage } from '@src/features/friends/friendSlice';
-import { receiveNewMessageFromSocket } from '@src/features/messages/messageSlice';
-import { IMessage } from '@src/features/messages/models/message';
 
 const MainLayout: FC = () => {
     const { receiver } = useAppSelector((state) => state.friends);

@@ -8,7 +8,7 @@
     }
 
     .default-btn {
-        @apply btn border border-gray012 hover:bg-gray003 disabled:hover:bg-white;
+        @apply btn border border-gray012 hover:bg-gray003 disabled:hover:bg-transparent;
     }
 
     .primary-btn {
@@ -16,7 +16,7 @@
     }
 
     .outlined-btn {
-        @apply btn border border-primary text-primary hover:bg-primary hover:text-white disabled:hover:bg-white;
+        @apply btn border border-primary text-primary hover:bg-primary hover:text-white disabled:hover:bg-transparent;
     }
 
     .lg-btn {

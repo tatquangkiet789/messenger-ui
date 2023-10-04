@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { STORAGE_KEY } from '@src/constants/constants';
+// import { STORAGE_KEY } from '@src/constants/constants';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { IAuth } from './models/auth';
@@ -10,6 +10,7 @@ import {
     getCurrentUserByAccessToken,
     logout,
 } from './services/authThunk';
+import { STORAGE_KEY } from '@src/constants/constants';
 
 interface IAuthState {
     loading: boolean;
@@ -40,9 +41,7 @@ const authSlice = createSlice({
             })
             .addCase(login.fulfilled, (state: IAuthState, action) => {
                 state.loading = false;
-                const { content } = action.payload;
-                state.currentUser = content;
-                sessionStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, content.accessToken);
+                sessionStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, action.payload.accessToken);
             })
             .addCase(login.rejected, (state, action) => {
                 state.loading = false;

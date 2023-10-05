@@ -6,8 +6,3 @@ export interface IUser {
     tick: boolean;
     isFriendWithCurrentUser: boolean;
 }
-
-export interface IFindUsersByKeyword {
-    keyword: string;
-    accessToken: string;
-}

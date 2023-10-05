@@ -3,7 +3,8 @@ import { MESSAGE_TYPE } from '@src/constants/constants';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { IFriend } from './models/friend';
-import { findAllFriends } from './services/friendThunk';
+import { findAllFriends, findAllUsersByKeyword } from './services/friendThunk';
+import { IUser } from '../users/models/user';
 
 interface IFriendState {
     friends: IFriend[];
@@ -14,6 +15,7 @@ interface IFriendState {
     hasNextPage: boolean;
     userReceiveNewMessageId: number;
     toggleNewReceiver: boolean;
+    searchResultList: IUser[];
 }
 
 const initialState: IFriendState = {
@@ -25,6 +27,7 @@ const initialState: IFriendState = {
     hasNextPage: false,
     userReceiveNewMessageId: 0,
     toggleNewReceiver: false,
+    searchResultList: [],
 };
 
 const friendSlice = createSlice({
@@ -92,6 +95,9 @@ const friendSlice = createSlice({
         updateFriendListAfterAcceptAddFriendNotification: (state, action) => {
             state.friends = [...state.friends, action.payload];
         },
+        resetSearchResultList: (state) => {
+            state.searchResultList = [];
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -111,6 +117,21 @@ const friendSlice = createSlice({
                     ? (action.payload as AxiosError).message
                     : action.error.message!;
                 toast.error(state.error);
+            })
+            .addCase(findAllUsersByKeyword.pending, (state) => {
+                state.searchResultList = [];
+                state.loading = true;
+                state.error = '';
+            })
+            .addCase(findAllUsersByKeyword.fulfilled, (state, action) => {
+                state.loading = false;
+                state.searchResultList = action.payload.content;
+            })
+            .addCase(findAllUsersByKeyword.rejected, (state, action) => {
+                state.loading = false;
+                state.error = (action.payload as AxiosError)
+                    ? (action.payload as AxiosError).message
+                    : action.error.message!;
             });
     },
 });
@@ -122,6 +143,7 @@ export const {
     updateSenderLastestMessage,
     resetReceiver,
     updateFriendListAfterAcceptAddFriendNotification,
+    resetSearchResultList,
 } = friendSlice.actions;
 
 export default friendSlice.reducer;

@@ -1,5 +1,5 @@
 import HeadlessTippy from '@tippyjs/react/headless';
-import { FC, useState, memo } from 'react';
+import { FC, memo, useState } from 'react';
 import { MdOutlineNotificationsNone } from 'react-icons/md';
 import { IAddFriendNotification } from '../../models/notification';
 import AddFriendNotificationList from '../AddFriendNotificationList/AddFriendNotificationList';
@@ -11,6 +11,10 @@ interface INotificationIconProps {
 const NotificationIcon: FC<INotificationIconProps> = ({ addFriendNotificationList }) => {
     const [isOpenNotificationList, setIsOpenNotificationList] = useState(false);
     const totalNotifications = addFriendNotificationList.length;
+
+    // useEffect(() => {
+    //     socketClient.on(SOCKET_EVENT.SEND_ACCEPTED_ADD_FRIEND_NOTIFICATION, () => {});
+    // }, []);
 
     return (
         <HeadlessTippy

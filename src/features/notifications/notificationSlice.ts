@@ -29,6 +29,10 @@ const notificationSlice = createSlice({
                 (notification) => notification.id !== action.payload,
             );
         },
+        receiveAddFriendNotificationFromSocket: (state, action) => {
+            console.log('receiveAddFriendNotificationFromSocket in notificationSlice');
+            state.addFriendNotificationList = [action.payload, ...state.addFriendNotificationList];
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -88,6 +92,7 @@ const notificationSlice = createSlice({
     },
 });
 
-export const { removeSelectedAddFriendNotification } = notificationSlice.actions;
+export const { removeSelectedAddFriendNotification, receiveAddFriendNotificationFromSocket } =
+    notificationSlice.actions;
 
 export default notificationSlice.reducer;

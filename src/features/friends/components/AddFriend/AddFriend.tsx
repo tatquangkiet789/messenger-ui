@@ -1,14 +1,14 @@
 import Input from '@src/components/form/Input/Input';
 import Button from '@src/components/ui/Button/Button';
 import { STORAGE_KEY } from '@src/constants/constants';
-import { findAllUsersByKeyword } from '@src/features/users/services/userThunk';
-import { resetUserList } from '@src/features/users/userSlice';
 import { useAppDispatch } from '@src/hooks/useAppDispatch';
 import { useAppSelector } from '@src/hooks/useAppSelector';
 import { ChangeEvent, FC, Fragment, useState } from 'react';
 import { AiOutlineClose, AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { MdPersonSearch } from 'react-icons/md';
 import SearchFriendList from '../SearchFriendList/SearchFriendList';
+import { findAllUsersByKeyword } from '../../services/friendThunk';
+import { resetSearchResultList } from '../../friendSlice';
 
 interface IAddFriendProps {
     onToggleModal: (value: boolean) => void;
@@ -17,12 +17,12 @@ interface IAddFriendProps {
 const AddFriend: FC<IAddFriendProps> = ({ onToggleModal }) => {
     const [keyword, setKeyword] = useState('');
     const dispatch = useAppDispatch();
-    const { userList, loading: userLoading } = useAppSelector((state) => state.users);
     const accessToken = sessionStorage.getItem(STORAGE_KEY.ACCESS_TOKEN)!;
+    const { searchResultList, loading: friendLoading } = useAppSelector((state) => state.friends);
 
     const handleToggleModal = () => {
         onToggleModal(false);
-        dispatch(resetUserList());
+        dispatch(resetSearchResultList());
     };
 
     const handleOnChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
@@ -51,12 +51,12 @@ const AddFriend: FC<IAddFriendProps> = ({ onToggleModal }) => {
                 />
             </div>
             <div className={`flex-1 overflow-y-auto`}>
-                {userLoading ? (
+                {friendLoading ? (
                     <div className={`flex justify-center items-center p-3`}>
                         <AiOutlineLoading3Quarters className='animate-spin' size={25} />
                     </div>
                 ) : (
-                    <SearchFriendList searchFriendList={userList} />
+                    <SearchFriendList searchFriendList={searchResultList} />
                 )}
             </div>
             <div className={`self-end p-4`}>

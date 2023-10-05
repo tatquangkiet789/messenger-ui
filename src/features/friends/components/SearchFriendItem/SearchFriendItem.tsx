@@ -2,6 +2,9 @@ import { IUser } from '@src/features/users/models/user';
 import { FC, memo } from 'react';
 import tickIcon from '@src/assets/icons/tick.svg';
 import Button from '@src/components/ui/Button/Button';
+import { createAddFriendNotification } from '@src/features/notifications/services/notificationThunk';
+import { useAppDispatch } from '@src/hooks/useAppDispatch';
+import { STORAGE_KEY } from '@src/constants/constants';
 
 interface ISearchFriendItemProps {
     searchFriendItem: IUser;
@@ -9,9 +12,12 @@ interface ISearchFriendItemProps {
 
 const SearchFriendItem: FC<ISearchFriendItemProps> = ({ searchFriendItem }) => {
     const { id, firstName, lastName, avatar, tick } = searchFriendItem;
+    const dispatch = useAppDispatch();
+    const accessToken = sessionStorage.getItem(STORAGE_KEY.ACCESS_TOKEN)!;
 
-    const handleAddFriend = () => {
+    const handleCreateAddFriendNotification = () => {
         console.log(`Creating add friend notification: [${id}]`);
+        dispatch(createAddFriendNotification({ receiverId: id, accessToken }));
     };
 
     return (
@@ -26,7 +32,12 @@ const SearchFriendItem: FC<ISearchFriendItemProps> = ({ searchFriendItem }) => {
                     {tick ? <img src={tickIcon} className='pl-2' /> : null}
                 </h2>
             </div>
-            <Button text='Kết bạn' size='sm' variant='primary' onClick={handleAddFriend} />
+            <Button
+                text='Kết bạn'
+                size='sm'
+                variant='primary'
+                onClick={handleCreateAddFriendNotification}
+            />
         </div>
     );
 };

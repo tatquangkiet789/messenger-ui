@@ -10,10 +10,21 @@ import HomePage from 'pages/HomePage/HomePage';
 import { FC, useEffect } from 'react';
 import Navbar from '../components/Navbar/Navbar';
 import Sidebar from '../components/Sidebar/Sidebar';
+import { receiveAddFriendNotificationFromSocket } from '@src/features/notifications/notificationSlice';
 
 const MainLayout: FC = () => {
     const { receiver } = useAppSelector((state) => state.friends);
     const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        socketClient.on(SOCKET_EVENT.SEND_ADD_FRIEND_NOTIFICATION, (data) => {
+            console.log(data.content);
+            dispatch(receiveAddFriendNotificationFromSocket(data.content));
+        });
+        return () => {
+            socketClient.off(SOCKET_EVENT.SEND_ADD_FRIEND_NOTIFICATION);
+        };
+    }, [dispatch]);
 
     useEffect(() => {
         if (!receiver) return;
@@ -26,7 +37,10 @@ const MainLayout: FC = () => {
             }
             dispatch(updateReceiverLastestMessage(newMessage));
         });
+
         return () => {
+            console.log('Clean up in MainLayout.tsx');
+            socketClient.off(SOCKET_EVENT.SEND_ADD_FRIEND_NOTIFICATION);
             socketClient.off(SOCKET_EVENT.RECEIVE_MESSAGE);
         };
     }, [dispatch, receiver]);

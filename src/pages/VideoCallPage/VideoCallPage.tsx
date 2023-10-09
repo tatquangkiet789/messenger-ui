@@ -1,63 +1,21 @@
 import { ROUTES } from '@src/constants/routes';
-import SOCKET_EVENT from '@src/constants/socket';
-import { useAppSelector } from '@src/hooks/useAppSelector';
-import socketClient from '@src/lib/socketClient';
-import { FC, Fragment, useEffect, useRef, useState } from 'react';
+import { VideoContext } from '@src/features/videos/context/VideoContext';
+import { FC, Fragment, useContext, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import SimplePeer from 'simple-peer';
-
-type Call = {
-    isReceivedCall: boolean;
-    callFrom: string;
-    signal: string;
-    callerName: string;
-};
 
 const VideoCallPage: FC = () => {
-    const [stream, setStream] = useState<MediaStream>();
-    const myVideoRef = useRef<HTMLVideoElement | null>(null);
-    const userVideoRef = useRef<HTMLVideoElement | null>(null);
+    const { stream, myVideoRef, userVideoRef, receiverSocketID, handleCallUserContext } =
+        useContext(VideoContext);
 
     const location = useLocation();
     const navigate = useNavigate();
     const from = (location.state as any)?.from.pathname || ROUTES.HOME;
 
-    const { currentUser } = useAppSelector((state) => state.auth);
-    const { receiver } = useAppSelector((state) => state.friends);
-    // const microphonePermission = 'microphone' as PermissionName;
-    // const cameraPermission = 'camera' as PermissionName;
-    // const isAccepted = false;
-    const [callDetail, setCallDetail] = useState<Call>();
-    const [isAccepted, setIsAccepted] = useState(false);
-    const [isEnded, setIsEnded] = useState(false);
-
-    const connectionRef = useRef<SimplePeer.Instance | null>(null);
-    const [videoCallReceiverId, setVideoReceiverId] = useState('');
-    const [callerName, setCallerName] = useState('');
-
     useEffect(() => {
-        // Get Audio and Camera Permissons
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-            setStream(stream);
-            if (myVideoRef.current) myVideoRef.current.srcObject = stream;
-            if (userVideoRef.current) userVideoRef.current.srcObject = stream;
-        });
+        if (receiverSocketID.length === 0) return;
 
-        socketClient.emit(SOCKET_EVENT.SEND_VIDEO_CALL_RECEIVER_ID, { userId: receiver.id });
-        // socketClient.on(
-        //     SOCKET_EVENT.RECEIVE_VIDEO_CALL_RECEIVER_ID,
-        //     ({ videoCallReceiverSocketId }: { videoCallReceiverSocketId: string }) => {
-        //         console.log(`socketClient.on(SOCKET_EVENT.RECEIVE_VIDEO_CALL_RECEIVER_ID)`);
-        //         setVideoReceiverId(videoCallReceiverSocketId);
-        //     },
-        // );
-
-        // socketClient.on(SOCKET_EVENT.CALL_USER, (data: any) => {
-        //     console.log(`socketClient.on(SOCKET_EVENT.CALL_USER)`);
-        //     const { signal, from, name } = data;
-        //     setCallDetail({ isReceivedCall: true, callFrom: from, callerName: name, signal });
-        // });
-    }, []);
+        handleCallUserContext();
+    }, [receiverSocketID, handleCallUserContext, navigate]);
 
     // navigator.permissions.query({ name: microphonePermission }).then((permisson) => {
     //     console.log(permisson);
@@ -65,35 +23,6 @@ const VideoCallPage: FC = () => {
     // navigator.permissions.query({ name: cameraPermission }).then((permisson) => {
     //     console.log(permisson);
     // });
-
-    // const answerCall = () => {
-    //     setIsAccepted(true);
-    //     const peer = new SimplePeer({ initiator: false, trickle: false, stream });
-    //     peer.on('signal', (data: any) => {
-    //         socketClient.emit(SOCKET_EVENT.ANSWER_CALL, { signal: data, to: callDetail!.from });
-    //     });
-    //     peer.on('stream', (stream: any) => {
-    //         if (userVideoRef.current) userVideoRef.current.srcObject = stream;
-    //     });
-    //     if (callDetail) peer.signal(callDetail.signal);
-    //     connectionRef.current = peer;
-    // };
-
-    // const callUser = (id: any) => {
-    //     const peer = new SimplePeer({ initiator: true, trickle: false, stream });
-    //     peer.on('signal', (data: any) => {
-    //         socketClient.emit('call-user', { userToCall: id, signalData: data, from: me, name });
-    //     });
-    //     peer.on('stream', (currentStream: any) => {
-    //         if (userVideoRef.current) userVideoRef.current.srcObject = currentStream;
-    //     });
-    //     socketClient.on('call-accepted', (signal: any) => {
-    //         setIsAccepted(true);
-
-    //         peer.signal(signal);
-    //     });
-    //     connectionRef.current = peer;
-    // };
 
     // const leaveCall = () => {
     //     setIsEnded(true);

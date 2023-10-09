@@ -3,6 +3,7 @@ import authSlice from './features/auth/authSlice';
 import friendSlice from './features/friends/friendSlice';
 import messageSlice from './features/messages/messageSlice';
 import notificationSlice from './features/notifications/notificationSlice';
+import videoSlice from './features/videos/videoSlice';
 
 export const store = configureStore({
     reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
         friends: friendSlice,
         messages: messageSlice,
         notifications: notificationSlice,
+        videos: videoSlice,
     },
 });
 

@@ -2,6 +2,7 @@ import SOCKET_EVENT from '@src/constants/socket';
 import { updateReceiverLastestMessage } from '@src/features/friends/friendSlice';
 import { receiveNewMessageFromSocket } from '@src/features/messages/messageSlice';
 import { IMessage } from '@src/features/messages/models/message';
+import { receiveAddFriendNotificationFromSocket } from '@src/features/notifications/notificationSlice';
 import { useAppDispatch } from '@src/hooks/useAppDispatch';
 import { useAppSelector } from '@src/hooks/useAppSelector';
 import socketClient from '@src/lib/socketClient';
@@ -10,7 +11,6 @@ import HomePage from 'pages/HomePage/HomePage';
 import { FC, useEffect } from 'react';
 import Navbar from '../components/Navbar/Navbar';
 import Sidebar from '../components/Sidebar/Sidebar';
-import { receiveAddFriendNotificationFromSocket } from '@src/features/notifications/notificationSlice';
 
 const MainLayout: FC = () => {
     const { receiver } = useAppSelector((state) => state.friends);
@@ -21,6 +21,7 @@ const MainLayout: FC = () => {
             console.log(data.content);
             dispatch(receiveAddFriendNotificationFromSocket(data.content));
         });
+
         return () => {
             socketClient.off(SOCKET_EVENT.SEND_ADD_FRIEND_NOTIFICATION);
         };
@@ -39,8 +40,6 @@ const MainLayout: FC = () => {
         });
 
         return () => {
-            console.log('Clean up in MainLayout.tsx');
-            socketClient.off(SOCKET_EVENT.SEND_ADD_FRIEND_NOTIFICATION);
             socketClient.off(SOCKET_EVENT.RECEIVE_MESSAGE);
         };
     }, [dispatch, receiver]);

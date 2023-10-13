@@ -27,8 +27,7 @@ const HomePage: FC = () => {
     } = useAppSelector((state) => state.messages);
     const navigate = useNavigate();
 
-    const { handleSendCallerAndReceiverIDContext, handleInitCallContext } =
-        useContext(VideoContext);
+    const { handleSendCallerAndReceiverIDContext } = useContext(VideoContext);
 
     useEffect(() => {
         dispatch(setIsNewList(page === 1 ? true : false));
@@ -47,7 +46,6 @@ const HomePage: FC = () => {
     }, [dispatch, receiver.id]);
 
     const handleCallUser = () => {
-        handleInitCallContext();
         handleSendCallerAndReceiverIDContext({ receiverID: receiver.id, senderID: currentUser.id });
         return navigate(ROUTES.VIDEO_CALL);
     };

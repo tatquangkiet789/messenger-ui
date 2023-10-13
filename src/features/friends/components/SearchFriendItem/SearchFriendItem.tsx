@@ -1,16 +1,18 @@
-import { IUser } from '@src/features/users/models/user';
-import { FC, memo } from 'react';
 import tickIcon from '@src/assets/icons/tick.svg';
 import Button from '@src/components/ui/Button/Button';
-import { createAddFriendNotification } from '@src/features/notifications/services/notificationThunk';
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
 import { STORAGE_KEY } from '@src/constants/constants';
+import { createAddFriendNotification } from '@src/features/notifications/services/notificationThunk';
+import { IUser } from '@src/features/users/models/user';
+import { useAppDispatch } from '@src/hooks/useAppDispatch';
+import { memo } from 'react';
 
 interface ISearchFriendItemProps {
     searchFriendItem: IUser;
 }
 
-const SearchFriendItem: FC<ISearchFriendItemProps> = ({ searchFriendItem }) => {
+const SearchFriendItem = memo(function SearchFriendItem({
+    searchFriendItem,
+}: ISearchFriendItemProps) {
     const { id, firstName, lastName, avatar, tick } = searchFriendItem;
     const dispatch = useAppDispatch();
     const accessToken = sessionStorage.getItem(STORAGE_KEY.ACCESS_TOKEN)!;
@@ -40,6 +42,6 @@ const SearchFriendItem: FC<ISearchFriendItemProps> = ({ searchFriendItem }) => {
             />
         </div>
     );
-};
+});
 
-export default memo(SearchFriendItem);
+export default SearchFriendItem;

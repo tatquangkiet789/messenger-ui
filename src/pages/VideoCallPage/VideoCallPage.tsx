@@ -1,100 +1,95 @@
 import { ROUTES } from '@src/constants/routes';
+import SOCKET_EVENT from '@src/constants/socket';
 import { VideoContext } from '@src/features/videos/context/VideoContext';
-import { FC, Fragment, useContext, useEffect } from 'react';
+import socketClient from '@src/lib/socketClient';
+import { useContext, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const VideoCallPage: FC = () => {
-    const { stream, myVideoRef, userVideoRef, receiverSocketID, handleCallUserContext } =
-        useContext(VideoContext);
-
-    const location = useLocation();
+const VideoCallPage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const from = (location.state as any)?.from.pathname || ROUTES.HOME;
 
+    const {
+        stream,
+        setStream,
+        handleCallUserContext,
+        handleAnswerCallContext,
+        callDetail,
+        setCallDetail,
+        myVideoRef,
+        userVideoRef,
+        isAccepted,
+        handleEndCallContext,
+        setIsEnded,
+        isEnded,
+        setIsAccepted,
+    } = useContext(VideoContext);
+
+    const handleReceiveCall = (data: any) => {
+        const { signalData, callerDetail } = data;
+        setCallDetail({ signalData, callerDetail, isReceivedCall: true });
+    };
+
     useEffect(() => {
-        if (receiverSocketID.length === 0) return;
+        navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then((stream) => {
+            setStream(stream);
+            if (myVideoRef.current) {
+                myVideoRef.current.srcObject = stream;
+            }
+        });
 
-        handleCallUserContext();
-    }, [receiverSocketID, handleCallUserContext, navigate]);
+        // Đây là bên người nhận
+        socketClient.on(SOCKET_EVENT.CALL_USER, handleReceiveCall);
 
-    // navigator.permissions.query({ name: microphonePermission }).then((permisson) => {
-    //     console.log(permisson);
-    // });
-    // navigator.permissions.query({ name: cameraPermission }).then((permisson) => {
-    //     console.log(permisson);
-    // });
+        return () => {
+            socketClient.off(SOCKET_EVENT.CALL_USER, handleReceiveCall);
+            setIsEnded(false);
+            setIsAccepted(false);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    // const leaveCall = () => {
-    //     setIsEnded(true);
-    //     if (connectionRef.current) connectionRef.current?.destroy();
-    // };
-
-    const handleStop = () => {
-        if (!stream) return;
-
-        stream.getVideoTracks()[0].stop();
-        stream.getAudioTracks()[0].stop();
-
-        if (myVideoRef.current) myVideoRef.current.srcObject = null;
-        if (userVideoRef.current) userVideoRef.current.srcObject = null;
-
-        return navigate(from);
+    const handleEndCall = () => {
+        console.log('handleEndCall');
+        handleEndCallContext();
     };
 
     return (
-        <Fragment>
+        <>
             {stream ? (
                 <div
                     className='w-screen h-screen bg-gray241_241_242_1 flex
-                    justify-end items-center'
+                            justify-end items-center'
                 >
-                    {/* {isAccepted ? (
-                        <video
-                            className={`w-full h-screen fixed`}
-                            ref={myVideoRef}
-                            autoPlay
-                        ></video>
-                    ) : (
-                        <CallPeding />
-                    )} */}
                     <div className={`flex flex-col justify-center items-center`}>
                         <h1>My Video</h1>
                         <video className={`w-1/2`} ref={myVideoRef} autoPlay muted></video>
                     </div>
                     <div className={`flex flex-col justify-center items-center`}>
-                        <h1>User Video</h1>
-                        <video className={`w-1/2`} ref={userVideoRef} autoPlay muted></video>
+                        {isAccepted && !isEnded ? (
+                            <>
+                                <h1>User Video</h1>
+                                <video
+                                    className={`w-1/2`}
+                                    ref={userVideoRef}
+                                    autoPlay
+                                    muted
+                                ></video>
+                            </>
+                        ) : null}
                     </div>
-                    <button onClick={handleStop}>Stop</button>
+                    {callDetail?.isReceivedCall ? (
+                        <button onClick={handleAnswerCallContext}>Answer</button>
+                    ) : (
+                        <button onClick={handleCallUserContext}>Call User</button>
+                    )}
+                    <a href={from} onClick={handleEndCall}>
+                        Stop
+                    </a>
                 </div>
             ) : null}
-
-            {/* <input type='text' value={idToCall} onChange={(e) => setIdToCall(e.target.value)} />
-            <button onClick={() => callUser(idToCall)}>Call</button>
-            <button onClick={() => console.log(me)}>Copy ID</button> */}
-
-            {/* {isAccepted ? (
-                <div
-                    className='w-screen h-screen bg-gray241_241_242_1 flex flex-col 
-                    justify-end items-center'
-                >
-                    <h1>User Video</h1>
-                    <div className='w-1/2'>
-                        <video className={`w-full h-full`} ref={userVideoRef} autoPlay></video>
-                    </div>
-                </div>
-            ) : null} */}
-
-            {/* {callDetail!.isReceivedCall && !isAccepted ? (
-                <div
-                    className='flex items-center justify-center gap-5 absolute 
-                            bottom-5 left-0 right-0 mx-auto'
-                >
-                    <CallAction stream={stream} />
-                    <button onClick={answerCall}>Answer call</button>
-                </div>
-            ) : null} */}
-        </Fragment>
+        </>
     );
 };
 

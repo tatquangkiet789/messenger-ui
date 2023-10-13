@@ -5,4 +5,6 @@ import chatting from './images/chatting.json';
 import background from './images/background.json';
 import calling from './images/calling.json';
 
-export { onlineChat, videoCall, welcome, chatting, background, calling };
+import callingIcon from './icons/calling-icon.json';
+
+export { onlineChat, videoCall, welcome, chatting, background, calling, callingIcon };

@@ -8,48 +8,47 @@ import LoginPage from '@src/pages/LoginPage/LoginPage';
 import RegisterPage from '@src/pages/RegisterPage/RegisterPage';
 import VideoCallPage from '@src/pages/VideoCallPage/VideoCallPage';
 import { FC } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
-type TRoute = {
+type Route = {
     path: string;
     page: JSX.Element;
     layout: JSX.Element;
 };
 
 const AppRoutes: FC = () => {
-    const publicRoutes: TRoute[] = [
+    const publicRoutes: Route[] = [
         { path: ROUTES.LOGIN, page: <LoginPage />, layout: <AuthLayout /> },
         { path: ROUTES.REGISTER, page: <RegisterPage />, layout: <AuthLayout /> },
     ];
 
-    const privateRoutes: TRoute[] = [
+    const privateRoutes: Route[] = [
         { path: ROUTES.HOME, page: <HomePage />, layout: <MainLayout /> },
         { path: ROUTES.VIDEO_CALL, page: <VideoCallPage />, layout: <NoLayout /> },
     ];
 
     return (
-        <BrowserRouter>
-            <Routes>
-                {/* Private Routes */}
-                {privateRoutes.map(({ path, page, layout }, index) => {
-                    return (
-                        <Route key={index} element={<RequiredAuth />}>
-                            <Route element={layout}>
-                                <Route path={path} element={page} />
-                            </Route>
-                        </Route>
-                    );
-                })}
-                {/* Public Routes */}
-                {publicRoutes.map(({ path, page, layout }, index) => {
-                    return (
-                        <Route key={index} element={layout}>
+        <Routes>
+            {/* Private Routes */}
+            {privateRoutes.map(({ path, page, layout }, index) => {
+                return (
+                    <Route key={index} element={<RequiredAuth />}>
+                        <Route element={layout}>
                             <Route path={path} element={page} />
                         </Route>
-                    );
-                })}
-            </Routes>
-        </BrowserRouter>
+                    </Route>
+                );
+            })}
+
+            {/* Public Routes */}
+            {publicRoutes.map(({ path, page, layout }, index) => {
+                return (
+                    <Route key={index} element={layout}>
+                        <Route path={path} element={page} />
+                    </Route>
+                );
+            })}
+        </Routes>
     );
 };
 

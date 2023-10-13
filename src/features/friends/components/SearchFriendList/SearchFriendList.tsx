@@ -1,12 +1,14 @@
 import { IUser } from '@src/features/users/models/user';
-import { FC, Fragment, memo } from 'react';
+import { Fragment, memo } from 'react';
 import SearchFriendItem from '../SearchFriendItem/SearchFriendItem';
 
 interface ISearchFriendListProps {
     searchFriendList: IUser[];
 }
 
-const SearchFriendList: FC<ISearchFriendListProps> = ({ searchFriendList }) => {
+const SearchFriendList = memo(function SearchFriendList({
+    searchFriendList,
+}: ISearchFriendListProps) {
     return (
         <Fragment>
             {searchFriendList.map((user) => (
@@ -14,6 +16,6 @@ const SearchFriendList: FC<ISearchFriendListProps> = ({ searchFriendList }) => {
             ))}
         </Fragment>
     );
-};
+});
 
-export default memo(SearchFriendList);
+export default SearchFriendList;

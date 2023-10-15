@@ -17,8 +17,3 @@ export interface IFindFriend {
     page: number;
     accessToken: string;
 }
-
-export interface IFindUsersByKeyword {
-    keyword: string;
-    accessToken: string;
-}

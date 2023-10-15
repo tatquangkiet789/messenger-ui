@@ -41,7 +41,7 @@ const Sidebar: FC = () => {
                 <div className='flex items-center justify-between gap-2 p-[10px]'>
                     <input
                         className='bg-gray006 rounded-[92px] caret-primary py-3 px-5 
-                    text-base flex-1 border-gray012'
+                        text-base flex-1 border-gray012'
                         type='text'
                         placeholder='Tìm kiếm bạn bè'
                         value={keyword}

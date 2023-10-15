@@ -2,6 +2,7 @@ import { privateAxios } from '@src/lib/axiosClient';
 import {
     IAcceptOrDeclineAddFriendNotification,
     ICreateAddFriendNotification,
+    IDeleteAddFriendNotification,
     IFindAddFriendNotification,
 } from '../models/notification';
 import { ENDPOINTS } from '@src/constants/endpoints';
@@ -39,6 +40,20 @@ export const declineAddFriendNotificationService = async (
     const res = await privateAxios.post(
         ENDPOINTS.DECLINE_ADD_FRIEND_NOTIFICATION,
         { notificationId: addFriendNotificationId },
+        {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        },
+    );
+    return res.data;
+};
+
+export const deleteAddFriendNotificationService = async (param: IDeleteAddFriendNotification) => {
+    const { accessToken, userID } = param;
+    const res = await privateAxios.post(
+        ENDPOINTS.DELETE_ADD_FRIEND_NOTIFFICATION,
+        { userID },
         {
             headers: {
                 Authorization: `Bearer ${accessToken}`,

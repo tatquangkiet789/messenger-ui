@@ -8,6 +8,11 @@ export interface IAcceptOrDeclineAddFriendNotification {
     accessToken: string;
 }
 
+export interface IDeleteAddFriendNotification {
+    userID: number;
+    accessToken: string;
+}
+
 export interface ICreateAddFriendNotification {
     receiverId: number;
     accessToken: string;

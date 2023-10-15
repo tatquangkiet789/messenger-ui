@@ -2,12 +2,14 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
     IAcceptOrDeclineAddFriendNotification,
     ICreateAddFriendNotification,
+    IDeleteAddFriendNotification,
     IFindAddFriendNotification,
 } from '../models/notification';
 import {
     acceptAddFriendNotificationService,
     createAddFriendNotificationService,
     declineAddFriendNotificationService,
+    deleteAddFriendNotificationService,
     findAllAddFriendNotificationsService,
 } from './notificationService';
 import { AxiosError } from 'axios';
@@ -45,6 +47,20 @@ export const declineAddFriendNotification = createAsyncThunk(
     async (param: IAcceptOrDeclineAddFriendNotification, { rejectWithValue }) => {
         try {
             const data = await declineAddFriendNotificationService(param);
+            return data;
+        } catch (error) {
+            const err = error as AxiosError;
+            if (!err.response) throw err;
+            return rejectWithValue(err.response.data);
+        }
+    },
+);
+
+export const deleteAddFriendNotification = createAsyncThunk(
+    'deleteAddFriendNotification',
+    async (param: IDeleteAddFriendNotification, { rejectWithValue }) => {
+        try {
+            const data = await deleteAddFriendNotificationService(param);
             return data;
         } catch (error) {
             const err = error as AxiosError;

@@ -4,6 +4,7 @@ import {
     acceptAddFriendNotification,
     createAddFriendNotification,
     declineAddFriendNotification,
+    deleteAddFriendNotification,
     findAllAddFriendNotifications,
 } from './services/notificationThunk';
 import { AxiosError } from 'axios';
@@ -30,7 +31,6 @@ const notificationSlice = createSlice({
             );
         },
         receiveAddFriendNotificationFromSocket: (state, action) => {
-            console.log('receiveAddFriendNotificationFromSocket in notificationSlice');
             state.addFriendNotificationList = [action.payload, ...state.addFriendNotificationList];
         },
     },
@@ -71,6 +71,19 @@ const notificationSlice = createSlice({
                 state.loading = false;
             })
             .addCase(declineAddFriendNotification.rejected, (state, action) => {
+                state.loading = false;
+                state.error = (action.payload as AxiosError)
+                    ? (action.payload as AxiosError).message
+                    : action.error.message!;
+            })
+            .addCase(deleteAddFriendNotification.pending, (state) => {
+                state.loading = true;
+                state.error = '';
+            })
+            .addCase(deleteAddFriendNotification.fulfilled, (state) => {
+                state.loading = false;
+            })
+            .addCase(deleteAddFriendNotification.rejected, (state, action) => {
                 state.loading = false;
                 state.error = (action.payload as AxiosError)
                     ? (action.payload as AxiosError).message

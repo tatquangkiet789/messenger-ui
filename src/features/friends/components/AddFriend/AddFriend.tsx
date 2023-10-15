@@ -6,9 +6,9 @@ import { useAppSelector } from '@src/hooks/useAppSelector';
 import { ChangeEvent, FC, Fragment, useState } from 'react';
 import { AiOutlineClose, AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { MdPersonSearch } from 'react-icons/md';
-import SearchFriendList from '../SearchFriendList/SearchFriendList';
-import { findAllUsersByKeyword } from '../../services/friendThunk';
-import { resetSearchResultList } from '../../friendSlice';
+import { resetSearchResultList } from '@src/features/users/userSlice';
+import { findAllUsersByKeyword } from '@src/features/users/services/userThunk';
+import SearchUserList from '@src/features/users/components/SearchUserList/SearchUserList';
 
 interface IAddFriendProps {
     onToggleModal: (value: boolean) => void;
@@ -18,7 +18,7 @@ const AddFriend: FC<IAddFriendProps> = ({ onToggleModal }) => {
     const [keyword, setKeyword] = useState('');
     const dispatch = useAppDispatch();
     const accessToken = sessionStorage.getItem(STORAGE_KEY.ACCESS_TOKEN)!;
-    const { searchResultList, loading: friendLoading } = useAppSelector((state) => state.friends);
+    const { searchResultList, loading: userLoading } = useAppSelector((state) => state.users);
 
     const handleToggleModal = () => {
         onToggleModal(false);
@@ -51,12 +51,12 @@ const AddFriend: FC<IAddFriendProps> = ({ onToggleModal }) => {
                 />
             </div>
             <div className={`flex-1 overflow-y-auto`}>
-                {friendLoading ? (
+                {userLoading ? (
                     <div className={`flex justify-center items-center p-3`}>
                         <AiOutlineLoading3Quarters className='animate-spin' size={25} />
                     </div>
                 ) : (
-                    <SearchFriendList searchFriendList={searchResultList} />
+                    <SearchUserList searchUserList={searchResultList} />
                 )}
             </div>
             <div className={`self-end p-4`}>

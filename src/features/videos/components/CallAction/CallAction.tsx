@@ -6,12 +6,17 @@ import {
     IoMicOutline,
 } from 'react-icons/io5';
 import { MdCallEnd } from 'react-icons/md';
+import { CallDetail } from '../../constants/videoConstant';
 
 type CallActionProps = {
     stream: MediaStream;
+    callDetail?: CallDetail;
+    onCall: () => void;
+    onAnwserCall: () => void;
+    onEndCall: () => void;
 };
 
-const CallAction: FC<CallActionProps> = ({ stream }) => {
+const CallAction: FC<CallActionProps> = ({ stream, callDetail, onEndCall }) => {
     const [isEnableAudio, setIsEnableAudio] = useState(false);
     const [isEnableVideo, setIsEnableVideo] = useState(false);
 
@@ -29,8 +34,19 @@ const CallAction: FC<CallActionProps> = ({ stream }) => {
         setIsEnableVideo(!isEnableVideo);
     };
 
+    const handleEndCall = () => {
+        onEndCall();
+    };
+
     return (
         <Fragment>
+            <button
+                className='flex items-center p-3 rounded-full hover:cursor-pointer 
+                        hover:bg-gray006'
+                onClick={handleToggleAudio}
+            >
+                {callDetail && callDetail.isReceivedCall ? <p>Trả lời</p> : <p>Gọi</p>}
+            </button>
             <button
                 className='flex items-center p-3 rounded-full hover:cursor-pointer 
                         hover:bg-gray006'
@@ -56,6 +72,7 @@ const CallAction: FC<CallActionProps> = ({ stream }) => {
             <button
                 className='flex items-center p-3 rounded-full cursor-pointer
                     bg-red-500 hover:bg-red-600'
+                onClick={handleEndCall}
             >
                 <MdCallEnd size={32} className='text-white' />
             </button>

@@ -1,14 +1,21 @@
 import { ROUTES } from '@src/constants/routes';
 import SOCKET_EVENT from '@src/constants/socket';
+import CallAction from '@src/features/videos/components/CallAction/CallAction';
+import CallPending from '@src/features/videos/components/CallPeding/CallPeding';
 import { VideoContext } from '@src/features/videos/context/VideoContext';
+import { useAppSelector } from '@src/hooks/useAppSelector';
 import socketClient from '@src/lib/socketClient';
 import { useContext, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {
+    useLocation,
+    // useNavigate
+} from 'react-router-dom';
 
 const VideoCallPage = () => {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const location = useLocation();
     const from = (location.state as any)?.from.pathname || ROUTES.HOME;
+    const { receiver } = useAppSelector((state) => state.friends);
 
     const {
         stream,
@@ -51,42 +58,68 @@ const VideoCallPage = () => {
     }, []);
 
     const handleEndCall = () => {
-        console.log('handleEndCall');
         handleEndCallContext();
     };
 
     return (
+        // <>
+        //     {stream ? (
+        //         <div
+        //             className='w-screen h-screen bg-gray241_241_242_1 flex
+        //                     justify-end items-center'
+        //         >
+        //             <div className={`flex flex-col justify-center items-center`}>
+        //                 <h1>My Video</h1>
+        //                 <video className={`w-1/2`} ref={myVideoRef} autoPlay muted></video>
+        //             </div>
+        //             <div className={`flex flex-col justify-center items-center`}>
+        //                 {isAccepted && !isEnded ? (
+        //                     <>
+        //                         <h1>User Video</h1>
+        //                         <video
+        //                             className={`w-1/2`}
+        //                             ref={userVideoRef}
+        //                             autoPlay
+        //                             muted
+        //                         ></video>
+        //                     </>
+        //                 ) : null}
+        //             </div>
+        //             {callDetail?.isReceivedCall ? (
+        //                 <button onClick={handleAnswerCallContext}>Answer</button>
+        //             ) : (
+        //                 <button onClick={handleCallUserContext}>Call User</button>
+        //             )}
+        //             <a href={from} onClick={handleEndCall}>
+        //                 Stop
+        //             </a>
+        //         </div>
+        //     ) : null}
+        // </>
         <>
             {stream ? (
                 <div
-                    className='w-screen h-screen bg-gray241_241_242_1 flex
-                            justify-end items-center'
+                    className={`w-screen h-screen bg-gray241_241_242_1 flex justify-end 
+                    items-center relative`}
                 >
-                    <div className={`flex flex-col justify-center items-center`}>
-                        <h1>My Video</h1>
-                        <video className={`w-1/2`} ref={myVideoRef} autoPlay muted></video>
-                    </div>
-                    <div className={`flex flex-col justify-center items-center`}>
+                    <div className={`w-full h-full`}>
                         {isAccepted && !isEnded ? (
-                            <>
-                                <h1>User Video</h1>
-                                <video
-                                    className={`w-1/2`}
-                                    ref={userVideoRef}
-                                    autoPlay
-                                    muted
-                                ></video>
-                            </>
-                        ) : null}
+                            <video ref={userVideoRef} className={`w-full h-full`} loop autoPlay />
+                        ) : (
+                            <CallPending
+                                name={` ${receiver.lastName} ${receiver.firstName}`}
+                                avatar={receiver.avatar}
+                            />
+                        )}
+                        <CallAction
+                            stream={stream}
+                            callDetail={callDetail}
+                            onCall={handleCallUserContext}
+                            onAnwserCall={handleAnswerCallContext}
+                            onEndCall={handleEndCall}
+                        />
                     </div>
-                    {callDetail?.isReceivedCall ? (
-                        <button onClick={handleAnswerCallContext}>Answer</button>
-                    ) : (
-                        <button onClick={handleCallUserContext}>Call User</button>
-                    )}
-                    <a href={from} onClick={handleEndCall}>
-                        Stop
-                    </a>
+                    <video ref={myVideoRef} className={`w-28 h-28 top-0 right-0`} loop autoPlay />
                 </div>
             ) : null}
         </>

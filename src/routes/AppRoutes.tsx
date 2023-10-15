@@ -3,8 +3,10 @@ import RequiredAuth from '@src/guards/RequiredAuth';
 import AuthLayout from '@src/layouts/AuthLayout/AuthLayout';
 import MainLayout from '@src/layouts/MainLayout/MainLayout';
 import NoLayout from '@src/layouts/NoLayout/NoLayout';
+import PostLayout from '@src/layouts/PostLayout/PostLayout';
 import HomePage from '@src/pages/HomePage/HomePage';
 import LoginPage from '@src/pages/LoginPage/LoginPage';
+import PostPage from '@src/pages/PostPage/PostPage';
 import RegisterPage from '@src/pages/RegisterPage/RegisterPage';
 import VideoCallPage from '@src/pages/VideoCallPage/VideoCallPage';
 import { FC } from 'react';
@@ -25,6 +27,7 @@ const AppRoutes: FC = () => {
     const privateRoutes: Route[] = [
         { path: ROUTES.HOME, page: <HomePage />, layout: <MainLayout /> },
         { path: ROUTES.VIDEO_CALL, page: <VideoCallPage />, layout: <NoLayout /> },
+        { path: ROUTES.POST, page: <PostPage />, layout: <PostLayout /> },
     ];
 
     return (

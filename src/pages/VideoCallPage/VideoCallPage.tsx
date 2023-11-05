@@ -1,145 +1,97 @@
+import { ROUTES } from '@src/constants/routes';
 import SOCKET_EVENT from '@src/constants/socket';
+import CallAction from '@src/features/videos/components/CallAction/CallAction';
+import CallPending from '@src/features/videos/components/CallPeding/CallPeding';
+import { VideoContext } from '@src/features/videos/context/VideoContext';
 import { useAppSelector } from '@src/hooks/useAppSelector';
 import socketClient from '@src/lib/socketClient';
-import { FC, Fragment, useEffect, useRef, useState } from 'react';
-import SimplePeer from 'simple-peer';
+import { useContext, useEffect } from 'react';
+import {
+    useLocation,
+    // useNavigate
+} from 'react-router-dom';
 
-type Call = {
-    isReceivedCall: boolean;
-    callFrom: string;
-    signal: string;
-    callerName: string;
-};
-
-const VideoCallPage: FC = () => {
-    const [stream, setStream] = useState<MediaStream>();
-    const myVideoRef = useRef<HTMLVideoElement | null>(null);
-    const userVideoRef = useRef<HTMLVideoElement | null>(null);
-
-    const { currentUser } = useAppSelector((state) => state.auth);
+const VideoCallPage = () => {
+    // const navigate = useNavigate();
+    const location = useLocation();
+    const from = (location.state as any)?.from.pathname || ROUTES.HOME;
     const { receiver } = useAppSelector((state) => state.friends);
-    // const microphonePermission = 'microphone' as PermissionName;
-    // const cameraPermission = 'camera' as PermissionName;
-    // const isAccepted = false;
-    const [callDetail, setCallDetail] = useState<Call>();
-    const [isAccepted, setIsAccepted] = useState(false);
-    const [isEnded, setIsEnded] = useState(false);
+    const {
+        stream,
+        setStream,
+        handleCallUserContext,
+        handleAnswerCallContext,
+        callDetail,
+        setCallDetail,
+        myVideoRef,
+        userVideoRef,
+        isAccepted,
+        handleEndCallContext,
+        setIsEnded,
+        isEnded,
+        setIsAccepted,
+    } = useContext(VideoContext);
+    const callPendingInfo = {
+        name: callDetail
+            ? callDetail.callerDetail.name
+            : `${receiver.lastName} ${receiver.firstName}`,
+        avatar: callDetail ? callDetail.callerDetail.avatar : receiver.avatar,
+    };
 
-    const connectionRef = useRef<SimplePeer.Instance | null>(null);
-    const [videoCallReceiverId, setVideoReceiverId] = useState('');
-    const [callerName, setCallerName] = useState('');
+    const handleReceiveCall = (data: any) => {
+        const { signalData, callerDetail } = data;
+        setCallDetail({ signalData, callerDetail, isReceivedCall: true });
+    };
 
     useEffect(() => {
-        // Get Audio and Camera Permissons
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+        navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then((stream) => {
             setStream(stream);
-            if (myVideoRef.current) myVideoRef.current.srcObject = stream;
+            if (myVideoRef.current) {
+                myVideoRef.current.srcObject = stream;
+            }
         });
 
-        socketClient.emit(SOCKET_EVENT.SEND_VIDEO_CALL_RECEIVER_ID, { userId: receiver.id });
-        socketClient.on(
-            SOCKET_EVENT.RECEIVE_VIDEO_CALL_RECEIVER_ID,
-            ({ videoCallReceiverSocketId }: { videoCallReceiverSocketId: string }) => {
-                setVideoReceiverId(videoCallReceiverSocketId);
-            },
-        );
+        // Đây là bên người nhận
+        socketClient.on(SOCKET_EVENT.CALL_USER, handleReceiveCall);
 
-        socketClient.on('call-user', (data: any) => {
-            const { signal, from, name } = data;
-            setCallDetail({ isReceivedCall: true, callFrom: from, callerName: name, signal });
-        });
+        return () => {
+            socketClient.off(SOCKET_EVENT.CALL_USER, handleReceiveCall);
+            setIsEnded(false);
+            setIsAccepted(false);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // navigator.permissions.query({ name: microphonePermission }).then((permisson) => {
-    //     console.log(permisson);
-    // });
-    // navigator.permissions.query({ name: cameraPermission }).then((permisson) => {
-    //     console.log(permisson);
-    // });
-
-    const answerCall = () => {
-        setIsAccepted(true);
-        const peer = new SimplePeer({ initiator: false, trickle: false, stream });
-        peer.on('signal', (data: any) => {
-            socketClient.emit(SOCKET_EVENT.ANSWER_CALL, { signal: data, to: call.from });
-        });
-        peer.on('stream', (stream: any) => {
-            if (userVideoRef.current) userVideoRef.current.srcObject = stream;
-        });
-        if (callDetail) peer.signal(callDetail.signal);
-        connectionRef.current = peer;
+    const handleEndCall = () => {
+        handleEndCallContext();
+        console.log(from);
     };
-
-    const callUser = (id: any) => {
-        const peer = new SimplePeer({ initiator: true, trickle: false, stream });
-        peer.on('signal', (data: any) => {
-            socketClient.emit('call-user', { userToCall: id, signalData: data, from: me, name });
-        });
-        peer.on('stream', (currentStream: any) => {
-            if (userVideoRef.current) userVideoRef.current.srcObject = currentStream;
-        });
-        socketClient.on('call-accepted', (signal: any) => {
-            setIsAccepted(true);
-
-            peer.signal(signal);
-        });
-        connectionRef.current = peer;
-    };
-
-    // const leaveCall = () => {
-    //     setIsEnded(true);
-    //     if (connectionRef.current) connectionRef.current?.destroy();
-    // };
 
     return (
-        <Fragment>
+        <>
             {stream ? (
-                <div
-                    className='w-screen h-screen bg-gray241_241_242_1 flex
-                    justify-end items-center'
-                >
-                    {/* {isAccepted ? (
-                        <video
-                            className={`w-full h-screen fixed`}
-                            ref={myVideoRef}
-                            autoPlay
-                        ></video>
-                    ) : (
-                        <CallPeding />
-                    )} */}
-                    <h1>My Video</h1>
-                    <div className='w-1/2'>
-                        <video className={`w-full h-full`} ref={myVideoRef} autoPlay muted></video>
+                <div className={`w-screen h-screen bg-gray241_241_242_1 flex`}>
+                    <div className={`w-full h-full flex flex-col items-center relative`}>
+                        {isAccepted && !isEnded ? (
+                            <video ref={userVideoRef} className={`w-full h-full`} loop autoPlay />
+                        ) : (
+                            <CallPending
+                                name={callPendingInfo.name}
+                                avatar={callPendingInfo.avatar}
+                            />
+                        )}
+                        <CallAction
+                            stream={stream}
+                            callDetail={callDetail}
+                            onCall={handleCallUserContext}
+                            onAnswerCall={handleAnswerCallContext}
+                            onEndCall={handleEndCall}
+                        />
                     </div>
+                    <video ref={myVideoRef} className={`w-48 h-48`} loop autoPlay muted />
                 </div>
             ) : null}
-
-            <input type='text' value={idToCall} onChange={(e) => setIdToCall(e.target.value)} />
-            <button onClick={() => callUser(idToCall)}>Call</button>
-            <button onClick={() => console.log(me)}>Copy ID</button>
-
-            {isAccepted ? (
-                <div
-                    className='w-screen h-screen bg-gray241_241_242_1 flex flex-col 
-                    justify-end items-center'
-                >
-                    <h1>User Video</h1>
-                    <div className='w-1/2'>
-                        <video className={`w-full h-full`} ref={userVideoRef} autoPlay></video>
-                    </div>
-                </div>
-            ) : null}
-
-            {call.isReceivedCall && !isAccepted ? (
-                <div
-                    className='flex items-center justify-center gap-5 absolute 
-                            bottom-5 left-0 right-0 mx-auto'
-                >
-                    {/* <CallAction stream={stream} /> */}
-                    <button onClick={answerCall}>Answer call</button>
-                </div>
-            ) : null}
-        </Fragment>
+        </>
     );
 };
 

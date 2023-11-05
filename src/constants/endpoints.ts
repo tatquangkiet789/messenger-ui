@@ -22,6 +22,7 @@ export const ENDPOINTS = {
     CREATE_ADD_FRIEND_NOTIFICATION: `/notifications/add-friend`,
     ACCEPT_ADD_FRIEND_NOTIFICATION: `/notifications/accept`,
     DECLINE_ADD_FRIEND_NOTIFICATION: `/notifications/decline`,
+    DELETE_ADD_FRIEND_NOTIFFICATION: `/notifications/delete`,
 
     // User endpoints
     FIND_ALL_USERS_BY_KEYWORD: (keyword: string) => `/users/search?q=${keyword}`,

@@ -5,4 +5,8 @@ export const ROUTES = {
     REGISTER: '/auth/register',
 
     VIDEO_CALL: '/videocall',
+
+    POST: '/posts',
+    FRIEND: '/friends',
+    WATCH: '/watch',
 };

@@ -1,49 +1,77 @@
-import SOCKET_EVENT from '@src/constants/socket';
-import { updateReceiverLastestMessage } from '@src/features/friends/friendSlice';
-import { receiveNewMessageFromSocket } from '@src/features/messages/messageSlice';
-import { IMessage } from '@src/features/messages/models/message';
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
+import ReceivedCall from '@src/features/videos/components/ReceivedCall/ReceivedCall';
+import { VideoContext } from '@src/features/videos/context/VideoContext';
 import { useAppSelector } from '@src/hooks/useAppSelector';
-import socketClient from '@src/lib/socketClient';
 import WelcomePage from '@src/pages/WelcomePage/WelcomePage';
 import HomePage from 'pages/HomePage/HomePage';
-import { FC, useEffect } from 'react';
+import { FC, useCallback, useContext, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import Navbar from '../components/Navbar/Navbar';
 import Sidebar from '../components/Sidebar/Sidebar';
+import { IMessage } from '@src/features/messages/models/message';
+import { useAppDispatch } from '@src/hooks/useAppDispatch';
+import SOCKET_EVENT from '@src/constants/socket';
+import socketClient from '@src/lib/socketClient';
+import { updateReceiverLastestMessage } from '@src/features/friends/friendSlice';
+import { receiveNewMessageFromSocket } from '@src/features/messages/messageSlice';
 import { receiveAddFriendNotificationFromSocket } from '@src/features/notifications/notificationSlice';
 
 const MainLayout: FC = () => {
     const { receiver } = useAppSelector((state) => state.friends);
     const dispatch = useAppDispatch();
+    const { callDetail, isEnded } = useContext(VideoContext);
 
     useEffect(() => {
-        socketClient.on(SOCKET_EVENT.SEND_ADD_FRIEND_NOTIFICATION, (data) => {
-            console.log(data.content);
-            dispatch(receiveAddFriendNotificationFromSocket(data.content));
+        if (!callDetail) return;
+        if (!callDetail.isReceivedCall) return;
+        if (isEnded) return;
+
+        const { callerDetail } = callDetail;
+        toast(() => <ReceivedCall callerDetail={callerDetail} />, {
+            className: `cursor-default`,
+            closeOnClick: true,
         });
-        return () => {
-            socketClient.off(SOCKET_EVENT.SEND_ADD_FRIEND_NOTIFICATION);
-        };
-    }, [dispatch]);
+        socketClient.on(SOCKET_EVENT.RECEIVED_END_CALL, () => {
+            console.log('Received end call');
+        });
 
-    useEffect(() => {
-        if (!receiver) return;
-        socketClient.on(SOCKET_EVENT.RECEIVE_MESSAGE, (data) => {
-            // Cập nhật tin nhắn vào trong message list và cập nhật
-            // tin nhắn mới nhất trong friend list ở phía receiver
+        return () => {
+            socketClient.off(SOCKET_EVENT.RECEIVED_END_CALL, () => {
+                console.log('Clean up Received end call');
+            });
+        };
+    }, [callDetail, isEnded]);
+
+    const handleAddFriend = useCallback(
+        (data: any) => {
+            dispatch(receiveAddFriendNotificationFromSocket(data.content));
+        },
+        [dispatch],
+    );
+
+    const handleAddMessage = useCallback(
+        (data: any) => {
+            if (!receiver) return;
             const newMessage: IMessage = data.content;
             if (newMessage.senderDetail.id === receiver.id) {
                 dispatch(receiveNewMessageFromSocket(newMessage));
             }
             dispatch(updateReceiverLastestMessage(newMessage));
-        });
+        },
+        [dispatch, receiver],
+    );
+
+    useEffect(() => {
+        socketClient.on(SOCKET_EVENT.SEND_ADD_FRIEND_NOTIFICATION, handleAddFriend);
+
+        // Cập nhật tin nhắn vào trong message list và cập nhật
+        // tin nhắn mới nhất trong friend list ở phía receiver
+        socketClient.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleAddMessage);
 
         return () => {
-            console.log('Clean up in MainLayout.tsx');
-            socketClient.off(SOCKET_EVENT.SEND_ADD_FRIEND_NOTIFICATION);
-            socketClient.off(SOCKET_EVENT.RECEIVE_MESSAGE);
+            socketClient.off(SOCKET_EVENT.SEND_ADD_FRIEND_NOTIFICATION, handleAddFriend);
+            socketClient.off(SOCKET_EVENT.RECEIVE_MESSAGE, handleAddMessage);
         };
-    }, [dispatch, receiver]);
+    }, [handleAddFriend, handleAddMessage]);
 
     return (
         <div className='bg-gray248_248_248'>

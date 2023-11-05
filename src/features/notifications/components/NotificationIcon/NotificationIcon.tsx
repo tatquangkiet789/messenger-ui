@@ -1,5 +1,5 @@
 import HeadlessTippy from '@tippyjs/react/headless';
-import { FC, memo, useState } from 'react';
+import { memo, useState } from 'react';
 import { MdOutlineNotificationsNone } from 'react-icons/md';
 import { IAddFriendNotification } from '../../models/notification';
 import AddFriendNotificationList from '../AddFriendNotificationList/AddFriendNotificationList';
@@ -7,8 +7,9 @@ import AddFriendNotificationList from '../AddFriendNotificationList/AddFriendNot
 interface INotificationIconProps {
     addFriendNotificationList: IAddFriendNotification[];
 }
-
-const NotificationIcon: FC<INotificationIconProps> = ({ addFriendNotificationList }) => {
+const NotificationIcon = memo(function NotificationIcon({
+    addFriendNotificationList,
+}: INotificationIconProps) {
     const [isOpenNotificationList, setIsOpenNotificationList] = useState(false);
     const totalNotifications = addFriendNotificationList.length;
 
@@ -52,6 +53,6 @@ const NotificationIcon: FC<INotificationIconProps> = ({ addFriendNotificationLis
             </div>
         </HeadlessTippy>
     );
-};
+});
 
-export default memo(NotificationIcon);
+export default NotificationIcon;

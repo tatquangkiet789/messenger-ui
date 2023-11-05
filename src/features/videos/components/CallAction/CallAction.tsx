@@ -1,17 +1,30 @@
-import { FC, Fragment, useState } from 'react';
+import { FC, useState } from 'react';
 import {
-    IoVideocamOutline,
-    IoVideocamOffOutline,
     IoMicOffOutline,
     IoMicOutline,
+    IoVideocamOffOutline,
+    IoVideocamOutline,
 } from 'react-icons/io5';
 import { MdCallEnd } from 'react-icons/md';
+import { CallDetail } from '../../constants/videoConstant';
+import Lottie from 'lottie-react';
+import { callingIcon } from '@src/assets';
 
 type CallActionProps = {
     stream: MediaStream;
+    callDetail?: CallDetail;
+    onCall: () => void;
+    onAnswerCall: () => void;
+    onEndCall: () => void;
 };
 
-const CallAction: FC<CallActionProps> = ({ stream }) => {
+const CallAction: FC<CallActionProps> = ({
+    stream,
+    callDetail,
+    onEndCall,
+    onCall,
+    onAnswerCall,
+}) => {
     const [isEnableAudio, setIsEnableAudio] = useState(false);
     const [isEnableVideo, setIsEnableVideo] = useState(false);
 
@@ -29,11 +42,40 @@ const CallAction: FC<CallActionProps> = ({ stream }) => {
         setIsEnableVideo(!isEnableVideo);
     };
 
+    const handleEndCall = () => {
+        onEndCall();
+    };
+
+    const handleCall = () => {
+        onCall();
+    };
+
+    const handleAnswerCall = () => {
+        onAnswerCall();
+    };
+
     return (
-        <Fragment>
+        <div className={`flex gap-6 bg-red-50 absolute bottom-7`}>
+            {callDetail && callDetail.isReceivedCall ? (
+                <Lottie
+                    animationData={callingIcon}
+                    autoPlay
+                    loop
+                    onClick={handleAnswerCall}
+                    className={`cursor-pointer`}
+                />
+            ) : (
+                <div
+                    className='flex items-center p-3 rounded-full hover:cursor-pointer 
+                    hover:bg-gray006'
+                    onClick={handleCall}
+                >
+                    Gọi
+                </div>
+            )}
             <button
                 className='flex items-center p-3 rounded-full hover:cursor-pointer 
-                        hover:bg-gray006'
+                hover:bg-gray006'
                 onClick={handleToggleAudio}
             >
                 {isEnableAudio ? (
@@ -44,7 +86,7 @@ const CallAction: FC<CallActionProps> = ({ stream }) => {
             </button>
             <button
                 className='flex items-center p-3 rounded-full hover:cursor-pointer 
-                    hover:bg-gray006'
+                hover:bg-gray006'
                 onClick={handleToggleVideo}
             >
                 {isEnableVideo ? (
@@ -55,11 +97,12 @@ const CallAction: FC<CallActionProps> = ({ stream }) => {
             </button>
             <button
                 className='flex items-center p-3 rounded-full cursor-pointer
-                    bg-red-500 hover:bg-red-600'
+                bg-red-500 hover:bg-red-600'
+                onClick={handleEndCall}
             >
                 <MdCallEnd size={32} className='text-white' />
             </button>
-        </Fragment>
+        </div>
     );
 };
 

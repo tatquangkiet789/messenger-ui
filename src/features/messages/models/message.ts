@@ -10,10 +10,12 @@ export interface IMessage {
     senderDetail: {
         id: number;
         avatar: string;
+        name: string;
     };
     receiverDetail: {
         id: number;
         avatar: string;
+        name: string;
     };
     content: string;
     createdDate: Date;

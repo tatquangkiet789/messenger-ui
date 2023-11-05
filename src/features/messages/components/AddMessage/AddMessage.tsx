@@ -3,18 +3,21 @@ import { updateSenderLastestMessage } from '@src/features/friends/friendSlice';
 import { useAppDispatch } from '@src/hooks/useAppDispatch';
 import { useAppSelector } from '@src/hooks/useAppSelector';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
-import { ChangeEvent, FC, FormEvent, Fragment, useState } from 'react';
+import { ChangeEvent, FC, FormEvent, useState } from 'react';
 import { AiOutlineSend } from 'react-icons/ai';
 import { FiImage } from 'react-icons/fi';
 import { HiOutlineEmojiHappy } from 'react-icons/hi';
+import { receiveNewMessageFromSocket } from '../../messageSlice';
 import { IMessage, INewMessage } from '../../models/message';
 import { createNewMessage } from '../../services/messageThunk';
-import { receiveNewMessageFromSocket } from '../../messageSlice';
+import ReplyMessage from './ReplyMessage/ReplyMessage';
 
 const AddMessage: FC = () => {
     const [content, setContent] = useState('');
     const [isOpenEmoji, setIsOpenEmoji] = useState(false);
     const { receiver } = useAppSelector((state) => state.friends);
+    const { selectedMessage } = useAppSelector((state) => state.messages);
+    const { currentUser } = useAppSelector((state) => state.auth);
     const accessToken = sessionStorage.getItem(STORAGE_KEY.ACCESS_TOKEN)!;
     const dispatch = useAppDispatch();
 
@@ -24,26 +27,25 @@ const AddMessage: FC = () => {
         const formData = new FormData();
         formData.append('receiverId', receiver.id.toString());
         formData.append('content', content);
+        if (selectedMessage) {
+            formData.append('parentId', selectedMessage.id.toString());
+        }
 
         const data: INewMessage = {
             formData: formData,
             accessToken: accessToken,
         };
-        // const socketData: ISendMessage = {
-        //     senderName: currentUser.username,
-        //     receiverName: receiver.username,
-        // };
 
         dispatch(createNewMessage(data))
             .unwrap()
-            .then((data: IMessage) => {
+            .then((data: any) => {
+                console.log(data);
                 // Cập nhật tin nhắn vào trong message list và cập nhật
                 // tin nhắn mới nhất trong friend list ở phía sender
-                const { content } = data;
-                dispatch(receiveNewMessageFromSocket(content));
-                dispatch(updateSenderLastestMessage(content));
+                // const { content } = data;
+                // dispatch(receiveNewMessageFromSocket(content));
+                // dispatch(updateSenderLastestMessage(content));
             });
-        // socketClient.emit(SOCKET_EVENT.SEND_MESSAGE, socketData);
         setContent('');
     };
 
@@ -76,11 +78,14 @@ const AddMessage: FC = () => {
     };
 
     return (
-        <Fragment>
+        <div className={`flex flex-col`}>
             {isOpenEmoji ? (
                 <div className='absolute bottom-24 left-auto'>
                     <EmojiPicker onEmojiClick={handleSelectEmoji} />
                 </div>
+            ) : null}
+            {selectedMessage ? (
+                <ReplyMessage selectedMessage={selectedMessage} currentUserID={currentUser.id} />
             ) : null}
             <form
                 className='bg-white flex p-3 gap-3 rounded-b-lg items-center'
@@ -110,6 +115,8 @@ const AddMessage: FC = () => {
                     className='caret-primary py-3 px-5 text-base flex-1 bg-gray006 
                     rounded-full border-gray012'
                     spellCheck={false}
+                    // autoFocus={selectedMessage ? true : false}
+                    autoFocus={true}
                 />
                 <button
                     className={`bg-white flex items-center justify-center p-[6px] 
@@ -124,7 +131,7 @@ const AddMessage: FC = () => {
                     />
                 </button>
             </form>
-        </Fragment>
+        </div>
     );
 };
 

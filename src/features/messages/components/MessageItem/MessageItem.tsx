@@ -1,27 +1,31 @@
 import { MESSAGE_TYPE } from '@src/constants/constants';
 import { useAppSelector } from '@src/hooks/useAppSelector';
 import { motion } from 'framer-motion';
-import { FC, Fragment } from 'react';
+import { memo, useState } from 'react';
+import MessageOption from '../MessageOption/MessageOption';
 
 interface IMessageItemProps {
     content: string;
     senderId: number;
     senderAvatar: string;
     messageTypeId: number;
+    messageId: number;
 }
 
-const MessageItem: FC<IMessageItemProps> = ({
+const MessageItem = memo(function MessageItem({
     content,
     senderId,
     senderAvatar,
     messageTypeId,
-}) => {
+    messageId,
+}: IMessageItemProps) {
     const { currentUser } = useAppSelector((state) => state.auth);
+    const [isShowOptions, setIsShowOptions] = useState(false);
 
     const renderContent = () => {
         if (messageTypeId === MESSAGE_TYPE.TEXT) {
             return (
-                <Fragment>
+                <>
                     <div
                         className={`w-12 h-12 bg-center bg-no-repeat bg-cover rounded-full ${
                             senderId === currentUser.id ? 'hidden' : ''
@@ -35,12 +39,12 @@ const MessageItem: FC<IMessageItemProps> = ({
                     >
                         {content}
                     </p>
-                </Fragment>
+                </>
             );
         }
         if (messageTypeId === MESSAGE_TYPE.IMAGE) {
             return (
-                <Fragment>
+                <>
                     <div
                         className={`w-12 h-12 bg-center bg-no-repeat bg-cover rounded-full ${
                             senderId === currentUser.id ? 'hidden' : ''
@@ -52,7 +56,7 @@ const MessageItem: FC<IMessageItemProps> = ({
                         bg-no-repeat bg-cover rounded-xl'
                         style={{ backgroundImage: `url(${content})` }}
                     ></div>
-                </Fragment>
+                </>
             );
         }
     };
@@ -62,13 +66,18 @@ const MessageItem: FC<IMessageItemProps> = ({
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 400, damping: 40 }}
-            className={`flex items-center max-w-[70%] w-fit gap-[10px] ${
-                senderId === currentUser.id ? 'ml-auto' : ''
+            className={`flex items-center gap-[10px] ${
+                senderId === currentUser.id && 'flex-row-reverse'
             }`}
+            onMouseEnter={() => setIsShowOptions(true)}
+            onMouseLeave={() => setIsShowOptions(false)}
         >
-            {renderContent()}
+            <div className={`flex items-center max-w-[70%] w-fit gap-[10px]`}>
+                {renderContent()}
+            </div>
+            {isShowOptions ? <MessageOption messageID={messageId} /> : null}
         </motion.div>
     );
-};
+});
 
 export default MessageItem;

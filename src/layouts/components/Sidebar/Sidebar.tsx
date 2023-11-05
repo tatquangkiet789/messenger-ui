@@ -1,5 +1,6 @@
 import Modal from '@src/components/ui/Modal/Modal';
-import { MAX_INPUT_LENGTH, STORAGE_KEY } from '@src/constants/constants';
+import { MAX_INPUT_LENGTH } from '@src/constants/constants';
+import useAccessToken from '@src/features/auth/hooks/useAccessToken';
 import AddFriend from '@src/features/friends/components/AddFriend/AddFriend';
 import FriendList from '@src/features/friends/components/FriendList/FriendList';
 import { IFriend } from '@src/features/friends/models/friend';
@@ -19,7 +20,8 @@ const Sidebar: FC = () => {
         error: friendError,
     } = useAppSelector((state) => state.friends);
     const dispatch = useAppDispatch();
-    const accessToken = sessionStorage.getItem(STORAGE_KEY.ACCESS_TOKEN)!;
+    // const accessToken = sessionStorage.getItem(STORAGE_KEY.ACCESS_TOKEN)!;
+    const { accessToken } = useAccessToken();
     const [isOpenAddFriend, setIsOpenAddFriend] = useState(false);
     const [keyword, setKeyword] = useState('');
     const debouncedValue = useDebounce(keyword, 500);

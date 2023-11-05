@@ -3,7 +3,11 @@ import { ROUTES } from '@src/constants/routes';
 import ReceiverInfo from '@src/features/friends/components/ReceiverInfo/ReceiverInfo';
 import AddMessage from '@src/features/messages/components/AddMessage/AddMessage';
 import MessageList from '@src/features/messages/components/MessageList/MessageList';
-import { resetMessages, setIsNewList } from '@src/features/messages/messageSlice';
+import {
+    resetMessages,
+    resetSelectedMessage,
+    setIsNewList,
+} from '@src/features/messages/messageSlice';
 import { findAllMessages } from '@src/features/messages/services/messageThunk';
 import { VideoContext } from '@src/features/videos/context/VideoContext';
 import { useAppDispatch } from '@src/hooks/useAppDispatch';
@@ -43,6 +47,7 @@ const HomePage: FC = () => {
     useEffect(() => {
         dispatch(resetMessages());
         setPage(1);
+        dispatch(resetSelectedMessage());
     }, [dispatch, receiver.id]);
 
     const handleCallUser = () => {

@@ -29,7 +29,6 @@ const CallPending: FC<CallPedingProps> = ({ name, avatar }) => {
                 <h3 className='font-semibold text-xl '>{name}</h3>
                 <img src={tickIcon} />
             </div>
-            <p>Đang gọi...</p>
         </div>
     );
 };

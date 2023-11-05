@@ -30,6 +30,15 @@ const MainLayout: FC = () => {
             className: `cursor-default`,
             closeOnClick: true,
         });
+        socketClient.on(SOCKET_EVENT.RECEIVED_END_CALL, () => {
+            console.log('Received end call');
+        });
+
+        return () => {
+            socketClient.off(SOCKET_EVENT.RECEIVED_END_CALL, () => {
+                console.log('Clean up Received end call');
+            });
+        };
     }, [callDetail, isEnded]);
 
     const handleAddFriend = useCallback(

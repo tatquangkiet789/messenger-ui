@@ -11,6 +11,7 @@ interface IMessageState {
     isNewList: boolean;
     hasNextPage: boolean;
     page: number;
+    selectedMessage: IMessage | undefined;
 }
 
 const initialState: IMessageState = {
@@ -20,6 +21,7 @@ const initialState: IMessageState = {
     isNewList: false,
     hasNextPage: false,
     page: 1,
+    selectedMessage: undefined,
 };
 
 const messageSlice = createSlice({
@@ -37,6 +39,14 @@ const messageSlice = createSlice({
         },
         receiveNewMessageFromSocket: (state, action) => {
             state.messages = [...state.messages, action.payload];
+        },
+        setSelectedMessage: (state, action) => {
+            state.selectedMessage = [...state.messages].find(
+                (message) => message.id === action.payload,
+            );
+        },
+        resetSelectedMessage: (state) => {
+            state.selectedMessage = undefined;
         },
     },
     extraReducers: (builder) => {
@@ -81,6 +91,12 @@ const messageSlice = createSlice({
     },
 });
 
-export const { resetMessages, setIsNewList, receiveNewMessageFromSocket } = messageSlice.actions;
+export const {
+    resetMessages,
+    setIsNewList,
+    receiveNewMessageFromSocket,
+    setSelectedMessage,
+    resetSelectedMessage,
+} = messageSlice.actions;
 
 export default messageSlice.reducer;

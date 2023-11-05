@@ -1,6 +1,7 @@
 import Input from '@src/components/form/Input/Input';
 import Button from '@src/components/ui/Button/Button';
 import { ROUTES } from '@src/constants/routes';
+import useAccessToken from '@src/features/auth/hooks/useAccessToken';
 import { ILogin } from '@src/features/auth/models/auth';
 import { login } from '@src/features/auth/services/authThunk';
 import { useAppDispatch } from '@src/hooks/useAppDispatch';
@@ -13,6 +14,7 @@ import * as Yup from 'yup';
 const LoginPage: FC = () => {
     const { loading: authLoading } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
+    const { handleSetAccessToken } = useAccessToken();
 
     const navigate = useNavigate();
 
@@ -40,7 +42,8 @@ const LoginPage: FC = () => {
                 onSubmit={(values, { resetForm }) => {
                     dispatch(login(values))
                         .unwrap()
-                        .then(() => {
+                        .then((data: any) => {
+                            handleSetAccessToken(data.accessToken);
                             return navigate(ROUTES.HOME);
                         });
                     resetForm();

@@ -1,7 +1,7 @@
 import SOCKET_EVENT from '@src/constants/socket';
 import socketClient from '@src/lib/socketClient';
 import { FC, ReactNode, createContext, useCallback, useEffect, useRef, useState } from 'react';
-import Peer, { Instance, SignalData } from 'simple-peer';
+import Peer, { SignalData } from 'simple-peer';
 import { useAppSelector } from '@src/hooks/useAppSelector';
 import { IVideoContext, CallerDetail, CallDetail } from '../constants/videoConstant';
 
@@ -23,7 +23,7 @@ const VideoProvider: FC<VideoProviderProps> = ({ children }) => {
 
     const myVideoRef = useRef<HTMLVideoElement>(null);
     const userVideoRef = useRef<HTMLVideoElement>(null);
-    const connectionRef = useRef<Instance | null>(null);
+    const connectionRef = useRef<Peer.Instance>(null as any);
 
     useEffect(() => {
         // Đây là bên người nhận cuộc gọi
@@ -59,7 +59,6 @@ const VideoProvider: FC<VideoProviderProps> = ({ children }) => {
 
     const handleSendCallerAndReceiverIDContext = useCallback(
         ({ receiverID, senderID }: { receiverID: number; senderID: number }) => {
-            console.log('handleSendCallerAndReceiverIDContext');
             socketClient.emit(SOCKET_EVENT.SEND_VIDEO_CALL_RECEIVER_ID, { receiverID, senderID });
         },
         [],
@@ -115,17 +114,17 @@ const VideoProvider: FC<VideoProviderProps> = ({ children }) => {
     const handleEndCallContext = () => {
         if (!stream) return;
 
-        stream.getVideoTracks()[0].stop();
-        stream.getAudioTracks()[0].stop();
+        socketClient.emit(SOCKET_EVENT.END_CALL, { receiverSocketID });
+        // stream.getVideoTracks()[0].stop();
+        // stream.getAudioTracks()[0].stop();
 
-        if (myVideoRef.current) myVideoRef.current.srcObject = null;
-        if (userVideoRef.current) userVideoRef.current.srcObject = null;
+        // if (myVideoRef.current) myVideoRef.current.srcObject = null;
+        // if (userVideoRef.current) userVideoRef.current.srcObject = null;
         // if (connectionRef.current) connectionRef.current.destroy();
-        connectionRef.current?.destroy();
 
-        setIsEnded(true);
-        setCallDetail(null as any);
-        setCallerDetail(null as any);
+        // setIsEnded(true);
+        // setCallDetail(null as any);
+        // setCallerDetail(null as any);
     };
 
     return (

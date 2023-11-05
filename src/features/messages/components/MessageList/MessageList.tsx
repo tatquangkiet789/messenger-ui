@@ -1,5 +1,5 @@
 import { AnimatePresence } from 'framer-motion';
-import { FC, Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, memo, useEffect, useRef, useState } from 'react';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { IMessage } from '../../models/message';
 import MessageItem from '../MessageItem/MessageItem';
@@ -14,7 +14,7 @@ interface IMessageListProps {
     receiverId: number;
 }
 
-const MessageList: FC<IMessageListProps> = ({
+const MessageList = memo(function MessageList({
     messages,
     loading,
     error,
@@ -22,7 +22,7 @@ const MessageList: FC<IMessageListProps> = ({
     hasNextPage,
     isNewList,
     receiverId,
-}) => {
+}: IMessageListProps) {
     const lastestMessageRef = useRef<HTMLDivElement | null>(null);
     const [element, setElement] = useState<HTMLDivElement | null>(null);
     const observer = useRef(
@@ -95,6 +95,7 @@ const MessageList: FC<IMessageListProps> = ({
                             senderId={senderDetail.id}
                             senderAvatar={senderDetail.avatar}
                             messageTypeId={messageTypeId}
+                            messageId={id}
                         />
                     ))}
                     <div ref={lastestMessageRef}></div>
@@ -102,6 +103,6 @@ const MessageList: FC<IMessageListProps> = ({
             )}
         </Fragment>
     );
-};
+});
 
 export default MessageList;

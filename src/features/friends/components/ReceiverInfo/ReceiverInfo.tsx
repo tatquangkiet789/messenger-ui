@@ -1,15 +1,15 @@
-import { FC, Fragment, useState } from 'react';
+import { memo, useState } from 'react';
 import { IFriend } from '../../models/friend';
 import tickIcon from '@src/assets/icons/tick.svg';
 import { AnimatePresence } from 'framer-motion';
-import Modal from '@src/components/ui/Modal/Modal';
+import Modal from '@src/components/ui/Modal';
 import UserProfile from '@src/features/users/components/UserProfile/UserProfile';
 
-interface IReceiverInfoProps {
+type ReceiverInfoProps = {
     receiverInfo: IFriend;
-}
+};
 
-const ReceiverInfo: FC<IReceiverInfoProps> = ({ receiverInfo }) => {
+const ReceiverInfo = memo(function ReceiverInfo({ receiverInfo }: ReceiverInfoProps) {
     const [isOpenProfile, setIsOpenProfile] = useState(false);
 
     const handleOpenProfile = () => {
@@ -17,7 +17,7 @@ const ReceiverInfo: FC<IReceiverInfoProps> = ({ receiverInfo }) => {
     };
 
     return (
-        <Fragment>
+        <>
             <div
                 className='flex items-center gap-2 p-[6px] rounded-lg hover:bg-gray006 
             cursor-pointer'
@@ -40,8 +40,8 @@ const ReceiverInfo: FC<IReceiverInfoProps> = ({ receiverInfo }) => {
                     </Modal>
                 ) : null}
             </AnimatePresence>
-        </Fragment>
+        </>
     );
-};
+});
 
 export default ReceiverInfo;

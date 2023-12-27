@@ -1,8 +1,8 @@
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
 import Tippy from '@tippyjs/react';
 import { memo } from 'react';
-import { BsSend } from 'react-icons/bs';
 import { setSelectedMessage } from '../../messageSlice';
+import { BsSend } from '@src/components/icons';
+import { useAppDispatch } from '@src/hooks/useRedux';
 
 type MessageOptionProps = {
     messageID: number;

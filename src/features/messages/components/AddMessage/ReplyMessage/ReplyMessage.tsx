@@ -1,10 +1,10 @@
+import { AiOutlineCloseCircle } from '@src/components/icons';
 import { MESSAGE_TYPE } from '@src/constants/constants';
 import { resetSelectedMessage } from '@src/features/messages/messageSlice';
 import { IMessage } from '@src/features/messages/models/message';
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
+import { useAppDispatch } from '@src/hooks/useRedux';
 import Tippy from '@tippyjs/react';
 import { memo } from 'react';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
 
 type ReplyMessageProps = {
     selectedMessage: IMessage;

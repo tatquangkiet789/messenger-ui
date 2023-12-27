@@ -1,7 +1,12 @@
-export interface ILogin {
+export type Login = {
     username: string;
     password: string;
-}
+};
+
+export type LoginResponse = {
+    statusCode: number;
+    accessToken: string;
+};
 
 export interface IRegister {
     firstName: string;
@@ -17,6 +22,16 @@ export interface IUpdatePassword {
     formData: FormData;
     accessToken: string;
 }
+
+export type Auth = {
+    id: number;
+    firstName: string;
+    lastName: string;
+    username: string;
+    userRoleName: number;
+    avatar: string;
+    isVerified: boolean;
+};
 
 export interface IAuth {
     id: number;

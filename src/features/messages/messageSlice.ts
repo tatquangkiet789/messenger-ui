@@ -34,7 +34,7 @@ const messageSlice = createSlice({
         resetMessages: (state) => {
             state.messages = [];
         },
-        setIsNewList: (state, action: PayloadAction<boolean>) => {
+        toggleNewMessageList: (state, action: PayloadAction<boolean>) => {
             state.isNewList = action.payload;
         },
         receiveNewMessageFromSocket: (state, action) => {
@@ -93,7 +93,7 @@ const messageSlice = createSlice({
 
 export const {
     resetMessages,
-    setIsNewList,
+    toggleNewMessageList,
     receiveNewMessageFromSocket,
     setSelectedMessage,
     resetSelectedMessage,

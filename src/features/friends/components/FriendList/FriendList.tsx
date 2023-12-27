@@ -1,42 +1,22 @@
-import { FC, Fragment } from 'react';
+import { memo } from 'react';
 import { IFriend } from '../../models/friend';
 import FriendItem from '../FriendItem/FriendItem';
 
-interface IFriendListProps {
+type FriendListProps = {
     friendList: IFriend[];
     loading: boolean;
     error: string;
-    // hasNextPage: boolean;
-    // onChangePage: (page: any) => void;
-}
+    hasNextPage: boolean;
+    onChangePage: (page: any) => void;
+};
 
-const FriendList: FC<IFriendListProps> = ({ friendList, loading, error }) => {
-    // const [element, setElement] = useState<HTMLDivElement | null>(null);
-    // const observer = useRef(
-    //     new IntersectionObserver(
-    //         (entries) => {
-    //             const first = entries[0];
-    //             if (first.isIntersecting) onChangePage((prev: any) => prev + 1);
-    //         },
-    //         {
-    //             threshold: 1,
-    //         },
-    //     ),
-    // );
-
-    // useEffect(() => {
-    //     const currentElement = element;
-    //     const currentObserver = observer.current;
-
-    //     if (!currentElement) return;
-
-    //     currentObserver.observe(currentElement);
-
-    //     if (!hasNextPage) currentObserver.unobserve(currentElement);
-
-    //     return () => currentObserver.unobserve(currentElement);
-    // }, [element, hasNextPage]);
-
+const FriendList = memo(function FriendList({
+    friendList,
+    loading,
+    error,
+    hasNextPage,
+    onChangePage,
+}: FriendListProps) {
     return (
         <div className='flex flex-col'>
             {friendList.length === 0 && loading ? (
@@ -46,15 +26,15 @@ const FriendList: FC<IFriendListProps> = ({ friendList, loading, error }) => {
             ) : error ? (
                 <p className='px-[10px]'>{error}</p>
             ) : (
-                <Fragment>
+                <>
                     {friendList.map((friend) => (
                         <FriendItem key={friend.id} friend={friend} />
                     ))}
-                    {/* <div ref={setElement} className='w-full h-[10px] bg-red-100'></div> */}
-                </Fragment>
+                    <div></div>
+                </>
             )}
         </div>
     );
-};
+});
 
 export default FriendList;

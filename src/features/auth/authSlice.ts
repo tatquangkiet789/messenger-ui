@@ -1,28 +1,30 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { STORAGE_KEY } from '@src/constants/constants';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
-import { IAuth } from './models/auth';
+import { User } from '../users/models/user';
 import {
+    getCurrentUserByAccessToken,
     login,
+    logout,
     register,
     updatePassword,
-    getCurrentUserByAccessToken,
-    logout,
 } from './services/authThunk';
-import { STORAGE_KEY } from '@src/constants/constants';
 
-interface IAuthState {
-    loading: boolean;
-    currentUser: IAuth;
+type AuthState = {
+    isLoading: boolean;
+    currentUser: User;
     error: string;
     registerMessage: string;
-}
+    isAuthenticated: boolean;
+};
 
-const initialState: IAuthState = {
-    loading: false,
+const initialState: AuthState = {
+    isLoading: false,
     currentUser: null as any,
     error: '',
     registerMessage: '',
+    isAuthenticated: false,
 };
 
 const authSlice = createSlice({
@@ -33,17 +35,16 @@ const authSlice = createSlice({
         builder
             // Login User
             .addCase(login.pending, (state) => {
-                state.loading = true;
+                state.isLoading = true;
                 state.currentUser = null as any;
-                sessionStorage.removeItem(STORAGE_KEY.ACCESS_TOKEN);
                 state.error = '';
             })
-            .addCase(login.fulfilled, (state: IAuthState, action) => {
-                state.loading = false;
+            .addCase(login.fulfilled, (state) => {
+                state.isLoading = false;
                 // sessionStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, action.payload.accessToken);
             })
             .addCase(login.rejected, (state, action) => {
-                state.loading = false;
+                state.isLoading = false;
                 state.error = (action.payload as AxiosError)
                     ? (action.payload as AxiosError).message
                     : action.error.message!;
@@ -51,14 +52,14 @@ const authSlice = createSlice({
             })
             // Register User
             .addCase(register.pending, (state) => {
-                state.loading = true;
+                state.isLoading = true;
                 state.error = '';
             })
             .addCase(register.fulfilled, (state) => {
-                state.loading = false;
+                state.isLoading = false;
             })
             .addCase(register.rejected, (state, action) => {
-                state.loading = false;
+                state.isLoading = false;
                 state.error = (action.payload as AxiosError)
                     ? (action.payload as AxiosError).message
                     : action.error.message!;
@@ -66,15 +67,15 @@ const authSlice = createSlice({
             })
             // Update Password
             .addCase(updatePassword.pending, (state) => {
-                state.loading = true;
+                state.isLoading = true;
                 state.error = '';
             })
             .addCase(updatePassword.fulfilled, (state, action) => {
-                state.loading = false;
+                state.isLoading = false;
                 toast.success(action.payload.message);
             })
             .addCase(updatePassword.rejected, (state, action) => {
-                state.loading = false;
+                state.isLoading = false;
                 state.error = (action.payload as AxiosError)
                     ? (action.payload as AxiosError).message
                     : action.error.message!;
@@ -82,16 +83,16 @@ const authSlice = createSlice({
             })
             // Get Current User By Access Token
             .addCase(getCurrentUserByAccessToken.pending, (state) => {
-                state.loading = true;
+                state.isLoading = true;
                 state.currentUser = null as any;
                 state.error = '';
             })
             .addCase(getCurrentUserByAccessToken.fulfilled, (state, action) => {
-                state.loading = false;
+                state.isLoading = false;
                 state.currentUser = action.payload.content;
             })
             .addCase(getCurrentUserByAccessToken.rejected, (state, action) => {
-                state.loading = false;
+                state.isLoading = false;
                 state.error = (action.payload as AxiosError)
                     ? (action.payload as AxiosError).message
                     : action.error.message!;
@@ -99,17 +100,17 @@ const authSlice = createSlice({
             })
             // Logout
             .addCase(logout.pending, (state) => {
-                state.loading = true;
+                state.isLoading = true;
                 state.error = '';
             })
             .addCase(logout.fulfilled, (state, action) => {
-                state.loading = false;
+                state.isLoading = false;
                 state.currentUser = null as any;
                 sessionStorage.removeItem(STORAGE_KEY.ACCESS_TOKEN);
                 toast.success(action.payload.message);
             })
             .addCase(logout.rejected, (state, action) => {
-                state.loading = false;
+                state.isLoading = false;
                 state.error = (action.payload as AxiosError)
                     ? (action.payload as AxiosError).message
                     : action.error.message!;
@@ -118,4 +119,6 @@ const authSlice = createSlice({
     },
 });
 
-export default authSlice.reducer;
+const authReducer = authSlice.reducer;
+
+export default authReducer;

@@ -1,14 +1,12 @@
-import Input from '@src/components/form/Input/Input';
-import Button from '@src/components/ui/Button/Button';
+import Input from '@src/components/ui/Input';
+import Button from '@src/components/ui/Button';
 import { STORAGE_KEY } from '@src/constants/constants';
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
-import { useAppSelector } from '@src/hooks/useAppSelector';
-import { ChangeEvent, FC, Fragment, useState } from 'react';
-import { AiOutlineClose, AiOutlineLoading3Quarters } from 'react-icons/ai';
-import { MdPersonSearch } from 'react-icons/md';
+import { ChangeEvent, FC, useState } from 'react';
 import { resetSearchResultList } from '@src/features/users/userSlice';
 import { findAllUsersByKeyword } from '@src/features/users/services/userThunk';
 import SearchUserList from '@src/features/users/components/SearchUserList/SearchUserList';
+import { AiOutlineClose, AiOutlineLoading3Quarters, MdPersonSearch } from '@src/components/icons';
+import { useAppDispatch, useAppSelector } from '@src/hooks/useRedux';
 
 interface IAddFriendProps {
     onToggleModal: (value: boolean) => void;
@@ -34,7 +32,7 @@ const AddFriend: FC<IAddFriendProps> = ({ onToggleModal }) => {
     };
 
     return (
-        <Fragment>
+        <>
             <div className='flex items-center justify-between p-4 border-b-2 border-b-gray006'>
                 <h3 className='text-lg font-medium'>Thêm bạn</h3>
                 <span onClick={handleToggleModal} className='cursor-pointer'>
@@ -68,7 +66,7 @@ const AddFriend: FC<IAddFriendProps> = ({ onToggleModal }) => {
                     onClick={handleSearchUserByKeyord}
                 />
             </div>
-        </Fragment>
+        </>
     );
 };
 

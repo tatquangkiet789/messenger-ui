@@ -1,7 +1,7 @@
+import { MdKeyboardArrowDown } from '@src/components/icons';
 import UpdatePassword from '@src/features/auth/components/UpdatePassword/UpdatePassword';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FC, Fragment, useState } from 'react';
-import { MdKeyboardArrowDown } from 'react-icons/md';
 
 interface ICurrentUserProfile {
     email: string;

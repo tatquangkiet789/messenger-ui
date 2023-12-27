@@ -1,14 +1,14 @@
 import { FC, useState } from 'react';
+import { CallDetail } from '../../constants/videoConstant';
+import Lottie from 'lottie-react';
+import { callingIcon } from '@src/assets';
 import {
     IoMicOffOutline,
     IoMicOutline,
     IoVideocamOffOutline,
     IoVideocamOutline,
-} from 'react-icons/io5';
-import { MdCallEnd } from 'react-icons/md';
-import { CallDetail } from '../../constants/videoConstant';
-import Lottie from 'lottie-react';
-import { callingIcon } from '@src/assets';
+    MdCallEnd,
+} from '@src/components/icons';
 
 type CallActionProps = {
     stream: MediaStream;

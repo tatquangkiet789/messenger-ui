@@ -1,14 +1,13 @@
-import Button from '@src/components/ui/Button/Button';
+import Button from '@src/components/ui/Button';
 import { FC } from 'react';
 import { IAddFriendNotification } from '../../models/notification';
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
 import { removeSelectedAddFriendNotification } from '../../notificationSlice';
 import {
     acceptAddFriendNotification,
     declineAddFriendNotification,
 } from '../../services/notificationThunk';
+import { useAppDispatch, useAppSelector } from '@src/hooks/useRedux';
 import { STORAGE_KEY } from '@src/constants/constants';
-import { useAppSelector } from '@src/hooks/useAppSelector';
 import { updateFriendListAfterAcceptAddFriendNotification } from '@src/features/friends/friendSlice';
 
 interface AddFriendNotificationItemProps {

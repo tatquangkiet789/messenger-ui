@@ -14,6 +14,7 @@ interface IFriendState {
     hasNextPage: boolean;
     userReceiveNewMessageId: number;
     toggleNewReceiver: boolean;
+    isNewList: boolean;
 }
 
 const initialState: IFriendState = {
@@ -25,6 +26,7 @@ const initialState: IFriendState = {
     hasNextPage: false,
     userReceiveNewMessageId: 0,
     toggleNewReceiver: false,
+    isNewList: true,
 };
 
 const friendSlice = createSlice({
@@ -92,18 +94,25 @@ const friendSlice = createSlice({
         updateFriendListAfterAcceptAddFriendNotification: (state, action) => {
             state.friends = [...state.friends, action.payload];
         },
+        toggleNewList: (state, action) => {
+            state.isNewList = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder
             .addCase(findAllFriends.pending, (state) => {
                 state.loading = true;
                 state.error = '';
-                state.friends = [];
             })
             .addCase(findAllFriends.fulfilled, (state, action) => {
                 state.loading = false;
-                state.friends = action.payload.content;
                 state.hasNextPage = Boolean(action.payload.content.length);
+
+                if (state.isNewList) {
+                    state.friends = action.payload.content;
+                } else {
+                    state.friends = [...state.friends, ...action.payload.content];
+                }
             })
             .addCase(findAllFriends.rejected, (state, action) => {
                 state.loading = false;
@@ -122,6 +131,7 @@ export const {
     updateSenderLastestMessage,
     resetReceiver,
     updateFriendListAfterAcceptAddFriendNotification,
+    toggleNewList,
 } = friendSlice.actions;
 
 export default friendSlice.reducer;

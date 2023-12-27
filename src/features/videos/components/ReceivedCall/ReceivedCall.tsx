@@ -2,9 +2,9 @@ import { memo } from 'react';
 import { CallerDetail } from '../../constants/videoConstant';
 import Lottie from 'lottie-react';
 import { callingIcon } from '@src/assets';
-import { MdCallEnd } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@src/constants/routes';
+import { MdCallEnd } from '@src/components/icons';
 
 type ReceivedCallProps = {
     callerDetail: CallerDetail;

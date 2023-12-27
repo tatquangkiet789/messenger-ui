@@ -25,5 +25,22 @@ export const ENDPOINTS = {
     DELETE_ADD_FRIEND_NOTIFFICATION: `/notifications/delete`,
 
     // User endpoints
-    FIND_ALL_USERS_BY_KEYWORD: (keyword: string) => `/users/search?q=${keyword}`,
+    FIND_10_SUGGESTED_USERS: '/users/suggested',
+    FIND_ALL_USERS_BY_KEYWORD: (keyword: string) =>
+        `/users/search?q=${encodeURIComponent(keyword)}`,
+
+    // Posts endpoints
+    FIND_ALL_POSTS: (page: number, username?: string) =>
+        `/posts?page=${page}${username ? `&username=${encodeURIComponent(username)}` : ''}`,
+    FIND_POST_BY_ID: (id: number) => `/posts/${id}`,
+    LIKE_POST_BY_ID: (id: number) => `/posts/${id}/like`,
+    UNlIKE_POST_BY_ID: (id: number) => `/posts/${id}/unlike`,
+    FIND_ALL_POSTS_BY_CURRENT_USER: (page: number) => `/posts/user?page=${page}`,
+    FIND_ALL_POSTS_ARE_VIDEO: (page: number) => `/posts/video?page=${page}`,
+    CREATE_POST: '/posts/create',
+    FIND_ALL_POSTS_FROM_FRIENDS: (page: number) => `/posts/friends?page=${page}`,
+
+    // Comments endpoints
+    FIND_ALL_COMMENTS_BY_POST_ID: (postId: number) => `/posts/${postId}/comments`,
+    CREATE_COMMENT: (postId: number) => `/posts/${postId}/comments/create`,
 };

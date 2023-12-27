@@ -1,8 +1,9 @@
 import { AnimatePresence } from 'framer-motion';
 import { Fragment, memo, useEffect, useRef, useState } from 'react';
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { IMessage } from '../../models/message';
 import MessageItem from '../MessageItem/MessageItem';
+import { AiOutlineLoading3Quarters } from '@src/components/icons';
+import useSrcollDown from '../../hooks/useScrollDown';
 
 interface IMessageListProps {
     messages: IMessage[];
@@ -23,7 +24,7 @@ const MessageList = memo(function MessageList({
     isNewList,
     receiverId,
 }: IMessageListProps) {
-    const lastestMessageRef = useRef<HTMLDivElement | null>(null);
+    const lastestMessageRef = useSrcollDown({ delay: 200, scrollDownTrigger: receiverId });
     const [element, setElement] = useState<HTMLDivElement | null>(null);
     const observer = useRef(
         new IntersectionObserver(
@@ -40,18 +41,6 @@ const MessageList = memo(function MessageList({
     const handleChangePage = () => {
         onChangePage((prev: any) => prev + 1);
     };
-
-    useEffect(() => {
-        const scrollDownTimeout = setTimeout(() => {
-            if (lastestMessageRef.current) {
-                lastestMessageRef.current.scrollIntoView({ behavior: 'smooth' });
-            }
-        }, 200);
-
-        return () => {
-            clearTimeout(scrollDownTimeout);
-        };
-    }, [receiverId]);
 
     useEffect(() => {
         if (!element) return;

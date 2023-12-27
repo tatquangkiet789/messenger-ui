@@ -1,6 +1,5 @@
 import ReceivedCall from '@src/features/videos/components/ReceivedCall/ReceivedCall';
 import { VideoContext } from '@src/features/videos/context/VideoContext';
-import { useAppSelector } from '@src/hooks/useAppSelector';
 import WelcomePage from '@src/pages/WelcomePage/WelcomePage';
 import HomePage from 'pages/HomePage/HomePage';
 import { FC, useCallback, useContext, useEffect } from 'react';
@@ -8,9 +7,9 @@ import { toast } from 'react-toastify';
 import Navbar from '../components/Navbar/Navbar';
 import Sidebar from '../components/Sidebar/Sidebar';
 import { IMessage } from '@src/features/messages/models/message';
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
 import SOCKET_EVENT from '@src/constants/socket';
 import socketClient from '@src/lib/socketClient';
+import { useAppDispatch, useAppSelector } from '@src/hooks/useRedux';
 import { updateReceiverLastestMessage } from '@src/features/friends/friendSlice';
 import { receiveNewMessageFromSocket } from '@src/features/messages/messageSlice';
 import { receiveAddFriendNotificationFromSocket } from '@src/features/notifications/notificationSlice';

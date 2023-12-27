@@ -1,17 +1,16 @@
-import Input from '@src/components/form/Input/Input';
-import Button from '@src/components/ui/Button/Button';
+import Input from '@src/components/ui/Input';
+import Button from '@src/components/ui/Button';
 import { IRegister } from '@src/features/auth/models/auth';
 import { register } from '@src/features/auth/services/authThunk';
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
-import { useAppSelector } from '@src/hooks/useAppSelector';
-import { Formik, Field } from 'formik';
-import { ChangeEvent, FC, Fragment } from 'react';
+import { useAppDispatch, useAppSelector } from '@src/hooks/useRedux';
+import { Field, Formik } from 'formik';
+import { ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 
-const RegisterPage: FC = () => {
-    const { loading: authLoading } = useAppSelector((state) => state.auth);
+const RegisterPage = () => {
+    const { isLoading: authLoading } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
@@ -51,7 +50,7 @@ const RegisterPage: FC = () => {
     });
 
     return (
-        <Fragment>
+        <>
             <h1 className='text-[32px] text-center flex-1 py-4'>Đăng ký</h1>
             <Formik
                 initialValues={initialValues}
@@ -184,7 +183,7 @@ const RegisterPage: FC = () => {
                     );
                 }}
             </Formik>
-        </Fragment>
+        </>
     );
 };
 

@@ -1,29 +1,30 @@
-import Modal from '@src/components/ui/Modal/Modal';
+import { MdOutlinePersonAddAlt } from '@src/components/icons';
+import Modal from '@src/components/ui/Modal';
 import { MAX_INPUT_LENGTH } from '@src/constants/constants';
 import useAccessToken from '@src/features/auth/hooks/useAccessToken';
 import AddFriend from '@src/features/friends/components/AddFriend/AddFriend';
 import FriendList from '@src/features/friends/components/FriendList/FriendList';
+import { toggleNewList } from '@src/features/friends/friendSlice';
 import { IFriend } from '@src/features/friends/models/friend';
 import { findAllFriends } from '@src/features/friends/services/friendThunk';
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
-import { useAppSelector } from '@src/hooks/useAppSelector';
+import { useAppDispatch, useAppSelector } from '@src/hooks/useRedux';
 import useDebounce from '@src/hooks/useDebounce';
 import Tippy from '@tippyjs/react';
 import { AnimatePresence } from 'framer-motion';
-import { FC, Fragment, useEffect, useState } from 'react';
-import { MdOutlinePersonAddAlt } from 'react-icons/md';
+import { useEffect, useState } from 'react';
 
-const Sidebar: FC = () => {
+export default function Sidebar() {
     const {
         friends,
         loading: friendLoading,
         error: friendError,
+        hasNextPage,
     } = useAppSelector((state) => state.friends);
     const dispatch = useAppDispatch();
-    // const accessToken = sessionStorage.getItem(STORAGE_KEY.ACCESS_TOKEN)!;
     const { accessToken } = useAccessToken();
     const [isOpenAddFriend, setIsOpenAddFriend] = useState(false);
     const [keyword, setKeyword] = useState('');
+    const [friendPage, setFriendPage] = useState(1);
     const debouncedValue = useDebounce(keyword, 500);
     const filterList: IFriend[] = [...friends].filter(
         (friend) =>
@@ -33,12 +34,13 @@ const Sidebar: FC = () => {
 
     useEffect(() => {
         if (!accessToken) return;
-        dispatch(findAllFriends({ accessToken: accessToken, page: 1 }));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [accessToken]);
+
+        dispatch(toggleNewList(friendPage === 1 ? true : false));
+        dispatch(findAllFriends({ accessToken: accessToken, page: friendPage }));
+    }, [accessToken, dispatch, friendPage]);
 
     return (
-        <Fragment>
+        <>
             <div className='bg-white rounded-lg flex flex-col w-[358px] shadow-lg'>
                 <div className='flex items-center justify-between gap-2 p-[10px]'>
                     <input
@@ -54,17 +56,19 @@ const Sidebar: FC = () => {
                         <span
                             onClick={() => setIsOpenAddFriend(true)}
                             className='flex items-center p-2 rounded-lg hover:cursor-pointer 
-                        hover:bg-gray006'
+                            hover:bg-gray006'
                         >
                             <MdOutlinePersonAddAlt size={25} />
                         </span>
                     </Tippy>
                 </div>
-                <div className='flex-1 overflow-y-scroll'>
+                <div className='flex-1 overflow-y-scroll' style={{ overflowAnchor: 'none' }}>
                     <FriendList
                         friendList={filterList}
                         loading={friendLoading}
                         error={friendError}
+                        hasNextPage={hasNextPage}
+                        onChangePage={setFriendPage}
                     />
                 </div>
             </div>
@@ -75,8 +79,6 @@ const Sidebar: FC = () => {
                     </Modal>
                 ) : null}
             </AnimatePresence>
-        </Fragment>
+        </>
     );
-};
-
-export default Sidebar;
+}

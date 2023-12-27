@@ -1,13 +1,10 @@
 import { ROUTES } from '@src/constants/routes';
 import RequiredAuth from '@src/guards/RequiredAuth';
-import AuthLayout from '@src/layouts/AuthLayout/AuthLayout';
-import MainLayout from '@src/layouts/MainLayout/MainLayout';
+import { AuthLayout, MainLayout } from '@src/layouts';
+import { default as HeaderOnlyLayout } from '@src/layouts/MainLayout/MainLayout';
 import NoLayout from '@src/layouts/NoLayout/NoLayout';
-import PostLayout from '@src/layouts/PostLayout/PostLayout';
-import HomePage from '@src/pages/HomePage/HomePage';
-import LoginPage from '@src/pages/LoginPage/LoginPage';
-import PostPage from '@src/pages/PostPage/PostPage';
-import RegisterPage from '@src/pages/RegisterPage/RegisterPage';
+import { HomePage, LoginPage, RegisterPage } from '@src/pages';
+import { default as MessagePage } from '@src/pages/HomePage/HomePage';
 import VideoCallPage from '@src/pages/VideoCallPage/VideoCallPage';
 import { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
@@ -22,12 +19,12 @@ const AppRoutes: FC = () => {
     const publicRoutes: Route[] = [
         { path: ROUTES.LOGIN, page: <LoginPage />, layout: <AuthLayout /> },
         { path: ROUTES.REGISTER, page: <RegisterPage />, layout: <AuthLayout /> },
+        { path: ROUTES.HOME, page: <HomePage />, layout: <MainLayout /> },
     ];
 
     const privateRoutes: Route[] = [
-        { path: ROUTES.HOME, page: <HomePage />, layout: <MainLayout /> },
+        { path: ROUTES.MESSAGE, page: <MessagePage />, layout: <HeaderOnlyLayout /> },
         { path: ROUTES.VIDEO_CALL, page: <VideoCallPage />, layout: <NoLayout /> },
-        { path: ROUTES.POST, page: <PostPage />, layout: <PostLayout /> },
     ];
 
     return (

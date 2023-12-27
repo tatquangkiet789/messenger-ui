@@ -1,11 +1,10 @@
 import tickIcon from '@src/assets/icons/tick.svg';
 import { MESSAGE_TYPE } from '@src/constants/constants';
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
-import { useAppSelector } from '@src/hooks/useAppSelector';
 import { resetUserReceiveNewMessage, setReceiver } from '@src/features/friends/friendSlice';
 import { FC } from 'react';
-import { FiImage } from 'react-icons/fi';
 import { IFriend } from '../../models/friend';
+import { FiImage } from '@src/components/icons';
+import { useAppDispatch, useAppSelector } from '@src/hooks/useRedux';
 
 interface IFriendItemProps {
     friend: IFriend;

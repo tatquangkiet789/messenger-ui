@@ -1,7 +1,7 @@
 import { onlineChat, videoCall, welcome } from '@src/assets';
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from '@src/components/icons';
 import Lottie from 'lottie-react';
 import { FC, useEffect, useRef, useState } from 'react';
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 
 interface ISildeItem {
     id: number;

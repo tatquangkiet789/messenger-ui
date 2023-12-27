@@ -3,12 +3,17 @@ export interface IUser {
     firstName: string;
     lastName: string;
     avatar: string;
-    tick: boolean;
+    isVerified: boolean;
     isFriendWithCurrentUser: boolean;
     isSentAddFriendNotification: boolean;
 }
 
-export interface IFindUsersByKeyword {
-    keyword: string;
-    accessToken: string;
-}
+export type User = {
+    id: number;
+    firstName: string;
+    lastName: string;
+    username: string;
+    avatar: string;
+    isVerified: boolean;
+    userRoleName: string;
+};

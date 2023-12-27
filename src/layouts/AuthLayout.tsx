@@ -1,9 +1,9 @@
-import { ROUTES } from '@src/constants/routes';
-import { FC } from 'react';
-import { Link, useLocation, Outlet } from 'react-router-dom';
 import wave from '@src/assets/images/waves.svg';
+import { AiOutlineClose } from '@src/components/icons';
+import { ROUTES } from '@src/constants/routes';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 
-const AuthLayout: FC = () => {
+export default function AuthLayout() {
     const { pathname } = useLocation();
 
     return (
@@ -13,6 +13,12 @@ const AuthLayout: FC = () => {
                 style={{ backgroundImage: `url(${wave})` }}
             ></div>
             <div className='w-[483px] rounded-lg shadow-lg flex flex-col items-center h-[75vh] z-10 bg-white'>
+                <Link
+                    to={ROUTES.HOME}
+                    className='flex self-end rounded-full bg-gray003 p-[10px] mt-[15px] mr-[15px]'
+                >
+                    <AiOutlineClose size={24} />
+                </Link>
                 <div className='py-0 px-[54px] w-full h-full overflow-y-auto'>
                     <Outlet />
                 </div>
@@ -41,6 +47,4 @@ const AuthLayout: FC = () => {
             </div>
         </div>
     );
-};
-
-export default AuthLayout;
+}

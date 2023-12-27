@@ -3,7 +3,7 @@ import SOCKET_EVENT from '@src/constants/socket';
 import CallAction from '@src/features/videos/components/CallAction/CallAction';
 import CallPending from '@src/features/videos/components/CallPeding/CallPeding';
 import { VideoContext } from '@src/features/videos/context/VideoContext';
-import { useAppSelector } from '@src/hooks/useAppSelector';
+import { useAppSelector } from '@src/hooks/useRedux';
 import socketClient from '@src/lib/socketClient';
 import { useContext, useEffect } from 'react';
 import {

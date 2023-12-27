@@ -3,8 +3,7 @@ import { STORAGE_KEY } from '@src/constants/constants';
 import NotificationIcon from '@src/features/notifications/components/NotificationIcon/NotificationIcon';
 import { findAllAddFriendNotifications } from '@src/features/notifications/services/notificationThunk';
 import CurrentUserIcon from '@src/features/users/components/CurrentUserIcon/CurrentUserIcon';
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
-import { useAppSelector } from '@src/hooks/useAppSelector';
+import { useAppDispatch, useAppSelector } from '@src/hooks/useRedux';
 import { FC, useEffect } from 'react';
 
 const Navbar: FC = () => {

@@ -1,8 +1,6 @@
-import Input from '@src/components/form/Input/Input';
-import Button from '@src/components/ui/Button/Button';
+import Input from '@src/components/ui/Input';
+import Button from '@src/components/ui/Button';
 import { STORAGE_KEY } from '@src/constants/constants';
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
-import { useAppSelector } from '@src/hooks/useAppSelector';
 import { Field, Formik } from 'formik';
 import { motion } from 'framer-motion';
 import { FC } from 'react';
@@ -10,6 +8,7 @@ import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { IUpdatePassword } from '../../models/auth';
 import { updatePassword } from '../../services/authThunk';
+import { useAppDispatch, useAppSelector } from '@src/hooks/useRedux';
 
 interface IUpdatePasswordForm {
     password: string;

@@ -1,16 +1,13 @@
 import { STORAGE_KEY } from '@src/constants/constants';
 import { updateSenderLastestMessage } from '@src/features/friends/friendSlice';
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
-import { useAppSelector } from '@src/hooks/useAppSelector';
+import { useAppDispatch, useAppSelector } from '@src/hooks/useRedux';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 import { ChangeEvent, FC, FormEvent, useState } from 'react';
-import { AiOutlineSend } from 'react-icons/ai';
-import { FiImage } from 'react-icons/fi';
-import { HiOutlineEmojiHappy } from 'react-icons/hi';
 import { receiveNewMessageFromSocket } from '../../messageSlice';
 import { IMessage, INewMessage } from '../../models/message';
 import { createNewMessage } from '../../services/messageThunk';
 import ReplyMessage from './ReplyMessage/ReplyMessage';
+import { AiOutlineSend, FiImage, HiOutlineEmojiHappy } from '@src/components/icons';
 
 const AddMessage: FC = () => {
     const [content, setContent] = useState('');

@@ -1,18 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { IUser } from './models/user';
-import { findAllUsersByKeyword } from './services/userThunk';
+import { IUser, User } from './models/user';
+import { find10SuggestedUsers, findAllUsersByKeyword } from './services/userThunk';
 import { AxiosError } from 'axios';
 
-interface IUserState {
-    loading: boolean;
+type UserState = {
+    isLoading: boolean;
     error: string;
     searchResultList: IUser[];
-}
+    suggestedUsers: User[];
+};
 
-const initialState: IUserState = {
-    loading: false,
+const initialState: UserState = {
+    isLoading: false,
     error: '',
     searchResultList: [],
+    suggestedUsers: [],
 };
 
 const userSlice = createSlice({
@@ -27,20 +29,40 @@ const userSlice = createSlice({
         resetSearchResultList: (state) => {
             state.searchResultList = [];
         },
+        removeCurrentUserInSuggestedUsers: (state, action) => {
+            state.suggestedUsers = [...state.suggestedUsers].filter(
+                (user) => user.id !== action.payload,
+            );
+        },
     },
     extraReducers: (builder) => {
         builder
             .addCase(findAllUsersByKeyword.pending, (state) => {
                 state.searchResultList = [];
-                state.loading = true;
+                state.isLoading = true;
                 state.error = '';
             })
             .addCase(findAllUsersByKeyword.fulfilled, (state, action) => {
-                state.loading = false;
+                state.isLoading = false;
                 state.searchResultList = action.payload.content;
             })
             .addCase(findAllUsersByKeyword.rejected, (state, action) => {
-                state.loading = false;
+                state.isLoading = false;
+                state.error = (action.payload as AxiosError)
+                    ? (action.payload as AxiosError).message
+                    : action.error.message!;
+            })
+            .addCase(find10SuggestedUsers.pending, (state) => {
+                state.suggestedUsers = [];
+                state.isLoading = true;
+                state.error = '';
+            })
+            .addCase(find10SuggestedUsers.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.suggestedUsers = action.payload.content;
+            })
+            .addCase(find10SuggestedUsers.rejected, (state, action) => {
+                state.isLoading = false;
                 state.error = (action.payload as AxiosError)
                     ? (action.payload as AxiosError).message
                     : action.error.message!;
@@ -48,6 +70,12 @@ const userSlice = createSlice({
     },
 });
 
-export const { resetSearchResultList, updateSearchResultListAfterDelete } = userSlice.actions;
+export const {
+    resetSearchResultList,
+    updateSearchResultListAfterDelete,
+    removeCurrentUserInSuggestedUsers,
+} = userSlice.actions;
 
-export default userSlice.reducer;
+const userReducer = userSlice.reducer;
+
+export default userReducer;

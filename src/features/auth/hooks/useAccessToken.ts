@@ -1,7 +1,7 @@
 import { STORAGE_KEY } from '@src/constants/constants';
 import { useEffect, useState } from 'react';
 
-const useAccessToken = () => {
+export default function useAccessToken() {
     const [accessToken, setAccessToken] = useState('');
 
     useEffect(() => {
@@ -11,16 +11,14 @@ const useAccessToken = () => {
         }
     }, []);
 
-    const handleSetAccessToken = (value: string) => {
+    function handleSetAccessToken(value: string) {
         sessionStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, value);
         setAccessToken(value);
-    };
+    }
 
-    const handleRemoveAccessToken = () => {
+    function handleRemoveAccessToken() {
         sessionStorage.removeItem(STORAGE_KEY.ACCESS_TOKEN);
-    };
+    }
 
     return { accessToken, handleRemoveAccessToken, handleSetAccessToken };
-};
-
-export default useAccessToken;
+}

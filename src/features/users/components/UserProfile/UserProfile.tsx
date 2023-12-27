@@ -1,19 +1,19 @@
 import tickIcon from '@src/assets/icons/tick.svg';
-import Button from '@src/components/ui/Button/Button';
-import { IAuth, isInstanceOfIAuth } from '@src/features/auth/models/auth';
+import { AiOutlineClose } from '@src/components/icons';
+import Button from '@src/components/ui/Button';
+import { isInstanceOfIAuth } from '@src/features/auth/models/auth';
 import { IFriend } from '@src/features/friends/models/friend';
 import { FC } from 'react';
-import { AiOutlineClose } from 'react-icons/ai';
-import { IUser } from '../../models/user';
+import { IUser, User } from '../../models/user';
 import CurrentUserProfile from '../CurrentUserProfile/CurrentUserProfile';
 
 interface IUserProfileProps {
-    user: IUser | IAuth | IFriend;
+    user: IUser | User | IFriend;
     onToggleModal: (value: boolean) => void;
 }
 
 const UserProfile: FC<IUserProfileProps> = ({ user, onToggleModal }) => {
-    const { firstName, lastName, avatar, tick } = user;
+    const { firstName, lastName, avatar, isVerified } = user;
 
     const handleToggleModal = () => {
         onToggleModal(false);
@@ -36,7 +36,7 @@ const UserProfile: FC<IUserProfileProps> = ({ user, onToggleModal }) => {
                 <h3 className='font-semibold my-3 text-base'>
                     {lastName} {firstName}
                 </h3>
-                {tick ? <img src={tickIcon} /> : null}
+                {isVerified ? <img src={tickIcon} /> : null}
             </div>
             {isInstanceOfIAuth(user) ? (
                 <CurrentUserProfile email={user.email} username={user.username} />

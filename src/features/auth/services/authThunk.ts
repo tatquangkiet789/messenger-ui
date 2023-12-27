@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
-import { ILogin, IUpdatePassword } from '../models/auth';
+import { Login, IUpdatePassword } from '../models/auth';
 import {
     loginService,
     registerService,
@@ -9,7 +9,7 @@ import {
     getCurrentUserByAccessTokenService,
 } from './authService';
 
-export const login = createAsyncThunk('login', async (params: ILogin, { rejectWithValue }) => {
+export const login = createAsyncThunk('login', async (params: Login, { rejectWithValue }) => {
     try {
         const data = await loginService(params);
         return data;
@@ -61,9 +61,9 @@ export const logout = createAsyncThunk('logout', async (_, { rejectWithValue }) 
 
 export const getCurrentUserByAccessToken = createAsyncThunk(
     'getCurrentUserByAccessToken',
-    async (param: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const data = await getCurrentUserByAccessTokenService(param);
+            const data = await getCurrentUserByAccessTokenService();
             return data;
         } catch (error) {
             const err = error as AxiosError;

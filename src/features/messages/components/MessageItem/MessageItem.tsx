@@ -1,5 +1,5 @@
 import { MESSAGE_TYPE } from '@src/constants/constants';
-import { useAppSelector } from '@src/hooks/useAppSelector';
+import { useAppSelector } from '@src/hooks/useRedux';
 import { motion } from 'framer-motion';
 import { memo, useState } from 'react';
 import MessageOption from '../MessageOption/MessageOption';

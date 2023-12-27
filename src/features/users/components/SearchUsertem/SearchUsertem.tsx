@@ -1,13 +1,12 @@
 import tickIcon from '@src/assets/icons/tick.svg';
-import Button from '@src/components/ui/Button/Button';
+import Button from '@src/components/ui/Button';
 import { STORAGE_KEY } from '@src/constants/constants';
 import {
     createAddFriendNotification,
     deleteAddFriendNotification,
 } from '@src/features/notifications/services/notificationThunk';
 import { IUser } from '@src/features/users/models/user';
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
-import { useAppSelector } from '@src/hooks/useAppSelector';
+import { useAppDispatch, useAppSelector } from '@src/hooks/useRedux';
 import { memo } from 'react';
 import { updateSearchResultListAfterDelete } from '../../userSlice';
 

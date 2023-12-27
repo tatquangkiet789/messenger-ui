@@ -1,24 +1,26 @@
-import Modal from '@src/components/ui/Modal/Modal';
+import {
+    BiLogOutCircle,
+    HiOutlineUserCircle,
+    IoLanguageOutline,
+    MdKeyboardArrowRight,
+} from '@src/components/icons';
+import Modal from '@src/components/ui/Modal';
 import { ROUTES } from '@src/constants/routes';
-import { IAuth } from '@src/features/auth/models/auth';
 import { logout } from '@src/features/auth/services/authThunk';
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
+import { resetReceiver } from '@src/features/friends/friendSlice';
+import { useAppDispatch } from '@src/hooks/useRedux';
 import HeadlessTippy from '@tippyjs/react/headless';
 import { AnimatePresence } from 'framer-motion';
-import { FC, Fragment, useState } from 'react';
-import { BiLogOutCircle } from 'react-icons/bi';
-import { HiOutlineUserCircle } from 'react-icons/hi';
-import { IoLanguageOutline } from 'react-icons/io5';
-import { MdKeyboardArrowRight } from 'react-icons/md';
+import { memo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { User } from '../../models/user';
 import UserProfile from '../UserProfile/UserProfile';
-import { resetReceiver } from '@src/features/friends/friendSlice';
 
-interface ICurrentUserIconProps {
-    currentUser: IAuth;
-}
+type CurrentUserIconProps = {
+    currentUser: User;
+};
 
-const CurrentUserIcon: FC<ICurrentUserIconProps> = ({ currentUser }) => {
+const CurrentUserIcon = memo(function CurrentUserIcon({ currentUser }: CurrentUserIconProps) {
     const [isOpenUserSetting, setIsOpenUserSetting] = useState(false);
     const [isOpenLanguage, setIsOpenLanguage] = useState(false);
     const [isOpenCurrentProfile, setIsOpenCurrentProfile] = useState(false);
@@ -37,7 +39,7 @@ const CurrentUserIcon: FC<ICurrentUserIconProps> = ({ currentUser }) => {
     };
 
     return (
-        <Fragment>
+        <>
             <HeadlessTippy
                 visible={isOpenUserSetting ? true : false}
                 interactive
@@ -150,8 +152,8 @@ const CurrentUserIcon: FC<ICurrentUserIconProps> = ({ currentUser }) => {
                     </Modal>
                 ) : null}
             </AnimatePresence>
-        </Fragment>
+        </>
     );
-};
+});
 
 export default CurrentUserIcon;

@@ -6,6 +6,6 @@ import background from './images/background.json';
 import calling from './images/calling.json';
 
 import callingIcon from './icons/calling-icon.json';
-import TickIcon from './icons/tick.svg';
+import tickIcon from './icons/tick.svg';
 
-export { onlineChat, videoCall, welcome, chatting, background, calling, callingIcon, TickIcon };
+export { onlineChat, videoCall, welcome, chatting, background, calling, callingIcon, tickIcon };

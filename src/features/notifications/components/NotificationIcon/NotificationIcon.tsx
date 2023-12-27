@@ -1,8 +1,8 @@
 import HeadlessTippy from '@tippyjs/react/headless';
 import { memo, useState } from 'react';
-import { MdOutlineNotificationsNone } from 'react-icons/md';
 import { IAddFriendNotification } from '../../models/notification';
 import AddFriendNotificationList from '../AddFriendNotificationList/AddFriendNotificationList';
+import { MdOutlineNotificationsNone } from '@src/components/icons';
 
 interface INotificationIconProps {
     addFriendNotificationList: IAddFriendNotification[];

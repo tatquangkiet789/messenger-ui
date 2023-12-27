@@ -2,7 +2,7 @@ import SOCKET_EVENT from '@src/constants/socket';
 import socketClient from '@src/lib/socketClient';
 import { FC, ReactNode, createContext, useCallback, useEffect, useRef, useState } from 'react';
 import Peer, { SignalData } from 'simple-peer';
-import { useAppSelector } from '@src/hooks/useAppSelector';
+import { useAppSelector } from '@src/hooks/useRedux';
 import { IVideoContext, CallerDetail, CallDetail } from '../constants/videoConstant';
 
 type VideoProviderProps = {

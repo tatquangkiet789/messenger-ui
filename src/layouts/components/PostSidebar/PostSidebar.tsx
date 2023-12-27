@@ -1,10 +1,8 @@
 import tickIcon from '@src/assets/icons/tick.svg';
+import { AiOutlineHome, HiOutlineUsers, MdOutlineOndemandVideo } from '@src/components/icons';
 import { ROUTES } from '@src/constants/routes';
-import { useAppSelector } from '@src/hooks/useAppSelector';
+import { useAppSelector } from '@src/hooks/useRedux';
 import { FC } from 'react';
-import { AiOutlineHome } from 'react-icons/ai';
-import { HiOutlineUsers } from 'react-icons/hi';
-import { MdOutlineOndemandVideo } from 'react-icons/md';
 import { Link, NavLink } from 'react-router-dom';
 
 const PostSidebar: FC = () => {

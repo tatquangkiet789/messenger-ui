@@ -1,24 +1,20 @@
-import Input from '@src/components/form/Input/Input';
-import Button from '@src/components/ui/Button/Button';
-import { ROUTES } from '@src/constants/routes';
-import useAccessToken from '@src/features/auth/hooks/useAccessToken';
-import { ILogin } from '@src/features/auth/models/auth';
-import { login } from '@src/features/auth/services/authThunk';
-import { useAppDispatch } from '@src/hooks/useAppDispatch';
-import { useAppSelector } from '@src/hooks/useAppSelector';
+import Input from '@src/components/ui/Input';
+import Button from '@src/components/ui/Button';
+import useAuth from '@src/features/auth/hooks/useAuth';
+import { Login } from '@src/features/auth/models/auth';
 import { Field, Formik } from 'formik';
-import { FC, Fragment } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
+import { ROUTES } from '@src/constants/routes';
 
-const LoginPage: FC = () => {
-    const { loading: authLoading } = useAppSelector((state) => state.auth);
-    const dispatch = useAppDispatch();
-    const { handleSetAccessToken } = useAccessToken();
+const LoginPage = () => {
+    const { handleLogin, isLoading } = useAuth();
+    const location = useLocation();
 
     const navigate = useNavigate();
+    const from = (location.state as any)?.from.pathname || ROUTES.HOME;
 
-    const initialValues: ILogin = {
+    const initialValues: Login = {
         username: '',
         password: '',
     };
@@ -35,18 +31,14 @@ const LoginPage: FC = () => {
     });
 
     return (
-        <Fragment>
+        <>
             <h1 className='text-[32px] text-center flex-1 py-4'>Đăng nhập</h1>
             <Formik
                 initialValues={initialValues}
                 onSubmit={(values, { resetForm }) => {
-                    dispatch(login(values))
-                        .unwrap()
-                        .then((data: any) => {
-                            handleSetAccessToken(data.accessToken);
-                            return navigate(ROUTES.HOME);
-                        });
+                    handleLogin(values);
                     resetForm();
+                    return navigate(from);
                 }}
                 validationSchema={validationSchema}
             >
@@ -76,24 +68,21 @@ const LoginPage: FC = () => {
                                 placeholder='Mật khẩu'
                                 error={passwordErr}
                             />
-                            {/* <p className='text-gray075 font-semibold text-xs mb-[21px]'>
-                                Quên mật khẩu?
-                            </p> */}
                             <div className={`mt-5`}>
                                 <Button
                                     text='Đăng nhập'
                                     variant='primary'
                                     type='submit'
                                     size='lg'
-                                    disabled={authLoading}
-                                    loading={authLoading}
+                                    disabled={isLoading}
+                                    loading={isLoading}
                                 />
                             </div>
                         </form>
                     );
                 }}
             </Formik>
-        </Fragment>
+        </>
     );
 };
 

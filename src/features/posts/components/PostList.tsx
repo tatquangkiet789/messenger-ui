@@ -1,60 +1,37 @@
-// import classNames from 'classnames/bind';
-// import { FC, Fragment, useEffect, useRef, useState } from 'react';
-// import styles from './PostList.module.scss';
-// import { IPost } from 'modules/posts/models/postModel';
-// import PostItem from '../PostItem/PostItem';
-
 import { Post } from 'features/posts/models/post';
 import { memo } from 'react';
 import PostItem from './PostItem';
-
-//     return (
-//         <div className={cx('container')}>
-//             {postList.length === 0 && postLoading ? (
-//                 <div>Đang tải bài viết</div>
-//             ) : postError ? (
-//                 <div>{postError}</div>
-//             ) : postList.length === 0 ? (
-//                 <div>Chưa có bài viết</div>
-//             ) : (
-//                 <Fragment>
-//                     {postList.map((post) => (
-//                         <PostItem key={post.id} post={post} />
-//                     ))}
-//                     <h1
-//                         ref={setElement}
-//                         style={{
-//                             width: '100%',
-//                             backgroundColor: 'red',
-//                             fontSize: '50px',
-//                         }}
-//                     >
-//                         End of page
-//                     </h1>
-//                 </Fragment>
-//             )}
-//         </div>
-//     );
-// };
+import useIntersectionObserver from '@src/hooks/useIntersectionObserver';
 
 type PostListProps = {
     posts: Post[];
     isLastPage: boolean;
-    page: number;
     onChangePage: (page: any) => void;
 };
 
-const PostList = memo(function PostList({
-    posts,
-    isLastPage,
-    page,
-    onChangePage,
-}: PostListProps) {
+const PostList = memo(function PostList({ posts, isLastPage, onChangePage }: PostListProps) {
+    const { elementRef } = useIntersectionObserver({
+        isUnobserve: isLastPage,
+        onChange: () => onChangePage((prev: any) => prev + 1),
+        // onChange: () => {
+        //     console.log(`onChangePage() in PostList`);
+        // },
+    });
+
     return (
         <div className={`flex flex-col items-center`}>
-            {posts.map((post) => (
-                <PostItem key={post.id} post={post} />
-            ))}
+            {posts.length === 0 ? (
+                <h1>Chưa có bài viết</h1>
+            ) : (
+                <>
+                    {posts.map((post) => (
+                        <PostItem key={post.id} post={post} />
+                    ))}
+                    <div className='flex items-center justify-center p-5' ref={elementRef}>
+                        <h1>Đã xem hết bài viết</h1>
+                    </div>
+                </>
+            )}
         </div>
     );
 });

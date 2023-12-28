@@ -9,7 +9,9 @@ const MainLayout = () => {
             <div className='flex w-[1150px] p-[18px] gap-[18px] h-[calc(100vh-60px)] mx-auto mt-[60px]'>
                 <Sidebar />
                 <div className='h-[cal(100vh-60px)] ml-[358px] flex-1'>
-                    <Outlet />
+                    <div className='w-full h-full py-6 pl-0 pr-4'>
+                        <Outlet />
+                    </div>
                 </div>
             </div>
         </div>

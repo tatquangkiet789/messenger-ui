@@ -6,6 +6,11 @@
 // import styles from './Watch.module.scss';
 // import PostList from 'modules/posts/components/PostList/PostList';
 
+import PostList from '@src/features/posts/components/PostList';
+import PostListSkeleton from '@src/features/posts/components/PostListSkeleton';
+import usePosts from '@src/features/posts/hooks/usePosts';
+import { Suspense, useState } from 'react';
+
 // const cx = classNames.bind(styles);
 
 // const Watch: FC = () => {
@@ -42,5 +47,12 @@
 
 // export default Watch;
 export default function WatchPage() {
-    return <h1>Watch</h1>;
+    const [page, setPage] = useState(1);
+    const { posts, isLastPage } = usePosts({ page, isWatch: true });
+
+    return (
+        <Suspense fallback={<PostListSkeleton />}>
+            <PostList posts={posts} isLastPage={isLastPage} onChangePage={setPage} />
+        </Suspense>
+    );
 }

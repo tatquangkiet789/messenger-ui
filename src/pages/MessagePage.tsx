@@ -11,7 +11,7 @@ import { useAppDispatch, useAppSelector } from '@src/hooks/useRedux';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function HomePage() {
+export default function MessagePage() {
     const [messagePage, setMessagePage] = useState(1);
     const { receiver } = useAppSelector((state) => state.friends);
     const { currentUser } = useAppSelector((state) => state.auth);

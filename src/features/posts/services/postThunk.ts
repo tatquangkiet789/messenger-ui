@@ -25,18 +25,34 @@ export const findAllPosts = createAsyncThunk(
     },
 );
 
+// export const findAllPostsAreVideo = createAsyncThunk(
+//     'findAllPostsAreVideo',
+//     async ({ page }: { page: number }, { rejectWithValue }, thunkAPI) => {
+//         try {
+//             const data = await findAllPostsAreVideoService({ page });
+//             return data;
+//         } catch (error) {
+//             const err = error as AxiosError;
+//             if (!err.response) throw err;
+//             return rejectWithValue(err.response.data);
+//         }
+//     },
+// );
 export const findAllPostsAreVideo = createAsyncThunk(
     'findAllPostsAreVideo',
-    async ({ page }: { page: number }, { rejectWithValue }) => {
-        try {
-            const data = await findAllPostsAreVideoService({ page });
-            return data;
-        } catch (error) {
-            const err = error as AxiosError;
-            if (!err.response) throw err;
-            return rejectWithValue(err.response.data);
-        }
+    async ({ page }: { page: number }) => {
+        const data = await findAllPostsAreVideoService({ page });
+        return data;
     },
+    // {
+    //     condition: (_, { getState }) => {
+    //         const { posts } = getState() as RootState;
+    //         if (posts.isLoading === true) {
+    //             console.log('cancel');
+    //             return false;
+    //         }
+    //     },
+    // },
 );
 
 export const findAllPostsByCurrentUser = createAsyncThunk(

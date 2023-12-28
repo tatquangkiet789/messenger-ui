@@ -1,20 +1,20 @@
-import ReceivedCall from '@src/features/videos/components/ReceivedCall/ReceivedCall';
-import { VideoContext } from '@src/features/videos/context/VideoContext';
-import WelcomePage from '@src/pages/WelcomePage/WelcomePage';
-import HomePage from 'pages/HomePage/HomePage';
-import { FC, useCallback, useContext, useEffect } from 'react';
-import { toast } from 'react-toastify';
-import Navbar from '../components/Navbar/Navbar';
-import Sidebar from '../components/Sidebar/Sidebar';
-import { IMessage } from '@src/features/messages/models/message';
 import SOCKET_EVENT from '@src/constants/socket';
-import socketClient from '@src/lib/socketClient';
-import { useAppDispatch, useAppSelector } from '@src/hooks/useRedux';
 import { updateReceiverLastestMessage } from '@src/features/friends/friendSlice';
 import { receiveNewMessageFromSocket } from '@src/features/messages/messageSlice';
+import { IMessage } from '@src/features/messages/models/message';
 import { receiveAddFriendNotificationFromSocket } from '@src/features/notifications/notificationSlice';
+import ReceivedCall from '@src/features/videos/components/ReceivedCall/ReceivedCall';
+import { VideoContext } from '@src/features/videos/context/VideoContext';
+import { useAppDispatch, useAppSelector } from '@src/hooks/useRedux';
+import socketClient from '@src/lib/socketClient';
+import MessagePage from '@src/pages/MessagePage';
+import WelcomePage from '@src/pages/WelcomePage';
+import { useCallback, useContext, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import Sidebar from './components/Sidebar/Sidebar';
+import Navbar from '@src/components/Navbar';
 
-const MainLayout: FC = () => {
+export default function HeaderLayout() {
     const { receiver } = useAppSelector((state) => state.friends);
     const dispatch = useAppDispatch();
     const { callDetail, isEnded } = useContext(VideoContext);
@@ -77,10 +77,8 @@ const MainLayout: FC = () => {
             <Navbar />
             <div className='flex p-[18px] w-full gap-[18px] h-[calc(100vh-60px)] bg-gray241_241_242_1'>
                 <Sidebar />
-                {receiver ? <HomePage /> : <WelcomePage />}
+                {receiver ? <MessagePage /> : <WelcomePage />}
             </div>
         </div>
     );
-};
-
-export default MainLayout;
+}

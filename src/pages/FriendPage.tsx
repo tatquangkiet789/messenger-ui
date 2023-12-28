@@ -42,6 +42,6 @@
 // };
 
 // export default Friend;
-export default function Friend() {
+export default function FriendPage() {
     return <h1>Friend</h1>;
 }

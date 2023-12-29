@@ -12,6 +12,13 @@
 // } from 'redux/reducers/postSlice';
 // import styles from './UserDetail.module.scss';
 
+import PostList from '@src/features/posts/components/PostList';
+import PostListSkeleton from '@src/features/posts/components/PostListSkeleton';
+import usePosts from '@src/features/posts/hooks/usePosts';
+import { useScrollToTop } from '@src/hooks';
+import { Suspense, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+
 // const cx = classNames.bind(styles);
 
 // const UserDetail: FC = () => {
@@ -66,5 +73,22 @@
 
 // export default UserDetail;
 export default function UserDetail() {
-    return <h1>UserDetail</h1>;
+    const { username } = useParams();
+    const [page, setPage] = useState(1);
+    const { posts, isLastPage } = usePosts({ page, type: 'default', username });
+    const { elementRef } = useScrollToTop(page);
+
+    useEffect(() => {
+        setPage(1);
+        console.log('Reset page');
+    }, [username]);
+
+    return (
+        <>
+            <div ref={elementRef}></div>
+            <Suspense fallback={<PostListSkeleton />}>
+                <PostList posts={posts} isLastPage={isLastPage} onChangePage={setPage} />
+            </Suspense>
+        </>
+    );
 }

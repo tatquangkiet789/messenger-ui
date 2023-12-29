@@ -1,18 +1,24 @@
-import { useAppDispatch, useAppSelector } from '@src/hooks/useRedux';
+import { useAppDispatch, useAppSelector } from '@src/hooks';
 import { useEffect } from 'react';
 import { toggleIsNewPostList } from '../postSlice';
-import { createPost, findAllPosts, findAllPostsAreVideo } from '../services/postThunk';
+import {
+    createPost,
+    findAllPosts,
+    findAllPostsAreVideo,
+    findAllPostsFromFriends,
+} from '../services/postThunk';
 
+type PostParam = 'watch' | 'friends' | 'default';
 type PostsHook = {
     page: number;
-    isWatch?: boolean;
     username?: string;
+    type: PostParam;
 };
 
 export default function usePosts(props: PostsHook | undefined) {
     const page = props?.page;
-    const isWatch = props?.isWatch;
     const username = props?.username;
+    const type = props?.type;
 
     const { posts, isLastPage, isLoading } = useAppSelector((state) => state.posts);
     const dispatch = useAppDispatch();
@@ -23,8 +29,10 @@ export default function usePosts(props: PostsHook | undefined) {
         let request: any;
         dispatch(toggleIsNewPostList(page === 1 ? true : false));
 
-        if (isWatch) {
+        if (type === 'watch') {
             request = dispatch(findAllPostsAreVideo({ page }));
+        } else if (type === 'friends') {
+            request = dispatch(findAllPostsFromFriends({ page }));
         } else {
             request = dispatch(findAllPosts({ page, username }));
         }
@@ -32,7 +40,7 @@ export default function usePosts(props: PostsHook | undefined) {
         return () => {
             request.abort();
         };
-    }, [dispatch, isWatch, page, username]);
+    }, [dispatch, page, type, username]);
 
     function handleCreatePost(formData: FormData) {
         dispatch(createPost({ formData }));

@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from '@src/hooks/useRedux';
+import { useAppDispatch, useAppSelector } from '@src/hooks';
 import { Login, LoginResponse } from '../models/auth';
 import { getCurrentUserByAccessToken, login } from '../services/authThunk';
 import useAccessToken from './useAccessToken';
@@ -19,9 +19,9 @@ export default function useAuth() {
         dispatch(getCurrentUserByAccessToken());
     }, [accessToken, currentUser, dispatch]);
 
-    function handleLogin(param: Login) {
+    async function handleLogin(param: Login) {
         handleRemoveAccessToken();
-        dispatch(login(param))
+        await dispatch(login(param))
             .unwrap()
             .then((data: LoginResponse) => handleSetAccessToken(data.accessToken));
     }

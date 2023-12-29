@@ -1,11 +1,16 @@
-import { useAppDispatch, useAppSelector } from '@src/hooks/useRedux';
+import useAuth from '@src/features/auth/hooks/useAuth';
+import { useAppDispatch, useAppSelector } from '@src/hooks';
 import { useEffect } from 'react';
 import { find10SuggestedUsers } from '../services/userThunk';
-import useAuth from '@src/features/auth/hooks/useAuth';
 import { removeCurrentUserInSuggestedUsers } from '../userSlice';
 
 export default function useUsers() {
     const { isAuthenticated, currentUser } = useAuth();
+    // const { data } = useQuery({
+    //     queryKey: ['suggested-users'],
+    //     queryFn: findTop10SuggestedUsersService,
+    // });
+
     const { suggestedUsers } = useAppSelector((state) => state.users);
     const dispatch = useAppDispatch();
 

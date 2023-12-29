@@ -65,7 +65,6 @@ export default function useIntersectionObserver({
             const first = entries[0];
             if (first.isIntersecting) {
                 onChange();
-                console.log(`onChange() in useIntersectionObserver`);
             }
         },
         { threshold: 1 },

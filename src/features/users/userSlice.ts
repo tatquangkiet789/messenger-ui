@@ -34,6 +34,9 @@ const userSlice = createSlice({
                 (user) => user.id !== action.payload,
             );
         },
+        setSuggestedUsers: (state, action) => {
+            state.suggestedUsers = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -74,6 +77,7 @@ export const {
     resetSearchResultList,
     updateSearchResultListAfterDelete,
     removeCurrentUserInSuggestedUsers,
+    setSuggestedUsers,
 } = userSlice.actions;
 
 const userReducer = userSlice.reducer;

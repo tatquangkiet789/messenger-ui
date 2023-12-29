@@ -3,7 +3,7 @@ import { memo } from 'react';
 import { User } from '../models/user';
 
 type SuggestedUsersProps = {
-    suggestedUsers: User[];
+    suggestedUsers: User[] | undefined;
 };
 
 const SuggestedUsers = memo(function SuggestedUsers({ suggestedUsers }: SuggestedUsersProps) {
@@ -12,7 +12,7 @@ const SuggestedUsers = memo(function SuggestedUsers({ suggestedUsers }: Suggeste
             <p className='text-gray075 text-sm font-semibold px-2 mt-[14px] mb-[10px]'>
                 Tài khoản được đề xuất
             </p>
-            {suggestedUsers.map(({ firstName, lastName, id, isVerified, avatar, username }) => (
+            {suggestedUsers?.map(({ firstName, lastName, id, isVerified, avatar, username }) => (
                 <AccountItem
                     key={id}
                     firstName={firstName}

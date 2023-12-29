@@ -2,10 +2,12 @@ import { ROUTES } from '@src/constants/routes';
 import RequiredAuth from '@src/guards/RequiredAuth';
 import { AuthLayout, HeaderLayout, MainLayout, NoLayout } from '@src/layouts';
 import {
+    FriendPage,
     HomePage,
     LoginPage,
     MessagePage,
     RegisterPage,
+    UserDetail,
     VideoCallPage,
     WatchPage,
 } from '@src/pages';
@@ -21,13 +23,16 @@ export default function AppRoutes() {
     const publicRoutes: Route[] = [
         { path: ROUTES.LOGIN, page: <LoginPage />, layout: <AuthLayout /> },
         { path: ROUTES.REGISTER, page: <RegisterPage />, layout: <AuthLayout /> },
+
         { path: ROUTES.HOME, page: <HomePage />, layout: <MainLayout /> },
         { path: ROUTES.WATCH, page: <WatchPage />, layout: <MainLayout /> },
+        { path: ROUTES.USER_DETAIL, page: <UserDetail />, layout: <MainLayout /> },
     ];
 
     const privateRoutes: Route[] = [
         { path: ROUTES.MESSAGE, page: <MessagePage />, layout: <HeaderLayout /> },
         { path: ROUTES.VIDEO_CALL, page: <VideoCallPage />, layout: <NoLayout /> },
+        { path: ROUTES.FRIEND, page: <FriendPage />, layout: <MainLayout /> },
     ];
 
     return (

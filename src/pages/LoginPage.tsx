@@ -1,11 +1,11 @@
-import Input from '@src/components/ui/Input';
 import Button from '@src/components/ui/Button';
+import Input from '@src/components/ui/Input';
+import { ROUTES } from '@src/constants/routes';
 import useAuth from '@src/features/auth/hooks/useAuth';
 import { Login } from '@src/features/auth/models/auth';
 import { Field, Formik } from 'formik';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { ROUTES } from '@src/constants/routes';
 
 const LoginPage = () => {
     const { handleLogin, isLoading } = useAuth();
@@ -15,8 +15,8 @@ const LoginPage = () => {
     const from = (location.state as any)?.from.pathname || ROUTES.HOME;
 
     const initialValues: Login = {
-        username: '',
-        password: '',
+        username: 'user1',
+        password: '123',
     };
 
     const validationSchema = Yup.object({
@@ -35,10 +35,10 @@ const LoginPage = () => {
             <h1 className='text-[32px] text-center flex-1 py-4'>Đăng nhập</h1>
             <Formik
                 initialValues={initialValues}
-                onSubmit={(values, { resetForm }) => {
-                    handleLogin(values);
-                    resetForm();
-                    return navigate(from);
+                onSubmit={(values) => {
+                    handleLogin(values).then(() => {
+                        return navigate(from);
+                    });
                 }}
                 validationSchema={validationSchema}
             >

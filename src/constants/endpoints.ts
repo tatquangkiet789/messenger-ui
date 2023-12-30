@@ -35,7 +35,7 @@ export const ENDPOINTS = {
     FIND_POST_BY_ID: (id: number) => `/posts/${id}`,
     LIKE_POST_BY_ID: (id: number) => `/posts/${id}/like`,
     UNlIKE_POST_BY_ID: (id: number) => `/posts/${id}/unlike`,
-    FIND_ALL_POSTS_BY_CURRENT_USER: (page: number) => `/posts/user?page=${page}`,
+    FIND_ALL_POSTS_BY_CURRENT_USER: (page: number) => `/posts/current-user?page=${page}`,
     FIND_ALL_POSTS_ARE_VIDEO: (page: number) => `/posts/video?page=${page}`,
     CREATE_POST: '/posts/create',
     FIND_ALL_POSTS_FROM_FRIENDS: (page: number) => `/posts/friends?page=${page}`,

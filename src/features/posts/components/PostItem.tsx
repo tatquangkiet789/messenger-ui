@@ -151,7 +151,9 @@ const PostItem = memo(function PostItem({ post }: PostItemProps) {
                         style={{ backgroundImage: `url(${postUrl})` }}
                     ></div>
                 ) : null}
-                {postTypeName === PostType.Video ? <VideoPlayer url={postUrl} /> : null}
+                {postTypeName === PostType.Video ? (
+                    <VideoPlayer size='400px' url={postUrl} />
+                ) : null}
             </div>
             <div className={`flex items-center justify-end py-4 mx-3 text-gray075`}>
                 <span>{numberFormat.format(totalLikes)} lượt thích</span>

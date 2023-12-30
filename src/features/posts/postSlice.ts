@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 import { Post } from 'features/posts/models/post';
-import { IPost } from 'features/posts/models/postModel';
 import {
     createPost,
     findAllPosts,
@@ -17,7 +16,7 @@ import { toast } from 'react-toastify';
 type PostState = {
     isLoading: boolean;
     posts: Post[];
-    selectedPost: IPost;
+    selectedPost: Post;
     error: string;
     isLastPage: boolean;
     message: string;

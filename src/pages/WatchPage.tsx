@@ -2,11 +2,10 @@ import PostList from '@src/features/posts/components/PostList';
 import PostListSkeleton from '@src/features/posts/components/PostListSkeleton';
 import usePosts from '@src/features/posts/hooks/usePosts';
 import { useScrollToTop } from '@src/hooks';
-import { Suspense, useState } from 'react';
+import { Suspense } from 'react';
 
 export default function WatchPage() {
-    const [page, setPage] = useState(1);
-    const { posts, isLastPage } = usePosts({ page, type: 'watch' });
+    const { posts, isLastPage, page, setPage } = usePosts({ type: 'watch' });
     const { elementRef } = useScrollToTop(page);
 
     return (

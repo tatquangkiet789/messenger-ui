@@ -12,11 +12,12 @@
 // } from 'redux/reducers/postSlice';
 // import styles from './UserDetail.module.scss';
 
+import useAuth from '@src/features/auth/hooks/useAuth';
 import PostList from '@src/features/posts/components/PostList';
 import PostListSkeleton from '@src/features/posts/components/PostListSkeleton';
 import usePosts from '@src/features/posts/hooks/usePosts';
 import { useScrollToTop } from '@src/hooks';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense } from 'react';
 import { useParams } from 'react-router-dom';
 
 // const cx = classNames.bind(styles);
@@ -74,14 +75,11 @@ import { useParams } from 'react-router-dom';
 // export default UserDetail;
 export default function UserDetail() {
     const { username } = useParams();
-    const [page, setPage] = useState(1);
-    const { posts, isLastPage } = usePosts({ page, type: 'default', username });
+    const { isAuthenticated, currentUser } = useAuth();
+    const findAllPostsType =
+        isAuthenticated && currentUser.username === username ? 'current-user' : 'default';
+    const { posts, isLastPage, page, setPage } = usePosts({ type: findAllPostsType, username });
     const { elementRef } = useScrollToTop(page);
-
-    useEffect(() => {
-        setPage(1);
-        console.log('Reset page');
-    }, [username]);
 
     return (
         <>

@@ -6,6 +6,7 @@ import {
     HomePage,
     LoginPage,
     MessagePage,
+    PostDetail,
     RegisterPage,
     UserDetail,
     VideoCallPage,
@@ -27,6 +28,7 @@ export default function AppRoutes() {
         { path: ROUTES.HOME, page: <HomePage />, layout: <MainLayout /> },
         { path: ROUTES.WATCH, page: <WatchPage />, layout: <MainLayout /> },
         { path: ROUTES.USER_DETAIL, page: <UserDetail />, layout: <MainLayout /> },
+        { path: ROUTES.POST_DETAIL, page: <PostDetail />, layout: <NoLayout /> },
     ];
 
     const privateRoutes: Route[] = [

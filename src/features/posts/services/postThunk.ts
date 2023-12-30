@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import {
     createPostService,
     findAllPostsAreVideoService,
-    findAllPostsByCurrentUserIDService,
+    findAllPostsByCurrentUserService,
     findAllPostsFromFriendsService,
     findAllPostsService,
     findPostByIDService,
@@ -59,7 +59,7 @@ export const findAllPostsByCurrentUser = createAsyncThunk(
     'findAllPostsByCurrentUser',
     async ({ page }: { page: number }, { rejectWithValue }) => {
         try {
-            const data = await findAllPostsByCurrentUserIDService({ page });
+            const data = await findAllPostsByCurrentUserService({ page });
             return data;
         } catch (error) {
             const err = error as AxiosError;

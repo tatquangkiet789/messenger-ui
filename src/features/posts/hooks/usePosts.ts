@@ -1,50 +1,81 @@
 import { useAppDispatch, useAppSelector } from '@src/hooks';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toggleIsNewPostList } from '../postSlice';
 import {
     createPost,
     findAllPosts,
     findAllPostsAreVideo,
+    findAllPostsByCurrentUser,
     findAllPostsFromFriends,
+    findPostByID,
 } from '../services/postThunk';
 
-type PostParam = 'watch' | 'friends' | 'default';
-type PostsHook = {
-    page: number;
-    username?: string;
-    type: PostParam;
-};
+type FindPostType = 'watch' | 'friends' | 'default' | 'current-user' | 'id';
 
-export default function usePosts(props: PostsHook | undefined) {
-    const page = props?.page;
-    const username = props?.username;
+// type FindAllPosts = {
+//     type: 'watch';
+// };
+
+// type FindPostByID = {
+//     type: 'byID';
+//     postID: number;
+// };
+
+type PostParam = {
+    type: FindPostType;
+    postID?: number;
+    username?: string;
+};
+// type PostParam = {
+//     test: number;
+// } & (FindAllPosts | FindPostByID)
+
+export default function usePosts(props: PostParam) {
+    const username = props.username;
+    const postID = props?.postID;
     const type = props?.type;
 
-    const { posts, isLastPage, isLoading } = useAppSelector((state) => state.posts);
+    const [page, setPage] = useState(1);
+    const { posts, isLastPage, isLoading, selectedPost } = useAppSelector((state) => state.posts);
     const dispatch = useAppDispatch();
 
-    useEffect(() => {
-        if (!page) return;
-
-        let request: any;
-        dispatch(toggleIsNewPostList(page === 1 ? true : false));
-
+    const handleFindAllPosts = useCallback(() => {
         if (type === 'watch') {
-            request = dispatch(findAllPostsAreVideo({ page }));
+            return findAllPostsAreVideo({ page: page });
         } else if (type === 'friends') {
-            request = dispatch(findAllPostsFromFriends({ page }));
+            return findAllPostsFromFriends({ page: page });
+        } else if (type === 'current-user') {
+            return findAllPostsByCurrentUser({ page: page });
         } else {
-            request = dispatch(findAllPosts({ page, username }));
+            return findAllPosts({ page: page, username });
         }
+    }, [page, type, username]);
+
+    useEffect(() => {
+        if (type === 'id') return;
+
+        dispatch(toggleIsNewPostList(page === 1 ? true : false));
+        const request = dispatch(handleFindAllPosts());
+        console.log(request);
 
         return () => {
             request.abort();
         };
-    }, [dispatch, page, type, username]);
+    }, [dispatch, handleFindAllPosts, page, type]);
+
+    useEffect(() => {
+        if (type !== 'id' || !postID) return;
+
+        const request = dispatch(findPostByID({ postID }));
+
+        return () => {
+            request.abort();
+        };
+    }, [dispatch, postID, type]);
 
     function handleCreatePost(formData: FormData) {
         dispatch(createPost({ formData }));
     }
 
-    return { posts, isLastPage, isLoading, handleCreatePost };
+    return { posts, isLastPage, isLoading, handleCreatePost, setPage, page, selectedPost };
 }

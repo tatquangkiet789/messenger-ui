@@ -21,7 +21,7 @@ export const findAllPostsAreVideoService = async ({ page }: { page: number }) =>
 };
 
 // [GET] /v1/posts/user?page=:page
-export const findAllPostsByCurrentUserIDService = async ({ page }: { page: number }) => {
+export const findAllPostsByCurrentUserService = async ({ page }: { page: number }) => {
     const res = await authAxios.get(ENDPOINTS.FIND_ALL_POSTS_BY_CURRENT_USER(page));
     return res.data;
 };

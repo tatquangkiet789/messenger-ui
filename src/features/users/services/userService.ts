@@ -9,6 +9,6 @@ export const findTop10SuggestedUsersService = async () => {
 
 // [GET] /api/v1/search?q=:keyword
 export const findAllUsersByKeywordService = async (keyword: string) => {
-    const res = await publicAxios.get(ENDPOINTS.FIND_ALL_USERS_BY_KEYWORD(keyword));
+    const res = await publicAxios.get(ENDPOINTS.FIND_ALL_USERS_BY_KEYWORD({ keyword }));
     return res.data;
 };

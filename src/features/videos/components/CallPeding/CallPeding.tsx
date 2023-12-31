@@ -27,7 +27,7 @@ const CallPending: FC<CallPedingProps> = ({ name, avatar }) => {
             </div>
             <div className='my-3 flex items-center gap-2'>
                 <h3 className='font-semibold text-xl '>{name}</h3>
-                <img src={tickIcon} />
+                <img className='ml-2' src={tickIcon} />
             </div>
         </div>
     );

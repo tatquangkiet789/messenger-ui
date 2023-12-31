@@ -36,7 +36,7 @@ const UserProfile: FC<IUserProfileProps> = ({ user, onToggleModal }) => {
                 <h3 className='font-semibold my-3 text-base'>
                     {lastName} {firstName}
                 </h3>
-                {isVerified ? <img src={tickIcon} /> : null}
+                {isVerified ? <img className='ml-2' src={tickIcon} /> : null}
             </div>
             {isInstanceOfIAuth(user) ? (
                 <CurrentUserProfile email={user.email} username={user.username} />

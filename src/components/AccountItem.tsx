@@ -27,7 +27,7 @@ const AccountItem = memo(function AccountItem({
                 <p className='flex items-center text-lg font-bold'>
                     {lastName} {firstName}
                     {isVerified ? (
-                        <img className='ml-[3px]' src={tickIcon} alt='isVerified Icon' />
+                        <img className='ml-2' src={tickIcon} alt='isVerified Icon' />
                     ) : null}
                 </p>
                 <p className='text-gray05 text-base'>{username}</p>

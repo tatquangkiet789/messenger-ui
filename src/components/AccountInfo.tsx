@@ -31,7 +31,7 @@ const AccountInfo = memo(function AccountInfo({
                     className={`flex items-center text-lg font-bold [&_svg]:ml-[3px] hover:opacity-70`}
                 >
                     {lastName} {firstName}
-                    {isVerified ? <img className='ml-[3px]' src={tickIcon} /> : null}
+                    {isVerified ? <img className='ml-2' src={tickIcon} /> : null}
                 </Link>
                 <span className={`text-sm font-normal text-gray075`}>{postCreatedDate}</span>
             </div>

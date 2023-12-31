@@ -31,7 +31,7 @@ export default function Sidebar() {
                     <p className={`ml-2 text-lg font-bold`}>
                         {currentUser.lastName} {currentUser.firstName}
                     </p>
-                    {currentUser.isVerified ? <img className='ml-[3px]' src={tickIcon} /> : null}
+                    {currentUser.isVerified ? <img className='ml-2' src={tickIcon} /> : null}
                 </Link>
             ) : null}
             <NavLinks />

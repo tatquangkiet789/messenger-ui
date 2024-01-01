@@ -143,7 +143,9 @@ const PostItem = memo(function PostItem({ post }: PostItemProps) {
                     postCreatedDate={createdDate}
                 />
             </div>
-            <div className={`px-4 break-keep`}>{caption}</div>
+            <div className={`px-4`} style={{ wordWrap: 'break-word' }}>
+                {caption}
+            </div>
             <div className={`w-full max-w-[600px] flex justify-center pt-3`}>
                 {postTypeName === PostType.Image ? (
                     <div

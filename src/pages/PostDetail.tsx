@@ -3,10 +3,13 @@ import AccountItemSkeleton from '@src/components/AccountItemSkeleton';
 import VideoPlayer from '@src/components/VideoPlayer';
 import { AiOutlineClose, AiOutlineComment, AiOutlineHeart } from '@src/components/icons';
 import { ROUTES } from '@src/constants/routes';
+import CommentList from '@src/features/comments/components/CommentList';
+import { findAllCommentsByPostID } from '@src/features/comments/services/commentThunk';
 import usePosts from '@src/features/posts/hooks/usePosts';
 import { PostType } from '@src/features/posts/models/postType.enum';
+import { useAppDispatch, useAppSelector } from '@src/hooks';
 import { numberFormat } from '@src/utils/format';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 //     useEffect(() => {
@@ -59,6 +62,12 @@ export default function PostDetail() {
     const { id } = useParams();
     const postID = parseInt(id!.toString());
     const { selectedPost } = usePosts({ type: 'id', postID: postID });
+    const dispatch = useAppDispatch();
+    const { comments } = useAppSelector((state) => state.comments);
+
+    useEffect(() => {
+        dispatch(findAllCommentsByPostID({ postID, page: 1 }));
+    }, [dispatch, postID]);
 
     function renderPostContent() {
         if (selectedPost.postTypeName === PostType.Image) {
@@ -87,7 +96,7 @@ export default function PostDetail() {
                             <AiOutlineClose size={40} color={'rgba(243, 243, 244, 0.9)'} />
                         </Link>
                         <div
-                            className={`w-2/5 flex flex-col justify-end border-2 border-gray006 shadow-md bg-white_1`}
+                            className={`w-[calc(100vw-600px)] flex flex-col justify-end border-2 border-gray006 shadow-md bg-white_1`}
                         >
                             <AccountInfo
                                 firstName={selectedPost.authorDetail.firstName}
@@ -97,7 +106,10 @@ export default function PostDetail() {
                                 isVerified={selectedPost.authorDetail.isVerified}
                                 postCreatedDate={selectedPost.createdDate}
                             />
-                            <p className={`pr-3 pl-8 my-4 text-lg overflow-y-auto max-h-28 h-fit`}>
+                            <p
+                                className={`pr-3 pl-8 my-4 text-lg overflow-y-auto max-h-28 h-fit`}
+                                style={{ wordWrap: 'break-word' }}
+                            >
                                 {selectedPost.caption}
                             </p>
                             <div className={`flex item-center pl-8 pb-3 gap-3`}>
@@ -114,9 +126,16 @@ export default function PostDetail() {
                                     {numberFormat.format(selectedPost.totalComments)} bình luận
                                 </div>
                             </div>
-                            <Suspense fallback={<AccountItemSkeleton size={5} />}>
-                                <div>Comment List</div>
-                            </Suspense>
+                            <div
+                                className={`border-y border-y-gray03 overflow-y-auto bg-gray241_241_242_1 h-1/2 pt-6 px-8`}
+                            >
+                                <Suspense fallback={<AccountItemSkeleton size={5} />}>
+                                    <CommentList
+                                        comments={comments}
+                                        authorID={selectedPost.authorDetail.id}
+                                    />
+                                </Suspense>
+                            </div>
                             <div>Add comment</div>
                         </div>
                     </>

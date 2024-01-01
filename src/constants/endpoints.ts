@@ -46,5 +46,5 @@ export const ENDPOINTS = {
     // Comments endpoints
     FIND_ALL_COMMENTS_BY_POST_ID: ({ postID, page }: { postID: number; page: number }) =>
         `/posts/${postID}/comments?page=${page}`,
-    CREATE_COMMENT: (postId: number) => `/posts/${postId}/comments/create`,
+    CREATE_COMMENT: ({ postID }: { postID: number }) => `/posts/${postID}/comments/create`,
 };

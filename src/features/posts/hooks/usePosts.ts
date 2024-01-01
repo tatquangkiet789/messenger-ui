@@ -30,8 +30,8 @@ type PostParam = {
 //     test: number;
 // } & (FindAllPosts | FindPostByID)
 
-export default function usePosts(props: PostParam) {
-    const username = props.username;
+export default function usePosts(props: PostParam | undefined) {
+    const username = props?.username;
     const postID = props?.postID;
     const type = props?.type;
 

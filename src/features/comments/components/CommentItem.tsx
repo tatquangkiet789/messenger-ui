@@ -7,16 +7,16 @@ type CommentItemProps = {
     comment: Comment;
     authorID: number;
     isDisabledReply: boolean;
-    childComments?: Comment[];
+    // childComments?: Comment[];
 };
 
 const CommentItem = memo(function CommentItem({
     comment,
     authorID,
     isDisabledReply,
-    childComments,
-}: CommentItemProps) {
-    const { id, content, userCommentDetail, createdDate } = comment;
+}: // childComments,
+CommentItemProps) {
+    const { id, content, userCommentDetail, createdDate, totalChildComments } = comment;
     const { avatar, lastName, firstName, id: userID, username, isVerified } = userCommentDetail;
     console.log(id);
 
@@ -27,7 +27,7 @@ const CommentItem = memo(function CommentItem({
     // };
 
     return (
-        <div className={`flex flex-col break-keep whitespace-pre-wrap`}>
+        <div className={`flex flex-col w-full max-w-[500px]`}>
             <div className={`flex justify-between mb-5`}>
                 <div
                     className={`w-10 h-10 bg-center bg-cover rounded-full`}
@@ -42,9 +42,13 @@ const CommentItem = memo(function CommentItem({
                             {lastName} {firstName}
                             {isVerified ? <img className='ml-2' src={tickIcon} /> : null}
                         </p>
-                        {userID === authorID ? <p className={``}>Tác giả</p> : null}
+                        {userID === authorID ? (
+                            <p className={`text-sm text-primary my-auto`}>Tác giả</p>
+                        ) : null}
                     </Link>
-                    <p className={`text-lg`}>{content}</p>
+                    <p className={`text-lg whitespace-pre-wrap`} style={{ wordWrap: 'break-word' }}>
+                        {content}
+                    </p>
                     <div className={`flex items-center py-[2px]`}>
                         <span className={`text-gray05`}>{createdDate}</span>
                         {!isDisabledReply ? (
@@ -55,9 +59,14 @@ const CommentItem = memo(function CommentItem({
                             </button>
                         ) : null}
                     </div>
+                    {totalChildComments !== 0 ? (
+                        <p className='text-base font-semibold hover:cursor-pointer hover:underline'>
+                            Xem {totalChildComments} phản hồi
+                        </p>
+                    ) : null}
                 </div>
             </div>
-            {childComments ? (
+            {/* {childComments ? (
                 <div className={`p-7 flex flex-col`}>
                     {childComments.map((comment) => (
                         <CommentItem
@@ -68,7 +77,7 @@ const CommentItem = memo(function CommentItem({
                         />
                     ))}
                 </div>
-            ) : null}
+            ) : null} */}
         </div>
     );
 });

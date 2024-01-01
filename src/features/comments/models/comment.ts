@@ -5,5 +5,17 @@ export type Comment = {
     content: string;
     parentID: number | null;
     createdDate: string;
+    totalChildComments: number;
     userCommentDetail: User;
+};
+
+export type CreateComment = {
+    postID: number;
+    content: string;
+};
+
+export type CreateChildComment = {
+    postID: number;
+    content: string;
+    parentID: number;
 };

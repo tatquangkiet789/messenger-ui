@@ -9,6 +9,8 @@ type CommentState = {
     comments: Comment[];
     error: string;
     selectedComment: Comment;
+    isLastPage: boolean;
+    isNewList: boolean;
 };
 
 const initialState: CommentState = {
@@ -16,19 +18,24 @@ const initialState: CommentState = {
     comments: [],
     error: '',
     selectedComment: null as any,
+    isLastPage: false,
+    isNewList: false,
 };
 
 const commentSlice = createSlice({
     name: 'comments',
     initialState,
     reducers: {
-        findSelectedCommentById: (state, action: PayloadAction<number>) => {
+        setSelectedCommentByID: (state, action: PayloadAction<number>) => {
             state.selectedComment = state.comments.filter(
                 (comment) => comment.id === action.payload,
             )[0];
         },
         resetSelectedComment: (state) => {
             state.selectedComment = null as any;
+        },
+        toggleIsNewCommentList: (state, action: PayloadAction<boolean>) => {
+            state.isNewList = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -40,7 +47,13 @@ const commentSlice = createSlice({
             })
             .addCase(findAllCommentsByPostID.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.comments = action.payload.content;
+                state.isLastPage = action.payload.isLastPage;
+
+                if (state.isNewList) {
+                    state.comments = action.payload.content;
+                } else {
+                    state.comments = [...state.comments, ...action.payload.content];
+                }
             })
             .addCase(findAllCommentsByPostID.rejected, (state, action) => {
                 state.isLoading = false;
@@ -50,6 +63,23 @@ const commentSlice = createSlice({
                     toast.error(state.error);
                 } else console.error(action.error.message);
             })
+            // Find All Child Comments By Parent Id
+            // .addCase(findAllCommentsByPostID.pending, (state) => {
+            //     state.isLoading = true;
+            //     state.error = '';
+            // })
+            // .addCase(findAllCommentsByPostID.fulfilled, (state, action) => {
+            //     state.isLoading = false;
+            //     state.comments = action.payload.content;
+            // })
+            // .addCase(findAllCommentsByPostID.rejected, (state, action) => {
+            //     state.isLoading = false;
+            //     const error = action.payload as AxiosError;
+            //     if (error) {
+            //         state.error = error.message;
+            //         toast.error(state.error);
+            //     } else console.error(action.error.message);
+            // })
             // Create comment | child comment
             .addCase(createComment.pending, (state) => {
                 state.isLoading = true;
@@ -70,7 +100,8 @@ const commentSlice = createSlice({
     },
 });
 
-export const { findSelectedCommentById, resetSelectedComment } = commentSlice.actions;
+export const { setSelectedCommentByID, resetSelectedComment, toggleIsNewCommentList } =
+    commentSlice.actions;
 
 const commentReducer = commentSlice.reducer;
 

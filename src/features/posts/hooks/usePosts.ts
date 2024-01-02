@@ -56,7 +56,6 @@ export default function usePosts(props: PostParam | undefined) {
 
         dispatch(toggleIsNewPostList(page === 1 ? true : false));
         const request = dispatch(handleFindAllPosts());
-        console.log(request);
 
         return () => {
             request.abort();

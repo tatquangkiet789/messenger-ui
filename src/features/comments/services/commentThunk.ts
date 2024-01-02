@@ -1,11 +1,15 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { createCommentService, findAllCommentsByPostIDService } from './commentService';
+import {
+    createCommentService,
+    findAllChildCommentsByParentIDService,
+    findAllCommentsByPostIDService,
+} from './commentService';
 import { AxiosError } from 'axios';
 import { CreateChildComment, CreateComment } from '../models/comment';
 
-// // [GET] /api/v1/posts/:id/comments
+// [GET] /api/v1/posts/:id/comments?page=:page
 export const findAllCommentsByPostID = createAsyncThunk(
-    'findAllCommentsByPostId',
+    'findAllCommentsByPostID',
     async (
         {
             postID,
@@ -27,7 +31,33 @@ export const findAllCommentsByPostID = createAsyncThunk(
     },
 );
 
-// // [POST] /api/v1/posts/:postId/comments/create
+// [GET] /api/v1/posts/:id/comments/:parentId?page=:page
+export const findAllChildCommentsByParentID = createAsyncThunk(
+    'findAllChildCommentsByParentID',
+    async (
+        {
+            postID,
+            page,
+            parentID,
+        }: {
+            postID: number;
+            page: number;
+            parentID: number;
+        },
+        { rejectWithValue },
+    ) => {
+        try {
+            const data = await findAllChildCommentsByParentIDService({ postID, page, parentID });
+            return data;
+        } catch (error) {
+            const err = error as AxiosError;
+            if (!err.response) throw err;
+            return rejectWithValue(err.response.data);
+        }
+    },
+);
+
+// [POST] /api/v1/posts/:postId/comments/create
 export const createComment = createAsyncThunk(
     'createComment',
     async (comment: CreateComment | CreateChildComment, { rejectWithValue }) => {

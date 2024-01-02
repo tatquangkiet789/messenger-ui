@@ -46,5 +46,14 @@ export const ENDPOINTS = {
     // Comments endpoints
     FIND_ALL_COMMENTS_BY_POST_ID: ({ postID, page }: { postID: number; page: number }) =>
         `/posts/${postID}/comments?page=${page}`,
+    FIND_ALL_CHILD_COMMENTS_BY_PARENT_ID: ({
+        postID,
+        parentID,
+        page,
+    }: {
+        postID: number;
+        parentID: number;
+        page: number;
+    }) => `/posts/${postID}/comments/${parentID}?page=${page}`,
     CREATE_COMMENT: ({ postID }: { postID: number }) => `/posts/${postID}/comments/create`,
 };

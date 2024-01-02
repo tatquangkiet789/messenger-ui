@@ -1,7 +1,13 @@
 import { tickIcon } from '@src/assets';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Comment } from '../models/comment';
+import { findAllChildCommentsByParentIDService } from '../services/commentService';
+import CommentList from './CommentList';
+import useAuth from '@src/features/auth/hooks/useAuth';
+import { calculateRemainChildComments } from '@src/utils/util';
+import { useAppDispatch } from '@src/hooks';
+import { setSelectedCommentByID } from '../commentSlice';
 
 type CommentItemProps = {
     comment: Comment;
@@ -16,15 +22,31 @@ const CommentItem = memo(function CommentItem({
     isDisabledReply,
 }: // childComments,
 CommentItemProps) {
-    const { id, content, userCommentDetail, createdDate, totalChildComments } = comment;
+    const { id, content, userCommentDetail, createdDate, totalChildComments, postID } = comment;
     const { avatar, lastName, firstName, id: userID, username, isVerified } = userCommentDetail;
-    console.log(id);
+    const { isAuthenticated } = useAuth();
+    const [childComments, setChildComments] = useState<Comment[]>([]);
+    const [childCommentPage, setChildCommetPage] = useState(1);
+    const [isLastPage, setIsLastPage] = useState(false);
+    const totalComments = calculateRemainChildComments({
+        totalChildComments,
+        fetchedChildComments: childComments.length,
+    });
+    const dispatch = useAppDispatch();
 
-    // const dispatch = useAppDispatch();
+    const handleFindAllChildComments = async () => {
+        const data = await findAllChildCommentsByParentIDService({
+            page: childCommentPage,
+            parentID: id,
+            postID,
+        });
+        setChildComments(data.content);
+        setIsLastPage(data.isLastPage);
+    };
 
-    // const handleSetRepliedUserFullName = () => {
-    //     dispatch(findSelectedCommentById(id!));
-    // };
+    const handleSetSelectedComment = () => {
+        dispatch(setSelectedCommentByID(id));
+    };
 
     return (
         <div className={`flex flex-col w-full max-w-[500px]`}>
@@ -51,33 +73,34 @@ CommentItemProps) {
                     </p>
                     <div className={`flex items-center py-[2px]`}>
                         <span className={`text-gray05`}>{createdDate}</span>
-                        {!isDisabledReply ? (
+                        {!isDisabledReply && isAuthenticated ? (
                             <button
                                 className={`ml-[10px] text-base text-gray05 hover:cursor-pointer hover:underline`}
+                                onClick={handleSetSelectedComment}
                             >
                                 Phản hồi
                             </button>
                         ) : null}
                     </div>
-                    {totalChildComments !== 0 ? (
-                        <p className='text-base font-semibold hover:cursor-pointer hover:underline'>
+                    {totalComments !== 0 && !isLastPage ? (
+                        <p
+                            className='text-base font-semibold hover:cursor-pointer hover:underline w-fit'
+                            onClick={handleFindAllChildComments}
+                        >
                             Xem {totalChildComments} phản hồi
                         </p>
                     ) : null}
                 </div>
             </div>
-            {/* {childComments ? (
-                <div className={`p-7 flex flex-col`}>
-                    {childComments.map((comment) => (
-                        <CommentItem
-                            key={comment.id}
-                            authorID={authorID}
-                            comment={comment}
-                            isDisabledReply={false}
-                        />
-                    ))}
+            {childComments.length !== 0 ? (
+                <div className='pl-12'>
+                    <CommentList
+                        comments={childComments}
+                        authorID={authorID}
+                        onChangePage={setChildCommetPage}
+                    />
                 </div>
-            ) : null} */}
+            ) : null}
         </div>
     );
 });

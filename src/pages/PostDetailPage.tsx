@@ -3,13 +3,14 @@ import AccountItemSkeleton from '@src/components/AccountItemSkeleton';
 import VideoPlayer from '@src/components/VideoPlayer';
 import { AiOutlineClose, AiOutlineComment, AiOutlineHeart } from '@src/components/icons';
 import { ROUTES } from '@src/constants/routes';
+import AddComment from '@src/features/comments/components/AddComment';
 import CommentList from '@src/features/comments/components/CommentList';
 import { findAllCommentsByPostID } from '@src/features/comments/services/commentThunk';
 import usePosts from '@src/features/posts/hooks/usePosts';
 import { PostType } from '@src/features/posts/models/postType.enum';
 import { useAppDispatch, useAppSelector } from '@src/hooks';
 import { numberFormat } from '@src/utils/format';
-import { Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 //     useEffect(() => {
@@ -58,16 +59,17 @@ import { Link, useParams } from 'react-router-dom';
 //             });
 //     };
 
-export default function PostDetail() {
+export default function PostDetailPage() {
     const { id } = useParams();
     const postID = parseInt(id!.toString());
     const { selectedPost } = usePosts({ type: 'id', postID: postID });
     const dispatch = useAppDispatch();
-    const { comments } = useAppSelector((state) => state.comments);
+    const { comments, isLastPage } = useAppSelector((state) => state.comments);
+    const [commentPage, setCommentPage] = useState(1);
 
     useEffect(() => {
-        dispatch(findAllCommentsByPostID({ postID, page: 1 }));
-    }, [dispatch, postID]);
+        dispatch(findAllCommentsByPostID({ postID, page: commentPage }));
+    }, [dispatch, postID, commentPage]);
 
     function renderPostContent() {
         if (selectedPost.postTypeName === PostType.Image) {
@@ -133,10 +135,11 @@ export default function PostDetail() {
                                     <CommentList
                                         comments={comments}
                                         authorID={selectedPost.authorDetail.id}
+                                        onChangePage={setCommentPage}
                                     />
                                 </Suspense>
                             </div>
-                            <div>Add comment</div>
+                            <AddComment postID={postID} />
                         </div>
                     </>
                 )}

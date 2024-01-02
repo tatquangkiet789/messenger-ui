@@ -2,7 +2,7 @@ import FriendPage from './FriendPage';
 import HomePage from './HomePage';
 import LoginPage from './LoginPage';
 import MessagePage from './MessagePage';
-import PostDetail from './PostDetail';
+import PostDetailPage from './PostDetailPage';
 import RegisterPage from './RegisterPage';
 import UserDetail from './UserDetail';
 import VideoCallPage from './VideoCallPage';
@@ -16,6 +16,6 @@ export {
     FriendPage,
     MessagePage,
     VideoCallPage,
-    PostDetail,
+    PostDetailPage,
     UserDetail,
 };

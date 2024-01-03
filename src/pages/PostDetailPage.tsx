@@ -3,6 +3,8 @@ import AccountItemSkeleton from '@src/components/AccountItemSkeleton';
 import VideoPlayer from '@src/components/VideoPlayer';
 import { AiOutlineClose, AiOutlineComment, AiOutlineHeart } from '@src/components/icons';
 import { ROUTES } from '@src/constants/routes';
+import useAuth from '@src/features/auth/hooks/useAuth';
+import { toggleIsNewCommentList } from '@src/features/comments/commentSlice';
 import AddComment from '@src/features/comments/components/AddComment';
 import CommentList from '@src/features/comments/components/CommentList';
 import { findAllCommentsByPostID } from '@src/features/comments/services/commentThunk';
@@ -63,11 +65,13 @@ export default function PostDetailPage() {
     const { id } = useParams();
     const postID = parseInt(id!.toString());
     const { selectedPost } = usePosts({ type: 'id', postID: postID });
+    const { isAuthenticated } = useAuth();
     const dispatch = useAppDispatch();
     const { comments, isLastPage } = useAppSelector((state) => state.comments);
     const [commentPage, setCommentPage] = useState(1);
 
     useEffect(() => {
+        dispatch(toggleIsNewCommentList(commentPage === 1 ? true : false));
         dispatch(findAllCommentsByPostID({ postID, page: commentPage }));
     }, [dispatch, postID, commentPage]);
 
@@ -134,12 +138,13 @@ export default function PostDetailPage() {
                                 <Suspense fallback={<AccountItemSkeleton size={5} />}>
                                     <CommentList
                                         comments={comments}
+                                        isLastPage={isLastPage}
                                         authorID={selectedPost.authorDetail.id}
                                         onChangePage={setCommentPage}
                                     />
                                 </Suspense>
                             </div>
-                            <AddComment postID={postID} />
+                            <AddComment postID={postID} isAuthenticated={isAuthenticated} />
                         </div>
                     </>
                 )}

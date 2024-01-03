@@ -8,6 +8,7 @@ export type Comment = {
     createdDate: string;
     totalChildComments: number;
     userCommentDetail: User;
+    childComments: Comment[];
 };
 
 export type CreateCommentForm = {
@@ -17,10 +18,5 @@ export type CreateCommentForm = {
 export type CreateComment = {
     postID: number;
     content: string;
-};
-
-export type CreateChildComment = {
-    postID: number;
-    content: string;
-    parentID: number;
+    parentID: number | undefined;
 };

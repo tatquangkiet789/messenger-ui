@@ -30,7 +30,7 @@ const Input = memo(function Input({
                 id={name}
                 name={name}
                 type={inputType}
-                className={`caret-primary text-base flex-1 border-2 
+                className={`caret-primary text-base flex-1 border-2 text-black
                 border-gray012 bg-gray006 p-3`}
                 placeholder={placeholder}
                 value={value}

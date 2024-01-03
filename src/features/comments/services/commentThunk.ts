@@ -1,11 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { AxiosError } from 'axios';
+import { CreateComment } from '../models/comment';
 import {
     createCommentService,
     findAllChildCommentsByParentIDService,
     findAllCommentsByPostIDService,
 } from './commentService';
-import { AxiosError } from 'axios';
-import { CreateChildComment, CreateComment } from '../models/comment';
 
 // [GET] /api/v1/posts/:id/comments?page=:page
 export const findAllCommentsByPostID = createAsyncThunk(
@@ -60,7 +60,7 @@ export const findAllChildCommentsByParentID = createAsyncThunk(
 // [POST] /api/v1/posts/:postId/comments/create
 export const createComment = createAsyncThunk(
     'createComment',
-    async (comment: CreateComment | CreateChildComment, { rejectWithValue }) => {
+    async (comment: CreateComment, { rejectWithValue }) => {
         try {
             const data = await createCommentService(comment);
             return data;

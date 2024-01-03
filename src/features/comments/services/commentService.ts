@@ -1,6 +1,6 @@
 import { ENDPOINTS } from '@src/constants/endpoints';
 import { authAxios, publicAxios } from 'lib/axiosClient';
-import { CreateChildComment, CreateComment } from '../models/comment';
+import { CreateComment } from '../models/comment';
 
 // [GET] /api/v1/posts/:id/comments?page=:page
 export const findAllCommentsByPostIDService = async ({
@@ -31,7 +31,7 @@ export const findAllChildCommentsByParentIDService = async ({
 };
 
 // [POST] /api/v1/posts/:postId/comments/create
-export const createCommentService = async (param: CreateComment | CreateChildComment) => {
+export const createCommentService = async (param: CreateComment) => {
     const res = await authAxios.post(ENDPOINTS.CREATE_COMMENT({ postID: param.postID }), param);
     return res.data;
 };

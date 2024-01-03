@@ -1,47 +1,40 @@
 import { tickIcon } from '@src/assets';
+import useAuth from '@src/features/auth/hooks/useAuth';
+import { useAppDispatch } from '@src/hooks';
+import { calculateRemainChildComments } from '@src/utils/util';
 import { memo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Comment } from '../models/comment';
-import { findAllChildCommentsByParentIDService } from '../services/commentService';
-import CommentList from './CommentList';
-import useAuth from '@src/features/auth/hooks/useAuth';
-import { calculateRemainChildComments } from '@src/utils/util';
-import { useAppDispatch } from '@src/hooks';
 import { setSelectedCommentByID } from '../commentSlice';
+import { Comment } from '../models/comment';
+import { findAllChildCommentsByParentID } from '../services/commentThunk';
+import ChildCommentList from './ChildCommentList';
 
 type CommentItemProps = {
     comment: Comment;
     authorID: number;
     isDisabledReply: boolean;
-    // childComments?: Comment[];
 };
 
 const CommentItem = memo(function CommentItem({
     comment,
     authorID,
     isDisabledReply,
-}: // childComments,
-CommentItemProps) {
+}: CommentItemProps) {
+    const dispatch = useAppDispatch();
+    const { isAuthenticated } = useAuth();
+    const [childCommentPage, setChildCommetPage] = useState(1);
+
     const { id, content, userCommentDetail, createdDate, totalChildComments, postID } = comment;
     const { avatar, lastName, firstName, id: userID, username, isVerified } = userCommentDetail;
-    const { isAuthenticated } = useAuth();
-    const [childComments, setChildComments] = useState<Comment[]>([]);
-    const [childCommentPage, setChildCommetPage] = useState(1);
-    const [isLastPage, setIsLastPage] = useState(false);
+    const childComments = comment.childComments ? comment.childComments : [];
+
     const totalComments = calculateRemainChildComments({
         totalChildComments,
         fetchedChildComments: childComments.length,
     });
-    const dispatch = useAppDispatch();
 
     const handleFindAllChildComments = async () => {
-        const data = await findAllChildCommentsByParentIDService({
-            page: childCommentPage,
-            parentID: id,
-            postID,
-        });
-        setChildComments(data.content);
-        setIsLastPage(data.isLastPage);
+        dispatch(findAllChildCommentsByParentID({ page: childCommentPage, parentID: id, postID }));
     };
 
     const handleSetSelectedComment = () => {
@@ -82,7 +75,8 @@ CommentItemProps) {
                             </button>
                         ) : null}
                     </div>
-                    {totalComments !== 0 && !isLastPage ? (
+                    {/* {totalComments !== 0 && !isLastPage ? ( */}
+                    {totalComments !== 0 ? (
                         <p
                             className='text-base font-semibold hover:cursor-pointer hover:underline w-fit'
                             onClick={handleFindAllChildComments}
@@ -92,15 +86,11 @@ CommentItemProps) {
                     ) : null}
                 </div>
             </div>
-            {childComments.length !== 0 ? (
-                <div className='pl-12'>
-                    <CommentList
-                        comments={childComments}
-                        authorID={authorID}
-                        onChangePage={setChildCommetPage}
-                    />
-                </div>
-            ) : null}
+            <ChildCommentList
+                authorID={authorID}
+                childComments={childComments}
+                totalChildComments={childComments.length}
+            />
         </div>
     );
 });

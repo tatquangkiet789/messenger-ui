@@ -64,6 +64,7 @@ export default function useIntersectionObserver({
         (entries) => {
             const first = entries[0];
             if (first.isIntersecting) {
+                console.log(`onChange in useIntersectionObserver`);
                 onChange();
             }
         },
@@ -72,7 +73,10 @@ export default function useIntersectionObserver({
     const observerRef = useRef(intersectionObserver);
 
     useEffect(() => {
-        if (!element) return;
+        if (!element) {
+            console.log(element);
+            return;
+        }
 
         const currentObserver = observerRef.current;
         currentObserver.observe(element);

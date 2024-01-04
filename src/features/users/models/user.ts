@@ -17,3 +17,10 @@ export type User = {
     isVerified: boolean;
     userRoleName: string;
 };
+
+export type UserLike = {
+    id: number;
+    postID: number;
+    username: string;
+    isLike: boolean;
+};

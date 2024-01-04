@@ -13,6 +13,7 @@ import {
     AiOutlineClose,
     AiOutlineSend,
     AiOutlineCloseCircle,
+    AiFillHeart,
     AiOutlineHome,
     AiOutlineComment,
     AiOutlineHeart,
@@ -34,6 +35,7 @@ import {
 import { CiSearch } from 'react-icons/ci';
 
 export {
+    AiFillHeart,
     IoAddOutline,
     AiOutlineMessage,
     AiOutlineComment,

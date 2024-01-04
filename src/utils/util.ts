@@ -7,3 +7,7 @@ export function calculateRemainChildComments({
 }) {
     return totalChildComments - fetchedChildComments;
 }
+
+// export function isLikeByCurrentUser({username: string}) {
+
+// }

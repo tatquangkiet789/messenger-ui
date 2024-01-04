@@ -35,13 +35,13 @@ export const ENDPOINTS = {
     FIND_ALL_POSTS: ({ page, username }: { page: number; username?: string }) =>
         `/posts?page=${page}${username ? `&username=${encodeURIComponent(username)}` : ''}`,
     FIND_POST_BY_ID: ({ id }: { id: number }) => `/posts/${id}`,
-    LIKE_POST_BY_ID: ({ id }: { id: number }) => `/posts/${id}/like`,
-    UNlIKE_POST_BY_ID: ({ id }: { id: number }) => `/posts/${id}/unlike`,
     FIND_ALL_POSTS_BY_CURRENT_USER: ({ page }: { page: number }) =>
         `/posts/current-user?page=${page}`,
     FIND_ALL_POSTS_ARE_VIDEO: ({ page }: { page: number }) => `/posts/video?page=${page}`,
     CREATE_POST: '/posts/create',
     FIND_ALL_POSTS_FROM_FRIENDS: ({ page }: { page: number }) => `/posts/friends?page=${page}`,
+    LIKE_POST_BY_ID: ({ id }: { id: number }) => `/posts/${id}/like`,
+    UNlIKE_POST_BY_ID: ({ id }: { id: number }) => `/posts/${id}/unlike`,
 
     // Comments endpoints
     FIND_ALL_COMMENTS_BY_POST_ID: ({ postID, page }: { postID: number; page: number }) =>

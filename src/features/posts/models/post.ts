@@ -1,4 +1,4 @@
-import { User } from 'features/users/models/user';
+import { User, UserLike } from 'features/users/models/user';
 
 export type Post = {
     id: number;
@@ -9,8 +9,8 @@ export type Post = {
     totalComments: number;
     authorDetail: User;
     createdDate: Date;
-    isLikeByCurrentUser: boolean;
     isActive: boolean;
+    userLikeList: UserLike[];
 };
 
 export type CreatePost = {

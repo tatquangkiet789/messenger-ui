@@ -1,54 +1,13 @@
-// import { HeartIcon } from 'assets/icons';
-// import classNames from 'classnames/bind';
-// import { POST_TYPE, STORAGE_KEY } from 'constants/constants';
-// import { useAppDispatch } from 'hooks/useAppDispatch';
-// import { useAppSelector } from 'hooks/useAppSelector';
-// import React, { memo, useEffect, useState } from 'react';
-// import { AiOutlineComment } from 'react-icons/ai';
-// import ReactPlayer from 'react-player';
-// import { Link, useLocation, useNavigate } from 'react-router-dom';
-// import { numberFormat } from 'utils/format';
-// import styles from './PostItem.module.scss';
-// import { IPost } from 'modules/posts/models/postModel';
-// import AccountInfo from 'components/ui/AccountInfo/AccountInfo';
-// import {
-//     likePostById,
-//     userLikePost,
-//     unlikePostById,
-//     userUnlikePost,
-// } from 'redux/reducers/postSlice';
-// import { ROUTES } from 'constants/api';
-// import { ISendNotification } from 'modules/notifications/models/notificationModel';
-// import SOCKET_EVENT from 'constants/socket';
-// import socketClient from 'lib/socketClient';
-
 import VideoPlayer from '@src/components/VideoPlayer';
-import { AiOutlineComment, AiOutlineHeart } from '@src/components/icons';
+import { AiFillHeart, AiOutlineComment, AiOutlineHeart } from '@src/components/icons';
 import AccountInfo from 'components/AccountInfo';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { numberFormat } from 'utils/format';
 import { Post } from '../models/post';
 import { PostType } from '../models/postType.enum';
-
-// const cx = classNames.bind(styles);
-
-// interface IPostItemProps {
-//     post: IPost;
-// }
-
-// const PostItem: React.FC<IPostItemProps> = ({ post }) => {
-//     const {
-//         id,
-//         caption,
-//         postUrl,
-//         postTypeId,
-//         totalComments,
-//         totalLikes,
-//         userLikePostList,
-//         authorDetail,
-//         createdDate,
-//     } = post;
+import useAuth from '@src/features/auth/hooks/useAuth';
+import { toast } from 'react-toastify';
 
 //     const { currentUser } = useAppSelector((state) => state.auth);
 //     const dispatch = useAppDispatch();
@@ -128,8 +87,31 @@ const PostItem = memo(function PostItem({ post }: PostItemProps) {
         totalComments,
         totalLikes,
         createdDate,
+        userLikeList,
         id,
     } = post;
+    const { currentUser, isAuthenticated } = useAuth();
+    const [isLike, setIsLike] = useState(
+        !!userLikeList.find((like) => like.username === currentUser?.username),
+    );
+    // const isLike = !!userLikeList.find((like) => like.username === currentUser?.username);
+
+    // const isLikeByCurrentUser = () => {
+    //     if (!currentUser) {
+    //         return false;
+    //     }
+    //     return !!userLikeList.find((like) => like.username === currentUser.username);
+    // };
+
+    const handleLikeOrUnlikePost = () => {
+        if (!isAuthenticated) {
+            return toast.info(`Đăng nhập để thích bài viết`);
+        }
+        if (isLike) {
+            return toast.info('Bỏ thích bài viết');
+        }
+        return toast.info('Thích bài viết');
+    };
 
     return (
         <div className={`w-full max-w-[600px] bg-white_1 shadow-md rounded-lg mb-6`}>
@@ -164,9 +146,15 @@ const PostItem = memo(function PostItem({ post }: PostItemProps) {
 
             <div className={`flex items-center justify-end px-4 pt-[6px] pb-3`}>
                 <div
-                    className={`flex items-center justify-center rounded-lg p-2 hover:bg-gray003 hover:cursor-pointer`}
+                    className={`flex items-center justify-center rounded-lg p-2 hover:bg-gray003 
+                    hover:cursor-pointer`}
+                    onClick={handleLikeOrUnlikePost}
                 >
-                    <AiOutlineHeart size={30} />
+                    {isLike ? (
+                        <AiFillHeart size={30} className={`fill-primary`} />
+                    ) : (
+                        <AiOutlineHeart size={30} />
+                    )}
                 </div>
                 <Link
                     className={`flex items-center justify-center rounded-lg p-2 hover:bg-gray003 hover:cursor-pointer`}

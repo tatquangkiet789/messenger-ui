@@ -123,8 +123,11 @@ const postSlice = createSlice({
                 state.message = action.payload.message;
             })
             .addCase(likePostByID.rejected, (state, action) => {
-                state.error = action.error.message!;
-                toast.error(state.error);
+                const error = action.payload as AxiosError;
+                if (error) {
+                    state.error = error.message;
+                    toast.error(state.error);
+                } else console.error(action.error.message);
             })
             // // Unlike Post By Id
             .addCase(unLikePostByID.pending, () => {})

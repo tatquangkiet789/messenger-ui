@@ -1,13 +1,14 @@
-import VideoPlayer from '@src/components/VideoPlayer';
 import { AiFillHeart, AiOutlineComment, AiOutlineHeart } from '@src/components/icons';
+import useAuth from '@src/features/auth/hooks/useAuth';
+import { useAppDispatch } from '@src/hooks';
 import AccountInfo from 'components/AccountInfo';
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { numberFormat } from 'utils/format';
 import { Post } from '../models/post';
-import { PostType } from '../models/postType.enum';
-import useAuth from '@src/features/auth/hooks/useAuth';
-import { toast } from 'react-toastify';
+import { likePostByID, unLikePostByID } from '../services/postThunk';
+import PostContent from './PostContent';
 
 //     const { currentUser } = useAppSelector((state) => state.auth);
 //     const dispatch = useAppDispatch();
@@ -91,26 +92,28 @@ const PostItem = memo(function PostItem({ post }: PostItemProps) {
         id,
     } = post;
     const { currentUser, isAuthenticated } = useAuth();
-    const [isLike, setIsLike] = useState(
-        !!userLikeList.find((like) => like.username === currentUser?.username),
-    );
-    // const isLike = !!userLikeList.find((like) => like.username === currentUser?.username);
+    const dispatch = useAppDispatch();
+    const [isLike, setIsLike] = useState(false);
 
-    // const isLikeByCurrentUser = () => {
-    //     if (!currentUser) {
-    //         return false;
-    //     }
-    //     return !!userLikeList.find((like) => like.username === currentUser.username);
-    // };
+    // Find a way to remove useEffect
+    useEffect(() => {
+        if (!currentUser) return;
+
+        setIsLike(!!userLikeList.find((like) => like.username === currentUser.username));
+    }, [currentUser, userLikeList]);
 
     const handleLikeOrUnlikePost = () => {
         if (!isAuthenticated) {
             return toast.info(`Đăng nhập để thích bài viết`);
         }
         if (isLike) {
-            return toast.info('Bỏ thích bài viết');
+            return dispatch(unLikePostByID({ postID: id }))
+                .unwrap()
+                .then(() => setIsLike(false));
         }
-        return toast.info('Thích bài viết');
+        return dispatch(likePostByID({ postID: id }))
+            .unwrap()
+            .then(() => setIsLike(true));
     };
 
     return (
@@ -129,15 +132,7 @@ const PostItem = memo(function PostItem({ post }: PostItemProps) {
                 {caption}
             </div>
             <div className={`w-full max-w-[600px] flex justify-center pt-3`}>
-                {postTypeName === PostType.Image ? (
-                    <div
-                        className={`w-[600px] h-[600px] bg-center bg-cover bg-no-repeat`}
-                        style={{ backgroundImage: `url(${postUrl})` }}
-                    ></div>
-                ) : null}
-                {postTypeName === PostType.Video ? (
-                    <VideoPlayer size='400px' url={postUrl} />
-                ) : null}
+                <PostContent postUrl={postUrl} postTypeName={postTypeName} contentSize='600px' />
             </div>
             <div className={`flex items-center justify-end py-4 mx-3 text-gray075`}>
                 <span>{numberFormat.format(totalLikes)} lượt thích</span>

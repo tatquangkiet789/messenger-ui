@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import ReactPlayer from 'react-player';
 
-type VideoPlayerSize = '400px' | '100%';
+type VideoPlayerSize = '600px' | '100%';
 
 type VideoPlayerProps = {
     url: string;

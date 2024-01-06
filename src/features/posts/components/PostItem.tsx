@@ -1,79 +1,11 @@
 import { AiFillHeart, AiOutlineComment, AiOutlineHeart } from '@src/components/icons';
-import useAuth from '@src/features/auth/hooks/useAuth';
-import { useAppDispatch } from '@src/hooks';
 import AccountInfo from 'components/AccountInfo';
-import { memo, useEffect, useState } from 'react';
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { numberFormat } from 'utils/format';
+import useLikePost from '../hooks/useLikePost';
 import { Post } from '../models/post';
-import { likePostByID, unLikePostByID } from '../services/postThunk';
 import PostContent from './PostContent';
-
-//     const { currentUser } = useAppSelector((state) => state.auth);
-//     const dispatch = useAppDispatch();
-
-//     const [likePost, setLikePost] = useState(false);
-
-//     const location = useLocation();
-//     const navigate = useNavigate();
-
-//     const accessToken = sessionStorage.getItem(STORAGE_KEY.ACCESS_TOKEN);
-
-//     useEffect(() => {
-//         // if user is not login then not show like status
-//         if (!currentUser) return;
-//         // if nobody likes that post then not show like status
-//         if (!userLikePostList) return;
-
-//         const currentUserLikePostDetail = userLikePostList.filter(
-//             (user) => user.id === currentUser.id,
-//         )[0];
-
-//         if (currentUserLikePostDetail) setLikePost(currentUserLikePostDetail.likeStatus);
-//     }, [currentUser, id, userLikePostList]);
-
-//     const handleLikeAndUnlikePost = () => {
-//         if (!currentUser || !accessToken) {
-//             return navigate(ROUTES.login, {
-//                 replace: true,
-//                 state: { from: location },
-//             });
-//         }
-//         const postId = id as number;
-//         if (!likePost) {
-//             dispatch(
-//                 likePostById({
-//                     postId: postId,
-//                     accessToken: accessToken,
-//                 }),
-//             )
-//                 .unwrap()
-//                 .then(() => {
-//                     setLikePost(true);
-//                     dispatch(userLikePost(postId));
-//                     const notification: ISendNotification = {
-//                         senderName: currentUser.username,
-//                         receiverName: userPostDetail.username,
-//                         notificationType: 'like',
-//                         postId: postId,
-//                     };
-//                     socketClient.emit(SOCKET_EVENT.SEND_NOTIFICATION, notification);
-//                 });
-//             return;
-//         }
-//         dispatch(
-//             unlikePostById({
-//                 postId: postId,
-//                 accessToken: accessToken,
-//             }),
-//         )
-//             .unwrap()
-//             .then(() => {
-//                 setLikePost(false);
-//                 dispatch(userUnlikePost(postId));
-//             });
-//     };
 
 type PostItemProps = {
     post: Post;
@@ -91,30 +23,7 @@ const PostItem = memo(function PostItem({ post }: PostItemProps) {
         userLikeList,
         id,
     } = post;
-    const { currentUser, isAuthenticated } = useAuth();
-    const dispatch = useAppDispatch();
-    const [isLike, setIsLike] = useState(false);
-
-    // Find a way to remove useEffect
-    useEffect(() => {
-        if (!currentUser) return;
-
-        setIsLike(!!userLikeList.find((like) => like.username === currentUser.username));
-    }, [currentUser, userLikeList]);
-
-    const handleLikeOrUnlikePost = () => {
-        if (!isAuthenticated) {
-            return toast.info(`Đăng nhập để thích bài viết`);
-        }
-        if (isLike) {
-            return dispatch(unLikePostByID({ postID: id }))
-                .unwrap()
-                .then(() => setIsLike(false));
-        }
-        return dispatch(likePostByID({ postID: id }))
-            .unwrap()
-            .then(() => setIsLike(true));
-    };
+    const { isLike, handleLikeOrUnlikePost } = useLikePost({ userLikeList });
 
     return (
         <div className={`w-full max-w-[600px] bg-white_1 shadow-md rounded-lg mb-6`}>
@@ -143,7 +52,7 @@ const PostItem = memo(function PostItem({ post }: PostItemProps) {
                 <div
                     className={`flex items-center justify-center rounded-lg p-2 hover:bg-gray003 
                     hover:cursor-pointer`}
-                    onClick={handleLikeOrUnlikePost}
+                    onClick={() => handleLikeOrUnlikePost({ postID: id })}
                 >
                     {isLike ? (
                         <AiFillHeart size={30} className={`fill-primary`} />

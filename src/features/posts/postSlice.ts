@@ -38,18 +38,26 @@ const postSlice = createSlice({
     initialState,
     reducers: {
         userLikePost: (state, action: PayloadAction<number>) => {
-            state.posts = state.posts.map((post: Post) => {
-                if (post.id === action.payload) return { ...post, totalLikes: post.totalLikes + 1 };
+            const postID = action.payload;
+            state.posts = state.posts.map((post) => {
+                if (post.id === postID) return { ...post, totalLikes: post.totalLikes + 1 };
                 return post;
             });
+            if (state.selectedPost.id === postID) {
+                state.selectedPost.totalLikes++;
+            }
         },
         userUnlikePost: (state, action: PayloadAction<number>) => {
-            state.posts = state.posts.map((post: Post) => {
-                if (post.id === action.payload) return { ...post, totalLikes: post.totalLikes - 1 };
+            const postID = action.payload;
+            state.posts = state.posts.map((post) => {
+                if (post.id === postID) return { ...post, totalLikes: post.totalLikes - 1 };
                 return post;
             });
+            if (state.selectedPost.id === postID) {
+                state.selectedPost.totalLikes--;
+            }
         },
-        userAddNewComment: (state) => {
+        userAddComment: (state) => {
             state.selectedPost.totalComments = state.selectedPost.totalComments + 1;
         },
         toggleIsNewPostList: (state, action: PayloadAction<boolean>) => {
@@ -203,7 +211,7 @@ const postSlice = createSlice({
     },
 });
 
-export const { userLikePost, userUnlikePost, userAddNewComment, toggleIsNewPostList } =
+export const { userLikePost, userUnlikePost, userAddComment, toggleIsNewPostList } =
     postSlice.actions;
 
 const postReducer = postSlice.reducer;

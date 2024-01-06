@@ -11,6 +11,7 @@ import { CreateComment, CreateCommentForm } from '../models/comment';
 import { createComment } from '../services/commentThunk';
 import ReplyComment from './ReplyComment';
 import { resetSelectedComment } from '../commentSlice';
+import { userAddComment } from '@src/features/posts/postSlice';
 
 type AddCommentProps = {
     postID: number;
@@ -44,7 +45,9 @@ const AddComment = memo(function AddComment({ postID, isAuthenticated }: AddComm
                     parentID: selectedComment ? selectedComment.id : undefined,
                     postID,
                 };
-                dispatch(createComment(data));
+                dispatch(createComment(data))
+                    .unwrap()
+                    .then(() => dispatch(userAddComment()));
                 dispatch(resetSelectedComment());
                 resetForm();
             }}

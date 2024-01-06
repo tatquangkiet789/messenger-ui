@@ -1,94 +1,45 @@
 import AccountInfo from '@src/components/AccountInfo';
 import AccountItemSkeleton from '@src/components/AccountItemSkeleton';
-import VideoPlayer from '@src/components/VideoPlayer';
-import { AiOutlineClose, AiOutlineComment, AiOutlineHeart } from '@src/components/icons';
+import {
+    AiFillHeart,
+    AiOutlineClose,
+    AiOutlineComment,
+    AiOutlineHeart,
+} from '@src/components/icons';
 import { ROUTES } from '@src/constants/routes';
 import useAuth from '@src/features/auth/hooks/useAuth';
 import { toggleIsNewCommentList } from '@src/features/comments/commentSlice';
 import AddComment from '@src/features/comments/components/AddComment';
 import CommentList from '@src/features/comments/components/CommentList';
 import { findAllCommentsByPostID } from '@src/features/comments/services/commentThunk';
-import usePosts from '@src/features/posts/hooks/usePosts';
-import { PostType } from '@src/features/posts/models/postType.enum';
+import PostContent from '@src/features/posts/components/PostContent';
+import useLikePost from '@src/features/posts/hooks/useLikePost';
+import { findPostByID } from '@src/features/posts/services/postThunk';
 import { useAppDispatch, useAppSelector } from '@src/hooks';
 import { numberFormat } from '@src/utils/format';
 import { Suspense, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
-//     useEffect(() => {
-//         // if (!id || !currentUser) return;
-//         if (!id) return;
-
-//         const postId = parseInt(id);
-//         dispatch(findPostById(postId));
-//         dispatch(findAllCommentsByPostId({ postId: postId }));
-//         // .unwrap()
-//         // .then((result) => {
-//         //     const currentUserLikePost = result.userLikePostList.filter(
-//         //         (user: any) => user.id === currentUser.id,
-//         //     )[0];
-//         //     if (currentUserLikePost)
-//         //         setUserLikePostStatus(currentUserLikePost.likeStatus);
-//         // });
-//         // eslint-disable-next-line react-hooks/exhaustive-deps
-//     }, [currentUser, id]);
-
-//     const handleLikeAndUnlikePost = () => {
-//         if (!id || !currentUser) return;
-
-//         const postId = parseInt(id);
-//         const accessToken = sessionStorage.getItem(STORAGE_KEY.ACCESS_TOKEN)!;
-//         if (!userLikePostStatus)
-//             return dispatch(likePostById({ postId: postId, accessToken: accessToken }))
-//                 .unwrap()
-//                 .then(() => {
-//                     setUserLikePostStatus(true);
-//                     dispatch(userLikePost(postId));
-//                     const notification: ISendNotification = {
-//                         senderName: currentUser.username,
-//                         receiverName: selectedPost.userPostDetail.username,
-//                         notificationType: 'like',
-//                         postId: postId,
-//                     };
-//                     socketClient.emit(SOCKET_EVENT.SEND_NOTIFICATION, notification);
-//                 });
-
-//         dispatch(unlikePostById({ postId: postId, accessToken: accessToken }))
-//             .unwrap()
-//             .then(() => {
-//                 setUserLikePostStatus(false);
-//                 dispatch(userUnlikePost(postId));
-//             });
-//     };
-
 export default function PostDetailPage() {
     const { id } = useParams();
     const postID = parseInt(id!.toString());
-    const { selectedPost } = usePosts({ type: 'id', postID: postID });
-    const { isAuthenticated } = useAuth();
-    const dispatch = useAppDispatch();
+
+    const { selectedPost } = useAppSelector((state) => state.posts);
     const { comments, isLastPage } = useAppSelector((state) => state.comments);
+    const dispatch = useAppDispatch();
+
+    const { isAuthenticated } = useAuth();
+    const { isLike, handleLikeOrUnlikePost } = useLikePost({
+        userLikeList: selectedPost?.userLikeList,
+    });
+
     const [commentPage, setCommentPage] = useState(1);
 
     useEffect(() => {
+        dispatch(findPostByID({ postID }));
         dispatch(toggleIsNewCommentList(commentPage === 1 ? true : false));
         dispatch(findAllCommentsByPostID({ postID, page: commentPage }));
     }, [dispatch, postID, commentPage]);
-
-    function renderPostContent() {
-        if (selectedPost.postTypeName === PostType.Image) {
-            return (
-                <div
-                    className={`w-full bg-center bg-no-repeat bg-cover`}
-                    style={{
-                        backgroundImage: `url(${selectedPost.postUrl})`,
-                    }}
-                ></div>
-            );
-        }
-
-        return <VideoPlayer size='100%' url={selectedPost.postUrl} />;
-    }
 
     return (
         <div className={`w-full h-screen flex justify-center bg-[rgba(243, 243, 244, 0.9)]`}>
@@ -97,7 +48,11 @@ export default function PostDetailPage() {
                     <>Loading....</>
                 ) : (
                     <>
-                        {renderPostContent()}
+                        <PostContent
+                            contentSize='100%'
+                            postTypeName={selectedPost.postTypeName}
+                            postUrl={selectedPost.postUrl}
+                        />
                         <Link to={ROUTES.HOME} className={`absolute left-0 top-2 cursor-pointer`}>
                             <AiOutlineClose size={40} color={'rgba(243, 243, 244, 0.9)'} />
                         </Link>
@@ -121,8 +76,13 @@ export default function PostDetailPage() {
                             <div className={`flex item-center pl-8 pb-3 gap-3`}>
                                 <div
                                     className={`flex item-center gap-1 [&_svg]:hover:cursor-pointer`}
+                                    onClick={() => handleLikeOrUnlikePost({ postID })}
                                 >
-                                    <AiOutlineHeart size={30} />
+                                    {isLike ? (
+                                        <AiFillHeart size={30} className={`fill-primary`} />
+                                    ) : (
+                                        <AiOutlineHeart size={30} />
+                                    )}
                                     {numberFormat.format(selectedPost.totalLikes)} lượt thích
                                 </div>
                                 <div

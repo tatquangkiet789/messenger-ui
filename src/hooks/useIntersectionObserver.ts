@@ -60,23 +60,17 @@ export default function useIntersectionObserver({
     onChange,
 }: IntersectionObserverHook) {
     const [element, setElement] = useState<HTMLDivElement | null>(null);
-    const intersectionObserver = new IntersectionObserver(
-        (entries) => {
-            const first = entries[0];
-            if (first.isIntersecting) {
-                console.log(`onChange in useIntersectionObserver`);
+    const intersectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
                 onChange();
             }
-        },
-        { threshold: 1 },
-    );
+        });
+    });
     const observerRef = useRef(intersectionObserver);
 
     useEffect(() => {
-        if (!element) {
-            console.log(element);
-            return;
-        }
+        if (!element) return;
 
         const currentObserver = observerRef.current;
         currentObserver.observe(element);
@@ -90,5 +84,5 @@ export default function useIntersectionObserver({
         };
     }, [isUnobserve, element]);
 
-    return { elementRef: setElement };
+    return { elementRef: setElement, element };
 }

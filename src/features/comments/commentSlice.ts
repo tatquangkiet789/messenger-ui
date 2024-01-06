@@ -54,10 +54,8 @@ const commentSlice = createSlice({
                 state.isLastPage = action.payload.isLastPage;
 
                 if (state.isNewList) {
-                    console.log('isNewList');
                     state.comments = action.payload.content;
                 } else {
-                    console.log('Update list');
                     state.comments = [...state.comments, ...action.payload.content];
                 }
             })

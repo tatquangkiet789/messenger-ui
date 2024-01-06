@@ -18,12 +18,8 @@ const CommentList = memo(function CommentList({
 }: CommentListProps) {
     const { elementRef } = useIntersectionObserver({
         isUnobserve: isLastPage,
-        onChange: () => {
-            console.log('OnChangePage');
-            onChangePage((prev: any) => prev + 1);
-        },
+        onChange: () => onChangePage((prev: any) => prev + 1),
     });
-    console.log(isLastPage);
 
     return (
         <div className={`flex flex-col`}>
@@ -35,7 +31,7 @@ const CommentList = memo(function CommentList({
                     isDisabledReply={false}
                 />
             ))}
-            <div ref={elementRef}>End of comment</div>
+            <div className='h-1 flex ' ref={elementRef}></div>
         </div>
     );
 });

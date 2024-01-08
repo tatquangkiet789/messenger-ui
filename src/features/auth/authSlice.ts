@@ -45,10 +45,11 @@ const authSlice = createSlice({
             })
             .addCase(login.rejected, (state, action) => {
                 state.isLoading = false;
-                state.error = (action.payload as AxiosError)
-                    ? (action.payload as AxiosError).message
-                    : action.error.message!;
-                toast.error(state.error);
+                const error = action.payload as AxiosError;
+                if (error) {
+                    state.error = error.message;
+                    toast.error(state.error);
+                } else console.error(action.error.message);
             })
             // Register User
             .addCase(register.pending, (state) => {
@@ -60,10 +61,11 @@ const authSlice = createSlice({
             })
             .addCase(register.rejected, (state, action) => {
                 state.isLoading = false;
-                state.error = (action.payload as AxiosError)
-                    ? (action.payload as AxiosError).message
-                    : action.error.message!;
-                toast.error(state.error);
+                const error = action.payload as AxiosError;
+                if (error) {
+                    state.error = error.message;
+                    toast.error(state.error);
+                } else console.error(action.error.message);
             })
             // Update Password
             .addCase(updatePassword.pending, (state) => {
@@ -76,10 +78,11 @@ const authSlice = createSlice({
             })
             .addCase(updatePassword.rejected, (state, action) => {
                 state.isLoading = false;
-                state.error = (action.payload as AxiosError)
-                    ? (action.payload as AxiosError).message
-                    : action.error.message!;
-                toast.error(state.error);
+                const error = action.payload as AxiosError;
+                if (error) {
+                    state.error = error.message;
+                    toast.error(state.error);
+                } else console.error(action.error.message);
             })
             // Get Current User By Access Token
             .addCase(getCurrentUserByAccessToken.pending, (state) => {
@@ -93,10 +96,11 @@ const authSlice = createSlice({
             })
             .addCase(getCurrentUserByAccessToken.rejected, (state, action) => {
                 state.isLoading = false;
-                state.error = (action.payload as AxiosError)
-                    ? (action.payload as AxiosError).message
-                    : action.error.message!;
-                toast.error(state.error);
+                const error = action.payload as AxiosError;
+                if (error) {
+                    state.error = error.message;
+                    toast.error(state.error);
+                } else console.error(action.error.message);
             })
             // Logout
             .addCase(logout.pending, (state) => {
@@ -111,10 +115,11 @@ const authSlice = createSlice({
             })
             .addCase(logout.rejected, (state, action) => {
                 state.isLoading = false;
-                state.error = (action.payload as AxiosError)
-                    ? (action.payload as AxiosError).message
-                    : action.error.message!;
-                toast.error(state.error);
+                const error = action.payload as AxiosError;
+                if (error) {
+                    state.error = error.message;
+                    toast.error(state.error);
+                } else console.error(action.error.message);
             });
     },
 });

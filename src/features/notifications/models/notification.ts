@@ -1,3 +1,5 @@
+import { User } from '@src/features/users/models/user';
+
 export interface IFindAddFriendNotification {
     page: number;
     accessToken: string;
@@ -28,3 +30,19 @@ export interface IAddFriendNotification {
         avatar: string;
     };
 }
+
+export type PostNotificationType = 'LIKE' | 'COMMENT';
+
+export type NotificationResponse = {
+    id: number;
+    content: string;
+    notificationTypeName: string;
+    notificationSenderDetail: User;
+};
+
+export type PostNotificationResponse = {
+    content: string;
+    notificationSenderDetail: User;
+    notificationType: PostNotificationType;
+    postID: number;
+};

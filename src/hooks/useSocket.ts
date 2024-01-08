@@ -1,13 +1,20 @@
 import SOCKET_EVENT from '@src/constants/socket';
-import useAuth from '@src/features/auth/hooks/useAuth';
+import { PostNotificationResponse } from '@src/features/notifications/models/notification';
+import { User } from '@src/features/users/models/user';
 import socketClient from '@src/lib/socketClient';
+import { useCallback } from 'react';
 
 export default function useSocket() {
-    const { currentUser } = useAuth();
+    const handleAddSocketUser = useCallback((user: User) => {
+        socketClient.emit(SOCKET_EVENT.NEW_USER, user);
+    }, []);
 
-    function handleAddUser() {
-        socketClient.emit(SOCKET_EVENT.NEW_USER, currentUser.id);
-    }
+    const handleReceivePostNotification = useCallback(
+        (postNotification: PostNotificationResponse) => {
+            console.log('Post Notification via Socket: ', postNotification);
+        },
+        [],
+    );
 
-    return { handleAddUser };
+    return { handleAddSocketUser, handleReceivePostNotification };
 }

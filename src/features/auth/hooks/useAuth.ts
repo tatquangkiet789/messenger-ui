@@ -1,8 +1,8 @@
 import { useAppDispatch, useAppSelector } from '@src/hooks';
+import { useEffect } from 'react';
 import { Login, LoginResponse } from '../models/auth';
 import { getCurrentUserByAccessToken, login } from '../services/authThunk';
 import useAccessToken from './useAccessToken';
-import { useEffect } from 'react';
 
 export default function useAuth() {
     const { accessToken, handleSetAccessToken, handleRemoveAccessToken } = useAccessToken();
@@ -16,7 +16,11 @@ export default function useAuth() {
         if (!accessToken) return;
         if (currentUser) return;
 
-        dispatch(getCurrentUserByAccessToken());
+        const response = dispatch(getCurrentUserByAccessToken());
+
+        return () => {
+            response.abort();
+        };
     }, [accessToken, currentUser, dispatch]);
 
     async function handleLogin(param: Login) {

@@ -43,7 +43,7 @@ const postSlice = createSlice({
                 if (post.id === postID) return { ...post, totalLikes: post.totalLikes + 1 };
                 return post;
             });
-            if (state.selectedPost.id === postID) {
+            if (state.selectedPost && state.selectedPost.id === postID) {
                 state.selectedPost.totalLikes++;
             }
         },
@@ -53,7 +53,7 @@ const postSlice = createSlice({
                 if (post.id === postID) return { ...post, totalLikes: post.totalLikes - 1 };
                 return post;
             });
-            if (state.selectedPost.id === postID) {
+            if (state.selectedPost && state.selectedPost.id === postID) {
                 state.selectedPost.totalLikes--;
             }
         },
